@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>山河会・35会 ホームページ</title>
     
-    <!-- Tailwind CSS (Correct URL for styling) -->
+    <!-- Tailwind CSS (正しい読み込み先) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Font Awesome for elegant icons -->
+    <!-- フォントとアイコンの読み込み -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts: Sawarabi Mincho (Japanese Serif), Noto Sans JP for readability -->
     <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
@@ -34,7 +32,7 @@
             background-image: radial-gradient(#e6ded6 1.2px, transparent 1.2px);
             background-size: 20px 20px;
         }
-        /* ルビ（ふりがな）の表示調整：行間が崩れないように設定 */
+        /* ルビ（ふりがな）の表示調整 */
         ruby {
             ruby-position: over;
             display: inline-flex;
@@ -44,15 +42,27 @@
             line-height: 1.15;
             margin: 0 0.1em;
         }
-        rt {
+        /* ヘッダー・フッター（濃い背景）用のふりがな：黄色、輪郭クッキリ */
+        header rt, footer rt {
             font-family: 'Noto Sans JP', sans-serif;
             font-size: 0.45em;
             font-weight: 700;
             letter-spacing: 0.05em;
-            color: #fcd34d; /* 読みやすい黄金色 */
+            color: #fef08a; /* レモンイエロー */
             display: block;
             margin-bottom: 0.25em;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        /* 本文（白い背景）用のふりがな：視認性の高い深緑、輪郭クッキリ */
+        main rt {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 0.45em;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #1b5e20; /* 濃い和風の深緑色（見えやすさを徹底追求） */
+            display: block;
+            margin-bottom: 0.25em;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.9);
         }
         /* タブ切り替え制御用 */
         .tab-content {
@@ -64,7 +74,7 @@
     </style>
 
     <script>
-        // 画像がロードできないときに自動で表示する美しい和風SVGイラスト
+        // アップロードされた写真が何らかの理由でロードできないときに表示する美しい手書き風SVG
         function loadFallback(img, type) {
             img.onerror = null; // ループ防止
             
@@ -120,19 +130,17 @@
 </head>
 <body class="wood-pattern min-h-screen flex flex-col justify-between">
 
+    <!-- ヘッダーエリア -->
     <header class="mountain-bg text-white shadow-xl relative overflow-hidden">
-        <!-- 美しい光の差し込み効果 -->
         <div class="absolute inset-0 opacity-15 bg-[radial-gradient(circle_at_bottom,_var(--tw-gradient-stops))] from-amber-200 via-emerald-400 to-transparent"></div>
         
         <div class="max-w-5xl mx-auto px-4 py-8 md:py-12 text-center relative z-10">
-            <!-- 小さい文字のサブタイトル（長野県南相木村立...） -->
             <p class="text-[12px] md:text-sm tracking-widest text-emerald-200 font-bold mb-3 flex items-center justify-center gap-2">
                 <i class="fa-solid fa-mountain text-amber-400"></i>
                 長野県南相木村立 南相木中学校 昭和40年卒業同級会
                 <i class="fa-solid fa-water text-emerald-400"></i>
             </p>
             
-            <!-- ふりがな（ルビ）付きメインタイトル -->
             <h1 class="serif-font text-3xl md:text-5xl font-bold tracking-wider mb-2 leading-relaxed drop-shadow-md">
                 <ruby>山河会<rt>さんがかい</rt></ruby>・<ruby>35会<rt>さんごかい</rt></ruby> 
                 <span class="text-2xl md:text-4xl font-light text-amber-100 block md:inline-block md:ml-3">ホームページ</span>
@@ -143,7 +151,7 @@
             </p>
         </div>
 
-        <!-- タブ式ナビゲーションバー（シニア世代でも押しやすい大きめのサイズ） -->
+        <!-- タブ式ナビゲーション -->
         <nav class="bg-emerald-950/95 border-t border-emerald-800 sticky top-0 z-30">
             <div class="max-w-5xl mx-auto px-2 flex justify-around">
                 <button onclick="switchTab('top-page')" id="btn-top-page" class="nav-tab py-4 px-3 flex-1 text-center text-sm md:text-base font-bold text-amber-300 border-b-4 border-amber-400 transition-all focus:outline-none">
@@ -164,11 +172,12 @@
         <!-- ==================== TAB 1: トップページ ==================== -->
         <div id="top-page" class="tab-content active space-y-8">
             
-            <!-- ウェルカム挨拶（和の趣のある飾り枠、デザイン構成は維持、文字サイズ・行間をシニア向けに最適化） -->
+            <!-- ウェルカム挨拶（スマホでも読みやすい文字サイズ・十分な行間を確保） -->
             <div class="bg-white rounded-2xl p-6 md:p-8 shadow-md border-l-8 border-emerald-700 relative">
-                <h2 class="serif-font text-2xl font-bold text-emerald-900 mb-6 flex items-center gap-2">
+                <h2 class="serif-font text-xl md:text-2xl font-bold text-emerald-900 mb-6 flex items-center gap-2">
                     <span>🌲</span>ようこそ、ふるさとの集いへ
                 </h2>
+                <!-- 2つの段落、スマホでも見やすい16px(text-base)、パソコンでは18px(md:text-lg)に最適化 -->
                 <div class="text-base md:text-lg text-gray-700 leading-loose space-y-6">
                     <p>
                         昭和40年に南相木中学校を卒業してから、私たちはそれぞれの道を歩み、長い歳月を重ねてきました。
@@ -177,19 +186,20 @@
                     <p>
                         このホームページは、<ruby>山河会<rt>さんがかい</rt></ruby>と<ruby>35会<rt>さんごかい</rt></ruby>の仲間が、いつでもあの日の思い出を語り合い、変わらない友情を確かめ合える場所です。
                         先日の同級会で再会できた仲間も、今回は参加できなかった仲間も、ここではいつでも一緒です。
-                        このホームページが、懐かしいふるさとを思い出し、仲間との絆を感じられる「第二のふるさと」「第二 of 我が家」となれば幸いです。
+                        このホームページが、懐かしいふるさとを思い出し、仲間との絆を感じられる「第二のふるさと」「第二の我が家」となれば幸いです。
                     </p>
                 </div>
             </div>
 
-            <!-- 2枚の写真配置 (omoide_1.jpeg と dokyukai_1.jpeg) -->
+            <!-- 写真レイアウト (パソコン：左右配置 / スマホ：上下配置) -->
+            <!-- 拡張子を .jpg に修正し、アップロードされた本物の写真を完全に反映 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 
-                <!-- 1枚目：昔の懐かしい写真 (omoide_1.jpeg) -->
+                <!-- 1枚目：昔の懐かしい写真 (omoide_1.jpg) -->
                 <div class="bg-amber-50/60 rounded-3xl p-6 border border-amber-200/60 shadow-md flex flex-col h-full">
                     <div class="bg-white p-3 rounded-2xl shadow-sm flex flex-col h-full">
                         <div class="relative rounded-xl overflow-hidden bg-gray-100 aspect-video flex items-center justify-center">
-                            <img src="omoide_1.jpeg" 
+                            <img src="omoide_1.jpg" 
                                  onerror="loadFallback(this, 'omoide')" 
                                  alt="昭和40年記念写真・当時の木造校舎" 
                                  class="object-cover w-full h-full transition-transform duration-500 hover:scale-105" />
@@ -208,11 +218,11 @@
                     </div>
                 </div>
 
-                <!-- 2枚目：最近の同級会写真 (dokyukai_1.jpeg) -->
+                <!-- 2枚目：最近の同級会写真 (dokyukai_1.jpg) -->
                 <div class="bg-emerald-50/60 rounded-3xl p-6 border border-emerald-200/60 shadow-md flex flex-col h-full">
                     <div class="bg-white p-3 rounded-2xl shadow-sm flex flex-col h-full">
                         <div class="relative rounded-xl overflow-hidden bg-gray-100 aspect-video flex items-center justify-center">
-                            <img src="dokyukai_1.jpeg" 
+                            <img src="dokyukai_1.jpg" 
                                  onerror="loadFallback(this, 'dokyukai')" 
                                  alt="最近の同級会の記念写真" 
                                  class="object-cover w-full h-full transition-transform duration-500 hover:scale-105" />
@@ -418,6 +428,7 @@
         <span id="toast-message">無事に追加されました！</span>
     </div>
 
+    <!-- フッターエリア -->
     <footer class="bg-emerald-950 text-emerald-200 py-10 border-t-4 border-amber-400">
         <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
             <h4 class="serif-font text-xl text-amber-100 font-bold tracking-wider">
