@@ -55,7 +55,7 @@
         <div class="max-w-5xl mx-auto px-4 py-6 md:py-8">
             <div class="flex flex-col items-center text-center">
                 
-                <!-- 1段目: タイトル（スマホ用に優しく最適化され、左右に光る桜のSVGを配した自動改行構造） -->
+                <!-- 1段目: メインタイトル（スマホ崩れを防ぐため「ようこそ」「へ」を完全にカット） -->
                 <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 w-full">
                     <!-- 左側の桜イラスト (SVGで100%確実に表示され、ゆっくり鼓動するように光ります) -->
                     <div class="flex-shrink-0 animate-pulse">
@@ -79,12 +79,12 @@
                     </div>
                 </div>
                 
-                <!-- 2段目: 昭和40年卒業（中間サイズでくっきり強調） -->
+                <!-- 2段目: 昭和40年卒業 -->
                 <p class="text-xl md:text-2xl font-bold tracking-wide text-white mb-2 serif-font">
                     昭和40年卒業
                 </p>
                 
-                <!-- 3段目: 長野県南相木村立南相木中学校（小さくシンプルに） -->
+                <!-- 3段目: 長野県南相木村立南相木中学校 -->
                 <p class="text-sm md:text-base text-emerald-200/90 tracking-wider serif-font font-bold">
                     長野県南相木村立南相木中学校
                 </p>
@@ -114,7 +114,6 @@
 
         <!-- ごあいさつセクション -->
         <section class="bg-white rounded-3xl shadow-md border border-gray-100 p-6 md:p-8 relative overflow-hidden">
-            <!-- 和風の飾り枠風の緑の太帯 -->
             <div class="absolute left-0 top-0 bottom-0 w-2 bg-emerald-700"></div>
             
             <h2 class="serif-font text-2xl md:text-3xl font-bold text-emerald-800 mb-5 flex items-center">
@@ -128,6 +127,60 @@
                 <p class="text-gray-700 leading-loose">
                     このホームページは、<ruby>山河会<rt>さんがかい</rt></ruby>と<ruby>35会<rt>さんごかい</rt></ruby>の仲間が、いつでもあの日の思い出を語り合い、変わらない友情を確かめ合える場所です。先日の同級会で再会できた仲間も、今回は参加できなかった仲間も、ここではいつでも一緒です。このホームページが、懐かしいふるさとを思い出し、仲間との絆を感じられる「第二の我が家」となれば幸いです。
                 </p>
+            </div>
+        </section>
+
+        <!-- 🎵 山河会・35会のテーマ曲セクション -->
+        <section class="bg-amber-50/40 rounded-3xl shadow-md border-2 border-amber-200/80 p-5 md:p-7 relative overflow-hidden">
+            <div class="absolute right-0 top-0 opacity-10 pointer-events-none transform translate-x-4 -translate-y-4">
+                <i class="fa-solid fa-music text-9xl text-amber-800"></i>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center md:items-start md:space-x-6 space-y-4 md:space-y-0">
+                <!-- 左側：音符と桜のアイキャッチアイコン -->
+                <div class="flex-shrink-0 bg-amber-600 text-white rounded-2xl p-4 flex items-center justify-center shadow-md w-16 h-16">
+                    <i class="fa-solid fa-music text-3xl animate-bounce"></i>
+                </div>
+                
+                <!-- 右側：紹介文とコントロールプレイヤー -->
+                <div class="flex-grow space-y-3 w-full">
+                    <h2 class="serif-font text-xl md:text-2xl font-bold text-amber-900 flex items-center justify-center md:justify-start">
+                        <span>🌸 山河会・35会 テーマ曲「ふるさとの友よ」</span>
+                    </h2>
+                    
+                    <p class="text-sm md:text-base text-amber-950 leading-relaxed">
+                        ふるさと南相木の青い空、清らかな風、そして共に机を並べたあの素晴らしい日々。
+                        私たちの永遠の友情を歌い継ぐテーマ曲 **『ふるさとの友よ』** です。
+                        懐かしいメロディに耳を傾けながら、ホームページをごゆっくりお楽しみください。
+                    </p>
+
+                    <!-- HTML5標準プレイヤー（直感的な音量スライダー、再生、一時停止ボタン付） -->
+                    <div class="bg-white/90 p-3 rounded-2xl border border-amber-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex items-center space-x-2 text-amber-900 font-bold text-sm">
+                            <i class="fa-solid fa-headphones text-emerald-800"></i>
+                            <span>テーマ曲を再生中：</span>
+                        </div>
+                        
+                        <div class="w-full sm:w-auto flex-grow max-w-md">
+                            <!-- audio要素 -->
+                            <audio id="theme-song" autoplay controls class="w-full h-10 rounded-lg">
+                                <source src="./tomoyo_uta_1.mp3" type="audio/mpeg">
+                                <source src="./tomoyo_uta_1.ogg" type="audio/ogg">
+                                <source src="./tomoyo_uta_1.wav" type="audio/wav">
+                                <source src="./tomoyo_uta_1" type="audio/mpeg">
+                                お使いのブラウザは音楽の再生に対応していません。
+                            </audio>
+                        </div>
+                    </div>
+
+                    <!-- 自動再生ブロック対策用の注意書き（シニアの方が困らない優しいナビ） -->
+                    <div class="text-xs text-amber-800 leading-relaxed flex items-start space-x-1.5 bg-white/40 p-2.5 rounded-xl border border-amber-100/60">
+                        <span class="text-amber-600 mt-0.5"><i class="fa-solid fa-circle-info"></i></span>
+                        <span>
+                            <strong>【音が鳴らない方へ】</strong> スマートフォンの安全機能により、最初の自動再生が止められていることがあります。<strong>画面のどこかを一度タップ（クリック）するか</strong>、上のプレイヤーの再生ボタン「▶」を直接押していただくと、音楽が流れ始め、音量調整も自由にできるようになります。
+                        </span>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -149,7 +202,7 @@
             <!-- 2つのメインビジュアルカード（横並び・スマホで縦並び） -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <!-- 1枚目：木造校舎の思い出（ご要望に沿ってタイトル文字を削除） -->
+                <!-- 1枚目：木造校舎の思い出（ご要望に沿ってタイトル文字を完全に削除） -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
                     <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
                         <!-- 写真を切り取らず全体を綺麗に表示するため object-contain に設定 -->
@@ -233,7 +286,7 @@
                     </li>
                     <li class="flex items-start">
                         <span class="text-amber-600 mr-2 mt-1">●</span>
-                        <span>住所の変更や、お仲間の新しい連絡先が分かりましたら、開設責任者の中島までメールでお教えいただけますと幸いです。</span>
+                        <span>住所 of の変更や、お仲間の新しい連絡先が分かりましたら、開設責任者の中島までメールでお教えいただけますと幸いです。</span>
                     </li>
                 </ul>
             </div>
@@ -370,16 +423,16 @@
             <!-- 常設の左右2分割構成：開いた瞬間から左側にメールフォームを配置 -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <!-- 近況お便り常設投稿フォーム（思い出ページと完全に一致させたシニアに優しい設計） -->
+                <!-- 近況お便り常設投稿フォーム -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 h-fit">
                     <h3 class="serif-font text-lg font-bold text-gray-800 mb-1 flex items-center">
                         <i class="fa-solid fa-paper-plane text-emerald-700 mr-2"></i>私の近況をお便りで送る
                     </h3>
                     <p class="text-xs text-gray-500 mb-3">
-                        送信ボタンを押すと自動でお使い of メールアプリが起動し、開設責任者の中島様へ直接届きます。
+                        送信ボタンを押すと自動でお使いのメールアプリが起動し、開設責任者の中島様へ直接届きます。
                     </p>
                     
-                    <!-- 重要案内文（お便りフォーム側にも「中島がメールを受け取った後に〜」をバッチリ常設） -->
+                    <!-- 重要案内文 -->
                     <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
                         <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
                         中島がメールを受け取った後にその後ページに反映されます。
@@ -438,7 +491,7 @@
                                 </span>
                                 <span class="text-xs text-gray-400">お便り：35会員より</span>
                             </div>
-                            <h4 class="font-bold text-gray-800 text-lg mb-2">近く of 温泉へリフレッシュに出かけました</h4>
+                            <h4 class="font-bold text-gray-800 text-lg mb-2">近くの温泉へリフレッシュに出かけました</h4>
                             <p class="text-sm text-gray-600 leading-relaxed">
                                 先週末、子供たち夫婦に誘われて近くののんびりできる温泉に行ってきました。湯船から眺める山々の緑が本当に美しく、日頃の畑仕事の疲れが一気に吹き飛びました。
                             </p>
@@ -507,7 +560,7 @@
                 img.src = "./dokyukai_1.jpg";
                 img.alt = "喜寿記念同級会";
                 
-                // ボタン表記とカード表記の更新
+                // ボタン表記とカード表記 of の更新
                 badgeText.innerHTML = '<i class="fa-solid fa-retweet mr-1"></i>画像を押すと名前の線画になります';
                 badgeMini.innerText = "名前をみる";
                 cardTitle.innerHTML = '喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>';
@@ -539,7 +592,7 @@
             activeBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white";
         }
 
-        // 🆕 トップページ（総合受付フォーム）メール送信アクション
+        // トップページ（総合受付フォーム）メール送信アクション
         function handleHomeSubmit(event) {
             event.preventDefault();
             const name = document.getElementById('home-name').value;
@@ -685,7 +738,7 @@
             `;
         }
 
-        // ページロード時の初期SVG描画
+        // ページロード時の初期設定
         window.onload = function() {
             // 木造校舎のプレースホルダーSVG
             const omoideSvg = `
@@ -708,6 +761,23 @@
             
             // 喜寿記念同級会（初期は通常のカラー写真プレビューSVGを設定）
             document.getElementById('placeholder-dokyukai').innerHTML = getDokyukaiPhotoSvg();
+
+            // ブラウザの自動再生ポリシー（安全制限）を優しく解除する補助スクリプト
+            // 画面のどこかを初めてクリック / タップしたときに音楽再生を開始します
+            const audio = document.getElementById('theme-song');
+            const playOnFirstInteraction = function() {
+                if (audio.paused) {
+                    audio.play().catch(function(error) {
+                        console.log("自動再生が制限されています。手動で再生ボタンを押してください。", error);
+                    });
+                }
+                // 一度アクションがあったらイベントリスナーを取り除き、何度も再生リクエストが行かないようにします
+                document.removeEventListener('click', playOnFirstInteraction);
+                document.removeEventListener('touchstart', playOnFirstInteraction);
+            };
+
+            document.addEventListener('click', playOnFirstInteraction);
+            document.addEventListener('touchstart', playOnFirstInteraction);
         };
     </script>
 </body>
