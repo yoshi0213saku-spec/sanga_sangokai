@@ -222,11 +222,11 @@
             </div>
 
             <!-- 事務局からのお知らせ -->
-            <div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-6">
-                <h3 class="serif-font text-xl font-bold text-amber-900 mb-3 flex items-center">
+            <div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-4 sm:p-6">
+                <h3 class="serif-font text-lg sm:text-xl font-bold text-amber-900 mb-3 flex items-center flex-wrap gap-1">
                     <span class="mr-2 text-amber-700"><i class="fa-solid fa-bullhorn"></i></span>同級会事務局からのお知らせ
                 </h3>
-                <ul class="space-y-3 text-gray-700">
+                <ul class="space-y-3 text-gray-700 text-sm sm:text-base">
                     <li class="flex items-start">
                         <span class="text-amber-600 mr-2 mt-1">●</span>
                         <span>思い出の写真やお便りを募集中です。下の入力フォームから中島宛てにお気軽にお寄せください。</span>
@@ -454,7 +454,7 @@
                 img.src = "./dokyukai_namae_1.jpg";
                 img.alt = "喜寿記念同級会 各自の名前入り（線画）";
                 
-                // ボタン表記とカード表記の更新（（各人の名前線画）は表示しません）
+                // ボタン表記とカード表記の更新
                 badgeText.innerHTML = '<i class="fa-solid fa-image mr-1"></i>画像を押すと本物の写真に戻ります';
                 badgeMini.innerText = "写真をみる";
                 cardTitle.innerHTML = '喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>';
