@@ -55,7 +55,7 @@
         <div class="max-w-5xl mx-auto px-4 py-6 md:py-8">
             <div class="flex flex-col items-center text-center">
                 
-                <!-- 1段目: タイトル（不要文字を除去し、スマホ用に優しく最適化された2行自動改行構造） -->
+                <!-- 1段目: タイトル（スマホ用に優しく最適化され、左右に光る桜のSVGを配した自動改行構造） -->
                 <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 w-full">
                     <!-- 左側の桜イラスト (SVGで100%確実に表示され、ゆっくり鼓動するように光ります) -->
                     <div class="flex-shrink-0 animate-pulse">
@@ -97,6 +97,7 @@
 
     <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-6 space-y-8">
 
+        <!-- 🔒 安心の限定公開バナー -->
         <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-5 shadow-sm">
             <div class="flex items-start space-x-3">
                 <span class="text-blue-600 text-2xl mt-0.5"><i class="fa-solid fa-shield-halved"></i></span>
@@ -148,7 +149,7 @@
             <!-- 2つのメインビジュアルカード（横並び・スマホで縦並び） -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <!-- 1枚目：木造校舎の思い出（ご要望に沿ってタイトル文字を削除しました） -->
+                <!-- 1枚目：木造校舎の思い出（ご要望に沿ってタイトル文字を削除） -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
                     <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
                         <!-- 写真を切り取らず全体を綺麗に表示するため object-contain に設定 -->
@@ -164,7 +165,6 @@
                                     <i class="fa-solid fa-history mr-1"></i>昭和40年（1965年）
                                 </span>
                             </div>
-                            <!-- タイトル文字「昭和40年記念写真、当時の木造校舎」は不要のため削除しました -->
                             <p class="text-sm text-gray-600 leading-relaxed text-center mt-4">
                                 冬のダルマストーブの温もり、競い合って雑巾がけした長い廊下。私たちの人生の大切な原点が、今もこの木造の学び舎に息づいています。
                             </p>
@@ -237,8 +237,48 @@
                     </li>
                 </ul>
             </div>
+
+            <!-- 🆕 お知らせの真下に常設された「思い出・お便り送信フォーム」 -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 md:p-6 max-w-xl mx-auto">
+                <h3 class="serif-font text-lg md:text-xl font-bold text-gray-800 mb-1 flex items-center">
+                    <i class="fa-solid fa-paper-plane text-amber-600 mr-2"></i>思い出やお便りを送る入力フォーム
+                </h3>
+                <p class="text-xs md:text-sm text-gray-500 mb-4">
+                    送信ボタンを押すと、お使いのメールアプリ（Gmailや携帯メール等）が自動起動し、中島宛てにメールが届きます。
+                </p>
+
+                <!-- 反映確認用の案内文（ご指定の文章を大きく強調配置） -->
+                <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
+                    <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
+                    中島がメールを受け取った後にその後ページに反映されます。
+                </div>
+
+                <form id="home-form" class="space-y-4" onsubmit="handleHomeSubmit(event)">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">お名前（ニックネーム可）</label>
+                        <input type="text" id="home-name" required placeholder="例：山河 太郎" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">お便りの種類</label>
+                        <select id="home-type" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600 bg-white">
+                            <option value="昔の思い出（思い出のページに掲載希望）">昔の思い出（思い出のページに掲載希望）</option>
+                            <option value="私の最近（趣味・畑・旅行など掲載希望）">私の最近（趣味・畑・旅行など掲載希望）</option>
+                            <option value="その他・事務局へのご連絡">その他・事務局へのご連絡</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">お便りの本文（写真添付はメール送信画面で行えます）</label>
+                        <textarea id="home-text" required rows="4" placeholder="楽しかった思い出や、近頃の様子など自由にお書きください。写真も一緒にお送りいただけます。" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600"></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-sm transition-colors flex items-center justify-center space-x-1 shadow">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>メールを作成する</span>
+                    </button>
+                </form>
+            </div>
         </div>
 
+        <!-- タブコンテンツ2: 思い出のページ -->
         <div id="content-memories" class="space-y-6 hidden">
             <div class="text-center max-w-2xl mx-auto mb-6">
                 <h2 class="serif-font text-2xl md:text-3xl font-bold text-emerald-800 mb-2">🌸 思い出のページ</h2>
@@ -318,6 +358,7 @@
             </div>
         </div>
 
+        <!-- タブコンテンツ3: 私の最近 -->
         <div id="content-hobby" class="space-y-6 hidden">
             <div class="text-center max-w-2xl mx-auto mb-6">
                 <h2 class="serif-font text-2xl md:text-3xl font-bold text-emerald-800 mb-2">🏡 私の最近（趣味・ガーデニング・旅行など）</h2>
@@ -335,7 +376,7 @@
                         <i class="fa-solid fa-paper-plane text-emerald-700 mr-2"></i>私の近況をお便りで送る
                     </h3>
                     <p class="text-xs text-gray-500 mb-3">
-                        送信ボタンを押すと自動でお使いのメールアプリが起動し、開設責任者の中島様へ直接届きます。
+                        送信ボタンを押すと自動でお使い of メールアプリが起動し、開設責任者の中島様へ直接届きます。
                     </p>
                     
                     <!-- 重要案内文（お便りフォーム側にも「中島がメールを受け取った後に〜」をバッチリ常設） -->
@@ -397,7 +438,7 @@
                                 </span>
                                 <span class="text-xs text-gray-400">お便り：35会員より</span>
                             </div>
-                            <h4 class="font-bold text-gray-800 text-lg mb-2">近くの温泉へリフレッシュに出かけました</h4>
+                            <h4 class="font-bold text-gray-800 text-lg mb-2">近く of 温泉へリフレッシュに出かけました</h4>
                             <p class="text-sm text-gray-600 leading-relaxed">
                                 先週末、子供たち夫婦に誘われて近くののんびりできる温泉に行ってきました。湯船から眺める山々の緑が本当に美しく、日頃の畑仕事の疲れが一気に吹き飛びました。
                             </p>
@@ -496,6 +537,29 @@
             // 選択されたタブのボタンスタイルを強調
             const activeBtn = document.getElementById('tab-' + tabId);
             activeBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white";
+        }
+
+        // 🆕 トップページ（総合受付フォーム）メール送信アクション
+        function handleHomeSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('home-name').value;
+            const type = document.getElementById('home-type').value;
+            const text = document.getElementById('home-text').value;
+
+            const to = 'yoshi0213.saku@gmail.com';
+            const subject = encodeURIComponent(`【山河会・35会HP】お便り投稿（${name}様より）`);
+            const body = encodeURIComponent(
+                `お名前：${name}\n` +
+                `投稿先（ジャンル）：${type}\n` +
+                `--------------------------------------------------\n\n` +
+                `${text}\n\n` +
+                `--------------------------------------------------\n` +
+                `※写真を一緒に送る場合は、このメールに写真を添付してお送りください。\n` +
+                `※中島様がメールを確認後に、ホームページへと追加・反映されます。`
+            );
+
+            // メールの起動
+            window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
         }
 
         // 思い出メール送信アクション
