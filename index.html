@@ -51,7 +51,6 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- ヘッダー（スマホで絶対に崩れない3段最適化、100%表示されるきらきら桜イラスト） -->
     <header class="bg-emerald-900 text-white shadow-md relative border-b-4 border-amber-600 dark-bg-ruby">
         <div class="max-w-5xl mx-auto px-4 py-6 md:py-8">
             <div class="flex flex-col items-center text-center">
@@ -98,7 +97,6 @@
 
     <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-6 space-y-8">
 
-        <!-- 🔒 限定公開のお知らせ枠 -->
         <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-5 shadow-sm">
             <div class="flex items-start space-x-3">
                 <span class="text-blue-600 text-2xl mt-0.5"><i class="fa-solid fa-shield-halved"></i></span>
@@ -150,7 +148,7 @@
             <!-- 2つのメインビジュアルカード（横並び・スマホで縦並び） -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <!-- 1枚目：木造校舎の思い出 -->
+                <!-- 1枚目：木造校舎の思い出（ご要望に沿ってタイトル文字を削除しました） -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
                     <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
                         <!-- 写真を切り取らず全体を綺麗に表示するため object-contain に設定 -->
@@ -166,10 +164,8 @@
                                     <i class="fa-solid fa-history mr-1"></i>昭和40年（1965年）
                                 </span>
                             </div>
-                            <h3 class="serif-font text-xl font-bold text-center text-gray-800 mb-3">
-                                昭和40年記念写真、当時の木造校舎
-                            </h3>
-                            <p class="text-sm text-gray-600 leading-relaxed text-center">
+                            <!-- タイトル文字「昭和40年記念写真、当時の木造校舎」は不要のため削除しました -->
+                            <p class="text-sm text-gray-600 leading-relaxed text-center mt-4">
                                 冬のダルマストーブの温もり、競い合って雑巾がけした長い廊下。私たちの人生の大切な原点が、今もこの木造の学び舎に息づいています。
                             </p>
                         </div>
@@ -178,18 +174,18 @@
 
                 <!-- 2枚目：喜寿記念同級会（クリックで写真と線画が交互に切り替わる魔法の額縁） -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
-                    <!-- 左右両端のお名前が切れるバグを防ぐため、object-contain（全体表示）と、額縁のような美しい枠にするため背景を bg-gray-50 に指定 -->
+                    <!-- 左右両端のお名前が切れるバグを防ぐため、object-contain（全体表示）にし、背景を bg-gray-50 に指定 -->
                     <div onclick="toggleDokyukaiImage()" class="relative h-64 bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-95 transition-opacity group" title="写真を押すと名前線画に切り替わります">
                         
-                        <!-- object-contain に修正したことで、どれだけ画面が狭くなっても一番左端の人から右端の人までお名前が絶対に隠れません -->
-                        <img id="img-dokyukai" src="./dokyukai_1.jpg" alt="喜寿記念同級会　2026年7月15日" class="w-full h-full object-contain hidden" onload="showImage('img-dokyukai', 'placeholder-dokyukai')">
+                        <!-- object-contain に設定し、お名前が絶対に画面外に隠れないようにしています -->
+                        <img id="img-dokyukai" src="./dokyukai_1.jpg" alt="喜寿記念同級会" class="w-full h-full object-contain hidden" onload="showImage('img-dokyukai', 'placeholder-dokyukai')">
                         
-                        <!-- 写真がまだ無い場合（プレビューなど）は、切り替え式の美しい和風イラストを描画 -->
+                        <!-- 写真がない場合は切り替え式の美しい和風イラストをSVG描画 -->
                         <div id="placeholder-dokyukai" class="w-full h-full">
                             <!-- JSの window.onload および toggleDokyukaiImage 内で動的にSVGを描画 -->
                         </div>
 
-                        <!-- 写真の上にふわっと浮かぶ「お名前切り替え」の丸アイコンマーク -->
+                        <!-- お名前切り替えの丸アイコンマーク -->
                         <div class="absolute bottom-3 right-3 bg-emerald-900/90 text-white rounded-full px-3 py-1 text-xs font-bold shadow-md flex items-center space-x-1 border border-emerald-700 pointer-events-none group-hover:scale-105 transition-transform">
                             <i class="fa-solid fa-user-tag text-amber-300"></i>
                             <span id="dokyukai-badge-mini">名前をみる</span>
@@ -203,11 +199,12 @@
                                     <i class="fa-solid fa-users mr-1"></i>喜寿記念同級会
                                 </span>
                             </div>
+                            <!-- 2026年7月15日の日付文字は小さく設定し、不要な（各人の名前線画）を完全に排除 -->
                             <h3 id="dokyukai-card-title" class="serif-font text-xl font-bold text-center text-gray-800 mb-2">
-                                喜寿記念同級会　2026年7月15日
+                                喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>
                             </h3>
                             
-                            <!-- シニアにも押しやすい、名前線画切り替え用の説明ボタン -->
+                            <!-- 名前線画切り替え用の説明ボタン -->
                             <div class="text-center mb-3">
                                 <button onclick="toggleDokyukaiImage()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-full shadow transition-all transform hover:-translate-y-0.5">
                                     <i class="fa-solid fa-retweet"></i>
@@ -242,7 +239,6 @@
             </div>
         </div>
 
-        <!-- タブコンテンツ2: 思い出のページ -->
         <div id="content-memories" class="space-y-6 hidden">
             <div class="text-center max-w-2xl mx-auto mb-6">
                 <h2 class="serif-font text-2xl md:text-3xl font-bold text-emerald-800 mb-2">🌸 思い出のページ</h2>
@@ -263,7 +259,7 @@
                         送信ボタンを押すと自動でお使いのメールアプリが起動し、開設責任者の中島様へ直接届きます。
                     </p>
                     
-                    <!-- ユーザー指定：中島様がメールを受け取った後の反映案内文（目立つオレンジ装飾） -->
+                    <!-- 反映案内文（目立つオレンジ装飾） -->
                     <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
                         <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
                         中島がメールを受け取った後にその後ページに反映されます。
@@ -291,7 +287,7 @@
 
                 <!-- 投稿された思い出一覧 -->
                 <div class="lg:col-span-2 space-y-4" id="memory-list">
-                    <!-- サンプル投稿（中島様が手動でコード追加する実運用の見本） -->
+                    <!-- サンプル投稿 -->
                     <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 relative">
                         <div class="flex justify-between items-start mb-2 border-b pb-2 border-gray-100">
                             <div>
@@ -322,7 +318,6 @@
             </div>
         </div>
 
-        <!-- タブコンテンツ3: 私の最近（趣味・お便り） -->
         <div id="content-hobby" class="space-y-6 hidden">
             <div class="text-center max-w-2xl mx-auto mb-6">
                 <h2 class="serif-font text-2xl md:text-3xl font-bold text-emerald-800 mb-2">🏡 私の最近（趣味・ガーデニング・旅行など）</h2>
@@ -331,10 +326,10 @@
                 </p>
             </div>
 
-            <!-- 親切な左右2分割構造：開いた瞬間からいつも左側に入力フォーム（お名前、ジャンル、本文）を常設 -->
+            <!-- 常設の左右2分割構成：開いた瞬間から左側にメールフォームを配置 -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <!-- 近況お便り投稿フォーム（思い出ページと完璧に同じ構成で使いやすさ抜群！） -->
+                <!-- 近況お便り常設投稿フォーム（思い出ページと完全に一致させたシニアに優しい設計） -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 h-fit">
                     <h3 class="serif-font text-lg font-bold text-gray-800 mb-1 flex items-center">
                         <i class="fa-solid fa-paper-plane text-emerald-700 mr-2"></i>私の近況をお便りで送る
@@ -343,7 +338,7 @@
                         送信ボタンを押すと自動でお使いのメールアプリが起動し、開設責任者の中島様へ直接届きます。
                     </p>
                     
-                    <!-- ユーザー指定の重要案内文（ここにも太いオレンジ色で常設配置） -->
+                    <!-- 重要案内文（お便りフォーム側にも「中島がメールを受け取った後に〜」をバッチリ常設） -->
                     <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
                         <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
                         中島がメールを受け取った後にその後ページに反映されます。
@@ -386,7 +381,7 @@
                                 </span>
                                 <span class="text-xs text-gray-400">お便り：山河会員より</span>
                             </div>
-                            <h4 class="font-bold text-gray-800 text-lg mb-2">庭 de コスモスが満開になりました</h4>
+                            <h4 class="font-bold text-gray-800 text-lg mb-2">庭のコスモスが満開になりました</h4>
                             <p class="text-sm text-gray-600 leading-relaxed">
                                 毎年この季節になると、裏庭に植えたコスモスが綺麗なピンクや白の花を咲かせてくれます。南相木の涼しい風に吹かれて揺れる様子を見ていると、中学の時にみんなで歩いた通学路の風景を思い出します。
                             </p>
@@ -415,14 +410,13 @@
 
     </main>
 
-    <!-- フッター（ホーム開設責任者 中島義健様 連絡先を配置） -->
     <footer class="bg-emerald-950 text-white py-6 md:py-8 mt-12 border-t-4 border-amber-600 dark-bg-ruby">
         <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
             <p class="text-xs md:text-sm text-emerald-200 serif-font">
                 <ruby>山河会<rt>さんがかい</rt></ruby>・<ruby>35会<rt>さんごかい</rt></ruby> ホームページ
             </p>
             
-            <!-- ホーム開設責任者署名枠（大きめの読みやすい文字） -->
+            <!-- ホーム開設責任者署名枠 -->
             <div class="bg-emerald-900/40 py-3 px-5 rounded-xl border border-emerald-800 inline-block max-w-full">
                 <div class="flex flex-col md:flex-row items-center justify-center md:space-x-4 space-y-2 md:space-y-0 text-sm">
                     <span class="font-bold flex items-center text-amber-200">
@@ -441,9 +435,8 @@
         </div>
     </footer>
 
-    <!-- JS処理（タブ切り替え・メールフォーム起動・画像切り替え） -->
     <script>
-        // 1. 同級会写真と名前入り線画のクリック切り替え状態管理変数
+        // 同級会写真と名前入り線画のクリック切り替え状態管理
         let isShowingNameFile = false;
 
         // 画像やボタンをクリックしたときに実行される切り替え処理
@@ -457,26 +450,26 @@
             const cardTitle = document.getElementById('dokyukai-card-title');
 
             if (isShowingNameFile) {
-                // 名前入り線画（dokyukai_namae_1）への切り替え設定
+                // 名前入り線画（dokyukai_namae_1）への切り替え
                 img.src = "./dokyukai_namae_1.jpg";
                 img.alt = "喜寿記念同級会 各自の名前入り（線画）";
                 
-                // ボタン表記とカード表記の更新
+                // ボタン表記とカード表記の更新（（各人の名前線画）は表示しません）
                 badgeText.innerHTML = '<i class="fa-solid fa-image mr-1"></i>画像を押すと本物の写真に戻ります';
                 badgeMini.innerText = "写真をみる";
-                cardTitle.innerHTML = '喜寿記念同級会　2026年7月15日';
+                cardTitle.innerHTML = '喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>';
 
-                // テストプレビュー用の臨時の線画SVGを再描画
+                // プレビュー用の臨時の線画SVGを再描画
                 placeholder.innerHTML = getDokyukaiNameSvg();
             } else {
-                // 通常写真（dokyukai_1）への切り替え設定
+                // 通常写真（dokyukai_1）への切り替え
                 img.src = "./dokyukai_1.jpg";
-                img.alt = "喜寿記念同級会　2026年7月15日";
+                img.alt = "喜寿記念同級会";
                 
                 // ボタン表記とカード表記の更新
                 badgeText.innerHTML = '<i class="fa-solid fa-retweet mr-1"></i>画像を押すと名前の線画になります';
                 badgeMini.innerText = "名前をみる";
-                cardTitle.innerHTML = '喜寿記念同級会　2026年7月15日';
+                cardTitle.innerHTML = '喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>';
 
                 // 通常のカラーSVG写真プレビューを描画
                 placeholder.innerHTML = getDokyukaiPhotoSvg();
@@ -585,7 +578,7 @@
                     <path d="M 50,400 Q 400,300 750,400" fill="none" stroke="#81c784" stroke-width="4"/>
                     <rect x="150" y="360" width="500" height="45" fill="#1b5e20" rx="22"/>
                     <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="18" fill="#fff" text-anchor="middle">
-                        喜寿記念同級会　2026年7月15日
+                        喜寿記念同級会 <tspan font-size="13" fill="#e2f5e3">2026年7月15日</tspan>
                     </text>
                 </svg>
             `;
@@ -622,7 +615,7 @@
                     <!-- 線画用のフッター枠 -->
                     <rect x="150" y="360" width="500" height="45" fill="#37474f" rx="22"/>
                     <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="16" fill="#fff" text-anchor="middle">
-                        【線画モード】 各自の名前が入ります
+                        喜寿記念同級会 <tspan font-size="12" fill="#cccccc">2026年7月15日</tspan>
                     </text>
                 </svg>
             `;
