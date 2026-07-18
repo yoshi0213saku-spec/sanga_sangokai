@@ -51,13 +51,13 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- ヘッダー（スマホで絶対に崩れない2行最適化、100%表示される桜イラスト） -->
+    <!-- ヘッダー（スマホで絶対に崩れない3段最適化、100%表示されるきらきら桜イラスト） -->
     <header class="bg-emerald-900 text-white shadow-md relative border-b-4 border-amber-600 dark-bg-ruby">
         <div class="max-w-5xl mx-auto px-4 py-6 md:py-8">
             <div class="flex flex-col items-center text-center">
                 
-                <!-- 1段目: 山河会・35会の憩いの広場（不要文字「ようこそ」「へ」を除去して文字数削減） -->
-                <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-3 md:space-x-4 mb-4 w-full">
+                <!-- 1段目: タイトル（不要文字を除去し、スマホ用に優しく最適化された2行自動改行構造） -->
+                <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 w-full">
                     <!-- 左側の桜イラスト (SVGで100%確実に表示され、ゆっくり鼓動するように光ります) -->
                     <div class="flex-shrink-0 animate-pulse">
                         <svg class="w-8 h-8 md:w-12 md:h-12 text-pink-300 drop-shadow" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -153,7 +153,8 @@
                 <!-- 1枚目：木造校舎の思い出 -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
                     <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
-                        <img id="img-omoide" src="./omoide_1.jpg" alt="昭和40年記念写真・あの頃の木造校舎" class="w-full h-full object-cover hidden" onload="showImage('img-omoide', 'placeholder-omoide')">
+                        <!-- 写真を切り取らず全体を綺麗に表示するため object-contain に設定 -->
+                        <img id="img-omoide" src="./omoide_1.jpg" alt="昭和40年記念写真・あの頃の木造校舎" class="w-full h-full object-contain hidden" onload="showImage('img-omoide', 'placeholder-omoide')">
                         <div id="placeholder-omoide" class="w-full h-full">
                             <!-- JSにて美しい手書き風SVGを動的描画（フォールバック） -->
                         </div>
@@ -177,10 +178,11 @@
 
                 <!-- 2枚目：喜寿記念同級会（クリックで写真と線画が交互に切り替わる魔法の額縁） -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
-                    <!-- クリックできることが視覚的に分かるように pointer-cursor を適用 -->
-                    <div onclick="toggleDokyukaiImage()" class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-95 transition-opacity group" title="写真を押すと名前線画に切り替わります">
+                    <!-- 左右両端のお名前が切れるバグを防ぐため、object-contain（全体表示）と、額縁のような美しい枠にするため背景を bg-gray-50 に指定 -->
+                    <div onclick="toggleDokyukaiImage()" class="relative h-64 bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-95 transition-opacity group" title="写真を押すと名前線画に切り替わります">
                         
-                        <img id="img-dokyukai" src="./dokyukai_1.jpg" alt="喜寿記念同級会　2026年7月15日" class="w-full h-full object-cover hidden" onload="showImage('img-dokyukai', 'placeholder-dokyukai')">
+                        <!-- object-contain に修正したことで、どれだけ画面が狭くなっても一番左端の人から右端の人までお名前が絶対に隠れません -->
+                        <img id="img-dokyukai" src="./dokyukai_1.jpg" alt="喜寿記念同級会　2026年7月15日" class="w-full h-full object-contain hidden" onload="showImage('img-dokyukai', 'placeholder-dokyukai')">
                         
                         <!-- 写真がまだ無い場合（プレビューなど）は、切り替え式の美しい和風イラストを描画 -->
                         <div id="placeholder-dokyukai" class="w-full h-full">
@@ -214,7 +216,7 @@
                             </div>
 
                             <p class="text-sm text-gray-600 leading-relaxed text-center">
-                                70名のうち16名の仲間が再び一堂に会しました。何何十年経っても、顔を合わせればすぐにあおの頃のニックネームに逆戻り。お互いの元気な笑顔を讃え合いました。
+                                70名のうち16名の仲間が再び一堂に会しました。何十年経っても、顔を合わせればすぐにあおの頃のニックネームに逆戻り。お互いの元気な笑顔を讃え合いました。
                             </p>
                         </div>
                     </div>
@@ -384,7 +386,7 @@
                                 </span>
                                 <span class="text-xs text-gray-400">お便り：山河会員より</span>
                             </div>
-                            <h4 class="font-bold text-gray-800 text-lg mb-2">庭のコスモスが満開になりました</h4>
+                            <h4 class="font-bold text-gray-800 text-lg mb-2">庭 de コスモスが満開になりました</h4>
                             <p class="text-sm text-gray-600 leading-relaxed">
                                 毎年この季節になると、裏庭に植えたコスモスが綺麗なピンクや白の花を咲かせてくれます。南相木の涼しい風に吹かれて揺れる様子を見ていると、中学の時にみんなで歩いた通学路の風景を思い出します。
                             </p>
@@ -444,7 +446,7 @@
         // 1. 同級会写真と名前入り線画のクリック切り替え状態管理変数
         let isShowingNameFile = false;
 
-        // 【新機能】画像やボタンをクリックしたときに実行される切り替え処理
+        // 画像やボタンをクリックしたときに実行される切り替え処理
         function toggleDokyukaiImage() {
             isShowingNameFile = !isShowingNameFile;
             
@@ -589,7 +591,7 @@
             `;
         }
 
-        // B. 【新設計】名前を割り当てた線画風SVGプレースホルダー（テスト・プレビュー用）
+        // B. 名前を割り当てた線画風SVGプレースホルダー（テスト・プレビュー用）
         function getDokyukaiNameSvg() {
             return `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
