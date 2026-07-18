@@ -48,6 +48,32 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9), -1px -1px 2px rgba(0, 0, 0, 0.9);
         }
     </style>
+
+    <script>
+        // 画像の読み込みが成功した際の処理（プレースホルダーを隠し、画像を表示）
+        function showImage(imgId, placeholderId) {
+            const img = document.getElementById(imgId);
+            if (img) {
+                img.classList.remove('hidden');
+            }
+            const placeholder = document.getElementById(placeholderId);
+            if (placeholder) {
+                placeholder.classList.add('hidden');
+            }
+        }
+
+        // 画像の読み込みに失敗した際の処理（エラーマークを出さず、安全にSVGプレースホルダーを表示）
+        function handleImageError(imgId, placeholderId) {
+            const img = document.getElementById(imgId);
+            if (img) {
+                img.classList.add('hidden'); // 壊れた画像を非表示にする
+            }
+            const placeholder = document.getElementById(placeholderId);
+            if (placeholder) {
+                placeholder.classList.remove('hidden'); // 代わりの美しいSVGを復活させる
+            }
+        }
+    </script>
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -130,7 +156,6 @@
             </div>
         </section>
 
-        <!-- 🎵 山河会・35会のテーマ曲セクション -->
         <section class="bg-amber-50/40 rounded-3xl shadow-md border-2 border-amber-200/80 p-5 md:p-7 relative overflow-hidden">
             <div class="absolute right-0 top-0 opacity-10 pointer-events-none transform translate-x-4 -translate-y-4">
                 <i class="fa-solid fa-music text-9xl text-amber-800"></i>
@@ -149,7 +174,7 @@
                     </h2>
                     
                     <p class="text-sm md:text-base text-amber-950 leading-relaxed">
-                        ふるさと南相木の青い空、清らかな風、そして共に机を並べたあの素晴らしい日々。
+                        ふるさと南相木の青い空、清らかな風、速度を緩めて共に机を並べたあの素晴らしい日々。
                         私たちの永遠の友情を歌い継ぐテーマ曲 **『ふるさとの友よ』** です。
                         故郷に思いをはせながら、ホームページをごゆっくりお楽しみください。
                     </p>
@@ -164,10 +189,10 @@
                         <div class="w-full sm:w-auto flex-grow max-w-md">
                             <!-- audio要素 -->
                             <audio id="theme-song" autoplay controls class="w-full h-10 rounded-lg">
-                                <source src="./tomoyo_uta_1.mp3" type="audio/mpeg">
-                                <source src="./tomoyo_uta_1.ogg" type="audio/ogg">
-                                <source src="./tomoyo_uta_1.wav" type="audio/wav">
-                                <source src="./tomoyo_uta_1" type="audio/mpeg">
+                                <source src="tomoyo_uta_1.mp3" type="audio/mpeg">
+                                <source src="tomoyo_uta_1.ogg" type="audio/ogg">
+                                <source src="tomoyo_uta_1.wav" type="audio/wav">
+                                <source src="tomoyo_uta_1" type="audio/mpeg">
                                 お使いのブラウザは音楽の再生に対応していません。
                             </audio>
                         </div>
@@ -205,10 +230,10 @@
                 <!-- 1枚目：木造校舎の思い出（ご要望に沿ってタイトル文字を完全に削除） -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
                     <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
-                        <!-- 写真を切り取らず全体を綺麗に表示するため object-contain に設定 -->
-                        <img id="img-omoide" src="./omoide_1.jpg" alt="昭和40年記念写真・あの頃の木造校舎" class="w-full h-full object-contain hidden" onload="showImage('img-omoide', 'placeholder-omoide')">
+                        <!-- 写真を切り取らず全体を綺麗に表示するため object-contain に設定、エラー時は安全にSVGプレースホルダーを表示 -->
+                        <img id="img-omoide" src="omoide_1.jpg" alt="昭和40年記念写真・あの頃の木造校舎" class="w-full h-full object-contain hidden" onload="showImage('img-omoide', 'placeholder-omoide')" onerror="handleImageError('img-omoide', 'placeholder-omoide')">
                         <div id="placeholder-omoide" class="w-full h-full">
-                            <!-- JSにて美しい手書き風SVGを動的描画（フォールバック） -->
+                            <!-- 下部の onload / onerror が検知して自動でSVG描画 -->
                         </div>
                     </div>
                     <div class="p-5 flex-grow flex flex-col justify-between">
@@ -230,12 +255,12 @@
                     <!-- 左右両端のお名前が切れるバグを防ぐため、object-contain（全体表示）にし、背景を bg-gray-50 に指定 -->
                     <div onclick="toggleDokyukaiImage()" class="relative h-64 bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-95 transition-opacity group" title="写真を押すと名前線画に切り替わります">
                         
-                        <!-- object-contain に設定し、お名前が絶対に画面外に隠れないようにしています -->
-                        <img id="img-dokyukai" src="./dokyukai_1.jpg" alt="喜寿記念同級会" class="w-full h-full object-contain hidden" onload="showImage('img-dokyukai', 'placeholder-dokyukai')">
+                        <!-- object-contain に設定し、お名前が絶対に画面外に隠れないようにしています。エラー時は安全にSVGに切り替えます -->
+                        <img id="img-dokyukai" src="dokyukai_1.jpg" alt="喜寿記念同級会" class="w-full h-full object-contain hidden" onload="showImage('img-dokyukai', 'placeholder-dokyukai')" onerror="handleImageError('img-dokyukai', 'placeholder-dokyukai')">
                         
                         <!-- 写真がない場合は切り替え式の美しい和風イラストをSVG描画 -->
                         <div id="placeholder-dokyukai" class="w-full h-full">
-                            <!-- JSの window.onload および toggleDokyukaiImage 内で動的にSVGを描画 -->
+                            <!-- 下部の onload / onerror が検知して自動でSVG描画 -->
                         </div>
 
                         <!-- お名前切り替えの丸アイコンマーク -->
@@ -276,7 +301,7 @@
 
             <!-- 事務局からのお知らせ -->
             <div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-4 sm:p-6">
-                <h3 class="serif-font text-lg sm:text-xl font-bold text-amber-900 mb-3 flex items-center flex-wrap gap-1">
+                <h3 class="serif-font text-lg md:text-xl font-bold text-amber-900 mb-3 flex items-center flex-wrap gap-1">
                     <span class="mr-2 text-amber-700"><i class="fa-solid fa-bullhorn"></i></span>同級会事務局からのお知らせ
                 </h3>
                 <ul class="space-y-3 text-gray-700 text-sm sm:text-base">
@@ -286,7 +311,7 @@
                     </li>
                     <li class="flex items-start">
                         <span class="text-amber-600 mr-2 mt-1">●</span>
-                        <span>住所 of の変更や、お仲間の新しい連絡先が分かりましたら、開設責任者の中島までメールでお教えいただけますと幸いです。</span>
+                        <span>住所の変更や、お仲間の新しい連絡先が分かりましたら、開設責任者の中島までメールでお教えいただけますと幸いです。</span>
                     </li>
                 </ul>
             </div>
@@ -455,7 +480,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">お便りの本文（写真添付も後ほど可能です）</label>
-                            <textarea id="hobby-text" required rows="4" placeholder="最近あった嬉しかったこと、楽しんでいる趣味、作物の出来栄えなどをご自由にお書きください。" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600"></textarea>
+                            <textarea id="hobby-text" required rows="4" placeholder="最近あった嬉しかったこと、楽しんでいる趣味、作物の出来栄えなどをご自由にお書きください." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600"></textarea>
                         </div>
                         <button type="submit" class="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-sm transition-colors flex items-center justify-center space-x-1 shadow">
                             <i class="fa-solid fa-envelope"></i>
@@ -543,30 +568,38 @@
             const badgeMini = document.getElementById('dokyukai-badge-mini');
             const cardTitle = document.getElementById('dokyukai-card-title');
 
+            // 切り替え前に一度非表示にして、再度ロード成功を待つ（チラつき・壊れアイコンマークを完全防止）
+            if (img) img.classList.add('hidden');
+            if (placeholder) placeholder.classList.remove('hidden');
+
             if (isShowingNameFile) {
                 // 名前入り線画（dokyukai_namae_1）への切り替え
-                img.src = "./dokyukai_namae_1.jpg";
-                img.alt = "喜寿記念同級会 各自の名前入り（線画）";
+                if (img) {
+                    img.src = "dokyukai_namae_1.jpg";
+                    img.alt = "喜寿記念同級会 各自の名前入り（線画）";
+                }
                 
                 // ボタン表記とカード表記の更新
-                badgeText.innerHTML = '<i class="fa-solid fa-image mr-1"></i>画像を押すと本物の写真に戻ります';
-                badgeMini.innerText = "写真をみる";
-                cardTitle.innerHTML = '喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>';
+                if (badgeText) badgeText.innerHTML = '<i class="fa-solid fa-image mr-1"></i>画像を押すと本物の写真に戻ります';
+                if (badgeMini) badgeMini.innerText = "写真をみる";
+                if (cardTitle) cardTitle.innerHTML = '喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>';
 
                 // プレビュー用の臨時の線画SVGを再描画
-                placeholder.innerHTML = getDokyukaiNameSvg();
+                if (placeholder) placeholder.innerHTML = getDokyukaiNameSvg();
             } else {
                 // 通常写真（dokyukai_1）への切り替え
-                img.src = "./dokyukai_1.jpg";
-                img.alt = "喜寿記念同級会";
+                if (img) {
+                    img.src = "dokyukai_1.jpg";
+                    img.alt = "喜寿記念同級会";
+                }
                 
-                // ボタン表記とカード表記 of の更新
-                badgeText.innerHTML = '<i class="fa-solid fa-retweet mr-1"></i>画像を押すと名前の線画になります';
-                badgeMini.innerText = "名前をみる";
-                cardTitle.innerHTML = '喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>';
+                // ボタン表記とカード表記の更新
+                if (badgeText) badgeText.innerHTML = '<i class="fa-solid fa-retweet mr-1"></i>画像を押すと名前の線画になります';
+                if (badgeMini) badgeMini.innerText = "名前をみる";
+                if (cardTitle) cardTitle.innerHTML = '喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>';
 
                 // 通常のカラーSVG写真プレビューを描画
-                placeholder.innerHTML = getDokyukaiPhotoSvg();
+                if (placeholder) placeholder.innerHTML = getDokyukaiPhotoSvg();
             }
         }
 
@@ -581,7 +614,9 @@
             const tabs = ['home', 'memories', 'hobby'];
             tabs.forEach(t => {
                 const tabBtn = document.getElementById('tab-' + t);
-                tabBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all text-emerald-800 hover:bg-white/50";
+                if (tabBtn) {
+                    tabBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all text-emerald-800 hover:bg-white/50";
+                }
             });
 
             // 選択されたタブを表示する
@@ -589,7 +624,9 @@
             
             // 選択されたタブのボタンスタイルを強調
             const activeBtn = document.getElementById('tab-' + tabId);
-            activeBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white";
+            if (activeBtn) {
+                activeBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white";
+            }
         }
 
         // トップページ（総合受付フォーム）メール送信アクション
@@ -660,16 +697,6 @@
 
             // メールの起動
             window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-        }
-
-        // 画像がロードされなかった場合のフォールバック（SVGイラスト表示）
-        function showImage(imgId, placeholderId) {
-            const img = document.getElementById(imgId);
-            img.classList.remove('hidden');
-            const placeholder = document.getElementById(placeholderId);
-            if (placeholder) {
-                placeholder.classList.add('hidden');
-            }
         }
 
         // A. 通常の集合写真風SVGプレースホルダー（テスト・プレビュー画面用）
@@ -757,16 +784,22 @@
                 </svg>
             `;
             
-            document.getElementById('placeholder-omoide').innerHTML = omoideSvg;
+            const omoidePlaceholder = document.getElementById('placeholder-omoide');
+            if (omoidePlaceholder) {
+                omoidePlaceholder.innerHTML = omoideSvg;
+            }
             
             // 喜寿記念同級会（初期は通常のカラー写真プレビューSVGを設定）
-            document.getElementById('placeholder-dokyukai').innerHTML = getDokyukaiPhotoSvg();
+            const dokyukaiPlaceholder = document.getElementById('placeholder-dokyukai');
+            if (dokyukaiPlaceholder) {
+                dokyukaiPlaceholder.innerHTML = getDokyukaiPhotoSvg();
+            }
 
             // ブラウザの自動再生ポリシー（安全制限）を優しく解除する補助スクリプト
             // 画面のどこかを初めてクリック / タップしたときに音楽再生を開始します
             const audio = document.getElementById('theme-song');
             const playOnFirstInteraction = function() {
-                if (audio.paused) {
+                if (audio && audio.paused) {
                     audio.play().catch(function(error) {
                         console.log("自動再生が制限されています。手動で再生ボタンを押してください。", error);
                     });
