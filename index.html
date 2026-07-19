@@ -73,6 +73,202 @@
                 placeholder.classList.remove('hidden'); // 代わりの美しいSVGを復活させる
             }
         }
+
+        // スライドショー用画像リスト (tomo_3 から tomo_17)
+        const slideshowImages = [
+            { name: "tomo_3" }, { name: "tomo_4" }, { name: "tomo_5" }, { name: "tomo_6" },
+            { name: "tomo_7" }, { name: "tomo_8" }, { name: "tomo_9" }, { name: "tomo_10" },
+            { name: "tomo_11" }, { name: "tomo_12" }, { name: "tomo_13" }, { name: "tomo_14" },
+            { name: "tomo_15" }, { name: "tomo_16" }, { name: "tomo_17" }
+        ];
+        let currentSlideIndex = 0;
+        let slideIntervalId = null;
+        let isSlidePlaying = false;
+        let isSlideBgmOn = true;
+
+        // 一コマアルバム（スライドショー）を開始
+        function openSlideshow() {
+            // メインのテーマ曲を止める
+            const mainAudio = document.getElementById('theme-song');
+            if (mainAudio) {
+                mainAudio.pause();
+            }
+
+            // モーダルを表示
+            const modal = document.getElementById('slideshow-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // 背後のスクロールを防止
+            }
+
+            currentSlideIndex = 0;
+            showSlide(currentSlideIndex);
+
+            // BGM開始
+            const slideBgm = document.getElementById('slideshow-bgm');
+            if (slideBgm && isSlideBgmOn) {
+                slideBgm.currentTime = 0;
+                slideBgm.play().catch(e => console.log("BGM自動再生ブロックへの対応:", e));
+            }
+
+            // 自動スライドショー（再生）を開始
+            startSlideShow();
+        }
+
+        // 一コマアルバム（スライドショー）を閉じる
+        function closeSlideshow() {
+            stopSlideShow();
+            
+            const modal = document.getElementById('slideshow-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // スクロール復帰
+            }
+
+            // スライドBGM停止
+            const slideBgm = document.getElementById('slideshow-bgm');
+            if (slideBgm) {
+                slideBgm.pause();
+            }
+
+            // 全画面表示中なら解除する
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        }
+
+        // スライドを表示
+        function showSlide(index) {
+            if (index < 0) index = slideshowImages.length - 1;
+            if (index >= slideshowImages.length) index = 0;
+            currentSlideIndex = index;
+
+            const slideImg = document.getElementById('slide-img');
+            if (slideImg) {
+                slideImg.classList.add('hidden'); // ロード中のチラつきを防ぐ
+                slideImg.src = slideshowImages[index].name + ".jpg";
+            }
+
+            // カウンターとタイトルの表示更新
+            document.getElementById('slide-counter').innerText = `${index + 1} / ${slideshowImages.length} 枚`;
+            document.getElementById('slide-title').innerText = `${slideshowImages[index].name}.jpg`;
+        }
+
+        // 次の写真
+        function nextSlide() {
+            showSlide(currentSlideIndex + 1);
+        }
+
+        // 前の写真
+        function prevSlide() {
+            showSlide(currentSlideIndex - 1);
+        }
+
+        // 自動送りの開始
+        function startSlideShow() {
+            if (slideIntervalId) clearInterval(slideIntervalId);
+            isSlidePlaying = true;
+            updateSlideControlsUI();
+            slideIntervalId = setInterval(nextSlide, 4500); // 4.5秒ごとに次の写真へ
+        }
+
+        // 自動送りの中断
+        function stopSlideShow() {
+            if (slideIntervalId) {
+                clearInterval(slideIntervalId);
+                slideIntervalId = null;
+            }
+            isSlidePlaying = false;
+            updateSlideControlsUI();
+        }
+
+        // 再生・一時停止の切り替え
+        function togglePlayPause() {
+            if (isSlidePlaying) {
+                stopSlideShow();
+            } else {
+                startSlideShow();
+            }
+        }
+
+        // BGMオン・オフ切替
+        function toggleSlideBgm() {
+            const slideBgm = document.getElementById('slideshow-bgm');
+            if (!slideBgm) return;
+
+            isSlideBgmOn = !isSlideBgmOn;
+            if (isSlideBgmOn) {
+                slideBgm.play().catch(e => console.log(e));
+                document.getElementById('slide-bgm-icon').className = "fa-solid fa-volume-high text-amber-300";
+                document.getElementById('slide-bgm-text').innerText = "BGM：オン";
+            } else {
+                slideBgm.pause();
+                document.getElementById('slide-bgm-icon').className = "fa-solid fa-volume-xmark text-gray-400";
+                document.getElementById('slide-bgm-text').innerText = "BGM：オフ";
+            }
+        }
+
+        // 全画面表示の切替
+        function toggleFullscreen() {
+            const container = document.getElementById('slideshow-modal');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => {
+                    console.log(`全画面エラー: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // コントロールボタンUIの更新
+        function updateSlideControlsUI() {
+            const playIcon = document.getElementById('icon-slide-play');
+            const playText = document.getElementById('text-slide-play');
+            if (isSlidePlaying) {
+                if (playIcon) playIcon.className = "fa-solid fa-pause text-amber-300";
+                if (playText) playText.innerText = "⏸ 一時停止";
+            } else {
+                if (playIcon) playIcon.className = "fa-solid fa-play text-emerald-400";
+                if (playText) playText.innerText = "▶ 再生";
+            }
+        }
+
+        // スライド画像が読み込めたとき
+        function onSlideImageLoad() {
+            document.getElementById('slide-img').classList.remove('hidden');
+            document.getElementById('slide-placeholder').classList.add('hidden');
+        }
+
+        // スライド画像がまだアップロードされておらず読み込めなかったとき
+        function onSlideImageError() {
+            document.getElementById('slide-img').classList.add('hidden');
+            const placeholder = document.getElementById('slide-placeholder');
+            placeholder.classList.remove('hidden');
+            const name = slideshowImages[currentSlideIndex].name;
+            placeholder.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
+                    <rect width="100%" height="100%" fill="#1a2f1c"/>
+                    <circle cx="400" cy="180" r="130" fill="#2d5231" opacity="0.4"/>
+                    <!-- 桜模様の代わり -->
+                    <path d="M 0,380 Q 200,320 400,380 T 800,380" fill="none" stroke="#e8f5e9" stroke-width="2" stroke-dasharray="8 8"/>
+                    
+                    <g transform="translate(400, 160)" stroke="#a5d6a7" stroke-width="3" fill="none">
+                        <rect x="-60" y="-45" width="120" height="90" rx="10"/>
+                        <circle cx="0" cy="0" r="30"/>
+                        <circle cx="40" cy="-25" r="8" fill="#e57373" stroke="none"/>
+                        <polygon points="-15,-45 0,-65 15,-45" stroke-linejoin="round"/>
+                    </g>
+                    
+                    <rect x="150" y="320" width="500" height="55" fill="#1b5e20" rx="28" stroke="#388e3c" stroke-width="2"/>
+                    <text x="400" y="355" font-family="'Sawarabi Mincho', serif" font-size="20" fill="#fff" text-anchor="middle" font-weight="bold">
+                        思い出のひとコマ：${name}.jpg
+                    </text>
+                    <text x="400" y="270" font-family="sans-serif" font-size="14" fill="#a5d6a7" text-anchor="middle">
+                        ※写真がサーバーに設置されると自動で切り替わります。
+                    </text>
+                </svg>
+            `;
+        }
     </script>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -282,11 +478,17 @@
                                 喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>
                             </h3>
                             
-                            <!-- 名前線画切り替え用の説明ボタン -->
-                            <div class="text-center mb-3">
+                            <!-- 名前線画切り替え用の説明ボタンと一コマアルバムボタン（レスポンシブで折り返しにも完璧対応） -->
+                            <div class="text-center mb-3 flex flex-col sm:flex-row justify-center items-center gap-2">
                                 <button onclick="toggleDokyukaiImage()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-full shadow transition-all transform hover:-translate-y-0.5">
                                     <i class="fa-solid fa-retweet"></i>
                                     <span id="dokyukai-badge-text">画像を押すと名前の線画になります</span>
+                                </button>
+                                
+                                <!-- 🆕 新設：「▶ 一コマアルバムを見る」ボタン -->
+                                <button onclick="openSlideshow()" class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-full shadow-md transition-all transform hover:-translate-y-0.5 border border-emerald-600">
+                                    <i class="fa-solid fa-film animate-pulse text-amber-300 mr-1"></i>
+                                    <span>▶ 一コマアルバムを見る</span>
                                 </button>
                             </div>
 
@@ -553,6 +755,90 @@
             </p>
         </div>
     </footer>
+
+    <!-- 🆕 一コマアルバム（スライドショー）表示用モーダル（全画面対応） -->
+    <div id="slideshow-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-between p-4 sm:p-6 transition-all duration-300">
+        
+        <!-- BGM用オーディオ要素 -->
+        <audio id="slideshow-bgm" loop>
+            <source src="tomoyo_uta_1.mp3" type="audio/mpeg">
+            <source src="tomoyo_uta_1.ogg" type="audio/ogg">
+            <source src="tomoyo_uta_1.wav" type="audio/wav">
+            <source src="tomoyo_uta_1" type="audio/mpeg">
+        </audio>
+
+        <!-- 上部：ヘッダー部分（戻るボタン、タイトル、BGMコントローラー） -->
+        <div class="w-full flex items-center justify-between text-white border-b border-gray-800 pb-3">
+            <div class="flex items-center space-x-2">
+                <!-- 閉じるボタン -->
+                <button onclick="closeSlideshow()" class="px-3.5 py-1.5 bg-red-700 hover:bg-red-800 active:scale-95 text-white font-bold text-sm rounded-lg transition-all flex items-center space-x-1 shadow">
+                    <i class="fa-solid fa-xmark mr-1"></i>
+                    <span>閉じる</span>
+                </button>
+                <span class="text-xs sm:text-sm text-emerald-400 font-bold hidden sm:inline">一コマアルバム</span>
+            </div>
+            
+            <!-- 中央：現在の写真タイトル -->
+            <div class="text-center">
+                <span id="slide-title" class="font-bold text-sm sm:text-base text-amber-200">tomo_3.jpg</span>
+                <span id="slide-counter" class="text-xs text-emerald-300 block">1 / 15 枚</span>
+            </div>
+
+            <!-- 右側：BGM切り替えトグルボタン -->
+            <button onclick="toggleSlideBgm()" class="px-3 py-1.5 bg-emerald-900/80 hover:bg-emerald-800 active:scale-95 text-white rounded-lg text-xs sm:text-sm font-bold border border-emerald-700 flex items-center space-x-1.5 transition-all">
+                <i id="slide-bgm-icon" class="fa-solid fa-volume-high text-amber-300"></i>
+                <span id="slide-bgm-text">BGM：オン</span>
+            </button>
+        </div>
+
+        <!-- 中部：写真表示エリア（画面の大きさに合わせ100%全景を表示。はみ出しなし） -->
+        <div class="flex-grow w-full max-w-4xl mx-auto flex items-center justify-center my-4">
+            <div class="relative w-full h-[55vh] sm:h-[65vh] bg-neutral-900/50 flex items-center justify-center rounded-2xl overflow-hidden border border-emerald-900/40 shadow-inner">
+                
+                <!-- 本物画像：全体表示（object-contain）指定 -->
+                <img id="slide-img" src="" alt="スライドショー画像" class="max-w-full max-h-full object-contain hidden" onload="onSlideImageLoad()" onerror="onSlideImageError()">
+                
+                <!-- 画像エラー時・ロード前の一時的な和風SVGプレースホルダー -->
+                <div id="slide-placeholder" class="w-full h-full"></div>
+            </div>
+        </div>
+
+        <!-- 下部：操作ボタンエリア（シニアの皆様に見やすく・押しやすく大きく配置） -->
+        <div class="w-full max-w-2xl mx-auto pb-2">
+            <div class="grid grid-cols-5 gap-1.5 sm:gap-3 justify-center items-center text-white">
+                
+                <!-- ⏮ 前の人 -->
+                <button onclick="prevSlide()" class="flex flex-col items-center justify-center py-2.5 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold text-xs sm:text-sm shadow">
+                    <i class="fa-solid fa-backward-step text-sm sm:text-lg mb-1 text-emerald-300"></i>
+                    <span>⏮ 前の人</span>
+                </button>
+                
+                <!-- ▶ 再生 / ⏸ 一時停止 (トグル) -->
+                <button onclick="togglePlayPause()" id="btn-slide-play" class="col-span-2 flex flex-col items-center justify-center py-2.5 bg-amber-600 hover:bg-amber-700 active:scale-95 rounded-xl border border-amber-500/50 transition-all font-bold text-xs sm:text-sm shadow">
+                    <i id="icon-slide-play" class="fa-solid fa-pause text-sm sm:text-lg mb-1 text-amber-200"></i>
+                    <span id="text-slide-play">⏸ 一時停止</span>
+                </button>
+                
+                <!-- ⏭ 次の人 -->
+                <button onclick="nextSlide()" class="flex flex-col items-center justify-center py-2.5 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold text-xs sm:text-sm shadow">
+                    <i class="fa-solid fa-forward-step text-sm sm:text-lg mb-1 text-emerald-300"></i>
+                    <span>⏭ 次の人</span>
+                </button>
+                
+                <!-- ⛶ 全画面表示 -->
+                <button onclick="toggleFullscreen()" class="flex flex-col items-center justify-center py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-xl border border-slate-600/50 transition-all font-bold text-xs sm:text-sm shadow">
+                    <i class="fa-solid fa-expand text-sm sm:text-lg mb-1 text-slate-300"></i>
+                    <span>⛶ 全画面</span>
+                </button>
+
+            </div>
+            
+            <p class="text-center text-[10px] sm:text-xs text-gray-500 mt-3">
+                ※4.5秒ごとに次の写真に自動で変わります。ボタンを押せばお好きなペースで1枚ずつ見ることもできます。
+            </p>
+        </div>
+
+    </div>
 
     <script>
         // 同級会写真と名前入り線画のクリック切り替え状態管理
