@@ -74,7 +74,7 @@
             }
         }
 
-        // スライドショー用画像リスト (tomo_3_1 から tomo_16_1 全14枚)
+        // スライドショー用画像リスト (tomo_3_1 から tomo_16_1 全14枚、すべてjpg形式)
         const slideshowImages = [
             { name: "tomo_3_1", ext: "jpg" }, { name: "tomo_4_1", ext: "jpg" }, { name: "tomo_5_1", ext: "jpg" }, { name: "tomo_6_1", ext: "jpg" },
             { name: "tomo_7_1", ext: "jpg" }, { name: "tomo_8_1", ext: "jpg" }, { name: "tomo_9_1", ext: "jpg" }, { name: "tomo_10_1", ext: "jpg" },
@@ -88,13 +88,7 @@
 
         // スライドショーを開始
         function openSlideshow() {
-            // メインのテーマ曲を止める
-            const mainAudio = document.getElementById('theme-song');
-            if (mainAudio) {
-                mainAudio.pause();
-            }
-
-            // モーダルを表示
+            // メインのテーマ曲プレイヤーは廃止されましたが、スライドショー用モーダルを表示
             const modal = document.getElementById('slideshow-modal');
             if (modal) {
                 modal.classList.remove('hidden');
@@ -279,9 +273,9 @@
         <div class="max-w-5xl mx-auto px-4 py-6 md:py-8">
             <div class="flex flex-col items-center text-center">
                 
-                <!-- 1段目: メインタイトル（スマホ崩れを防ぐため「ようこそ」「へ」を完全にカット） -->
+                <!-- 1段目: メインタイトル（スマホ崩れ防止仕様） -->
                 <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 w-full">
-                    <!-- 左側の桜イラスト (SVGで100%確実に表示され、ゆっくり鼓動するように光ります) -->
+                    <!-- 左側の桜イラスト -->
                     <div class="flex-shrink-0 animate-pulse">
                         <svg class="w-8 h-8 md:w-12 md:h-12 text-pink-300 drop-shadow" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 3s1-2.5 3-2.5c1.5 0 2.5 1 2.5 2.5s-2 3.5-5.5 4c-3.5-.5-5.5-2.5-5.5-4S7.5.5 9 .5c2 0 3 2.5 3 2.5zm6.5 6.5s2.5 1 2.5 3c0 1.5-1 2.5-2.5 2.5s-3.5-2-4-5.5c.5-3.5 2.5-5.5 4-5.5s2.5 1 2.5 2.5zm-13 0s-2.5 1-2.5 3c0 1.5 1 2.5 2.5 2.5s3.5-2 4-5.5c-.5-3.5-2.5-5.5-4-5.5S3.5 7.5 3.5 9.5zm11.5 8s1 2.5 3 2.5c1.5 0 2.5-1 2.5-2.5s-2-3.5-5.5-4c-3.5.5-5.5 2.5-5.5 4s1 2.5 2.5 2.5c2 0 3-2.5 3-2.5zm-7 0s-1 2.5-3 2.5c-1.5 0-2.5-1-2.5-2.5s2-3.5 5.5-4c3.5.5 5.5 2.5 5.5 4s-1 2.5-2.5 2.5c-2 0-3-2.5-3-2.5z"/>
@@ -289,12 +283,12 @@
                         </svg>
                     </div>
                     
-                    <!-- メインタイトル：スマホでは自動で2行になり改字崩れを防ぎます -->
+                    <!-- メインタイトル -->
                     <h1 class="serif-font font-bold tracking-wider leading-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-amber-200">
                         <ruby>山河会<rt>さんがかい</rt></ruby>・<ruby>35会<rt>さんごかい</rt></ruby>の憩いの広場
                     </h1>
                     
-                    <!-- 右側の桜イラスト (SVG) -->
+                    <!-- 右側の桜イラスト -->
                     <div class="flex-shrink-0 animate-pulse">
                         <svg class="w-8 h-8 md:w-12 md:h-12 text-pink-300 drop-shadow" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 3s1-2.5 3-2.5c1.5 0 2.5 1 2.5 2.5s-2 3.5-5.5 4c-3.5-.5-5.5-2.5-5.5-4S7.5.5 9 .5c2 0 3 2.5 3 2.5zm6.5 6.5s2.5 1 2.5 3c0 1.5-1 2.5-2.5 2.5s-3.5-2-4-5.5c.5-3.5 2.5-5.5 4-5.5s2.5 1 2.5 2.5zm-13 0s-2.5 1-2.5 3c0 1.5 1 2.5 2.5 2.5s3.5-2 4-5.5c-.5-3.5-2.5-5.5-4-5.5S3.5 7.5 3.5 9.5zm11.5 8s1 2.5 3 2.5c1.5 0 2.5-1 2.5-2.5s-2-3.5-5.5-4c-3.5.5-5.5 2.5-5.5 4s1 2.5 2.5 2.5c2 0 3-2.5 3-2.5zm-7 0s-1 2.5-3 2.5c-1.5 0-2.5-1-2.5-2.5s2-3.5 5.5-4c3.5.5 5.5 2.5 5.5 4s-1 2.5-2.5 2.5c-2 0-3-2.5-3-2.5z"/>
@@ -354,7 +348,7 @@
             </div>
         </section>
 
-        <!-- 🎵 テーマ曲プレイヤーセクション -->
+        <!-- 🌸 「ふるさとの友よ 音楽館」紹介セクション -->
         <section class="bg-amber-50/40 rounded-3xl shadow-md border-2 border-amber-200/80 p-5 md:p-7 relative overflow-hidden">
             <div class="absolute right-0 top-0 opacity-10 pointer-events-none transform translate-x-4 -translate-y-4">
                 <i class="fa-solid fa-music text-9xl text-amber-800"></i>
@@ -363,52 +357,36 @@
             <div class="flex flex-col md:flex-row items-center md:items-start md:space-x-6 space-y-4 md:space-y-0">
                 <!-- 左側：音符と桜のアイキャッチアイコン -->
                 <div class="flex-shrink-0 bg-amber-600 text-white rounded-2xl p-4 flex items-center justify-center shadow-md w-16 h-16">
-                    <i class="fa-solid fa-music text-3xl animate-bounce"></i>
+                    <i class="fa-solid fa-headphones text-3xl animate-pulse"></i>
                 </div>
                 
-                <!-- 右側：紹介文とコントロールプレイヤー -->
-                <div class="flex-grow space-y-3 w-full">
+                <!-- 右側：紹介文と特設リンク -->
+                <div class="flex-grow space-y-4 w-full">
                     <h2 class="serif-font text-xl md:text-2xl font-bold text-amber-900 flex items-center justify-center md:justify-start">
-                        <span>🌸 山河会・35会 テーマ曲「ふるさとの友よ」</span>
+                        <span>🌸 特設「ふるさとの友よ 音楽館」のご案内</span>
                     </h2>
                     
                     <p class="text-sm md:text-base text-amber-950 leading-relaxed">
                         ふるさと南相木の青い空、清らかな風、そして共に机を並べたあの素晴らしい日々。
-                        私たちの永遠の友情を歌い継ぐテーマ曲 **『ふるさとの友よ』** です。
-                        故郷に思いをはせながら、ホームページをごゆっくりお楽しみください。
+                        私たちの永遠の友情を歌い継ぐテーマ曲 **『ふるさとの友よ』** の音源や歌詞、様々な思い出のメロディをいつでもゆっくりとお楽しみいただける、専用の特設サイト **「ふるさとの友よ 音楽館」** を開設いたしました。
+                    </p>
+                    
+                    <p class="text-sm md:text-base text-amber-950 leading-relaxed">
+                        下記のボタンを押していただくと「音楽館」が別窓で開き、美しいメロディの数々をゆっくりとお聴きいただけます。故郷に思いをはせながら、素晴らしいひとときをお過ごしください。
                     </p>
 
-                    <!-- HTML5標準プレイヤー（直感的な音量スライダー、再生、一時停止ボタン付） -->
-                    <div class="bg-white/90 p-3 rounded-2xl border border-amber-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-                        <div class="flex items-center space-x-2 text-amber-900 font-bold text-sm">
-                            <i class="fa-solid fa-headphones text-emerald-800"></i>
-                            <span>テーマ曲を再生中：</span>
-                        </div>
-                        
-                        <div class="w-full sm:w-auto flex-grow max-w-md">
-                            <!-- audio要素 -->
-                            <audio id="theme-song" autoplay controls class="w-full h-10 rounded-lg">
-                                <source src="tomoyo_uta_1.mp3" type="audio/mpeg">
-                                <source src="tomoyo_uta_1.ogg" type="audio/ogg">
-                                <source src="tomoyo_uta_1.wav" type="audio/wav">
-                                <source src="tomoyo_uta_1" type="audio/mpeg">
-                                お使いのブラウザは音楽の再生に対応していません。
-                            </audio>
-                        </div>
-                    </div>
-
-                    <!-- 自動再生ブロック対策用の注意書き（シニアの方が困らない優しいナビ） -->
-                    <div class="text-xs text-amber-800 leading-relaxed flex items-start space-x-1.5 bg-white/40 p-2.5 rounded-xl border border-amber-100/60">
-                        <span class="text-amber-600 mt-0.5"><i class="fa-solid fa-circle-info"></i></span>
-                        <span>
-                            <strong>【音が鳴らない方へ】</strong> スマートフォンの安全機能により、最初の自動再生が止められていることがあります。<strong>画面のどこかを一度タップ（クリック）するか</strong>、上のプレイヤーの再生ボタン「▶」を直接押していただくと、音楽が流れ始め、音量調整も自由にできるようになります。
-                        </span>
+                    <!-- 特設サイトへのリンクボタン -->
+                    <div class="pt-2 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+                        <a href="https://yoshi0213saku-spec.github.io/hurusato_tomoyo/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 border border-amber-500">
+                            <i class="fa-solid fa-circle-play text-xl text-yellow-200 animate-pulse"></i>
+                            <span class="serif-font tracking-wider">👉「ふるさとの友よ 音楽館」を開く</span>
+                        </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ナビゲーションタブ（シニアにわかりやすく大きな文字とボタン型に） -->
+        <!-- ナビゲーションタブ -->
         <div class="grid grid-cols-3 gap-2 bg-emerald-800/10 p-2 rounded-2xl">
             <button onclick="switchTab('home')" id="tab-home" class="py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white">
                 <i class="fa-solid fa-house mr-1"></i><span class="block md:inline">トップ</span>
@@ -426,14 +404,12 @@
             <!-- 2つのメインビジュアルカード（横並び・スマホで縦並び） -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <!-- 1枚目：木造校舎の思い出（ご要望に沿ってタイトル文字を完全に削除） -->
+                <!-- 1枚目：木造校舎の思い出（タイトル文字は完全非表示・削除） -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
                     <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
-                        <!-- 写真を切り取らず全体を綺麗に表示するため object-contain に設定、エラー時は安全にSVGプレースホルダーを表示 -->
+                        <!-- 写真を切り取らず全体を綺麗に表示するため object-contain に設定 -->
                         <img id="img-omoide" src="omoide_1.jpg" alt="昭和40年記念写真・あの頃の木造校舎" class="w-full h-full object-contain hidden" onload="showImage('img-omoide', 'placeholder-omoide')" onerror="handleImageError('img-omoide', 'placeholder-omoide')">
-                        <div id="placeholder-omoide" class="w-full h-full">
-                            <!-- 下部の onload / onerror が検知して自動でSVG描画 -->
-                        </div>
+                        <div id="placeholder-omoide" class="w-full h-full"></div>
                     </div>
                     <div class="p-5 flex-grow flex flex-col justify-between">
                         <div>
@@ -449,18 +425,11 @@
                     </div>
                 </div>
 
-                <!-- 2枚目：喜寿記念同級会（クリックで写真と線画が交互に切り替わる魔法の額縁） -->
+                <!-- 2枚目：喜寿記念同級会（余計なタイトル文字を一切排除し、日付のみをスッキリと小さく表示） -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
-                    <!-- 左右両端のお名前が切れるバグを防ぐため、object-contain（全体表示）にし、背景を bg-gray-50 に指定 -->
                     <div onclick="toggleDokyukaiImage()" class="relative h-64 bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-95 transition-opacity group" title="写真を押すと名前線画に切り替わります">
-                        
-                        <!-- object-contain に設定し、お名前が絶対に画面外に隠れないようにしています。エラー時は安全にSVGに切り替えます -->
                         <img id="img-dokyukai" src="dokyukai_1.jpg" alt="喜寿記念同級会" class="w-full h-full object-contain hidden" onload="showImage('img-dokyukai', 'placeholder-dokyukai')" onerror="handleImageError('img-dokyukai', 'placeholder-dokyukai')">
-                        
-                        <!-- 写真がない場合は切り替え式の美しい和風イラストをSVG描画 -->
-                        <div id="placeholder-dokyukai" class="w-full h-full">
-                            <!-- 下部の onload / onerror が検知して自動でSVG描画 -->
-                        </div>
+                        <div id="placeholder-dokyukai" class="w-full h-full"></div>
 
                         <!-- お名前切り替えの丸アイコンマーク -->
                         <div class="absolute bottom-3 right-3 bg-emerald-900/90 text-white rounded-full px-3 py-1 text-xs font-bold shadow-md flex items-center space-x-1 border border-emerald-700 pointer-events-none group-hover:scale-105 transition-transform">
@@ -471,25 +440,27 @@
                     
                     <div class="p-5 flex-grow flex flex-col justify-between">
                         <div>
+                            <!-- 緑のバッジ -->
                             <div class="text-center mb-3">
                                 <span class="inline-block px-4 py-1 bg-emerald-100 text-emerald-900 rounded-full text-sm font-bold shadow-sm">
                                     <i class="fa-solid fa-users mr-1"></i>喜寿記念同級会
                                 </span>
                             </div>
-                            <!-- 2026年7月15日の日付文字は小さく設定し、不要な（各人の名前線画）を完全に排除 -->
-                            <h3 id="dokyukai-card-title" class="serif-font text-center text-gray-500 mb-2">
+                            
+                            <!-- 日付のみを小さく表示 -->
+                            <h3 id="dokyukai-card-title" class="serif-font text-center text-gray-500 mb-4">
                                 <span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>
                             </h3>
                             
-                            <!-- 名前線画切り替え用の説明ボタンと一コマアルバムボタン（レスポンシブで折り返しにも完璧対応） -->
-                            <div class="text-center mb-3 flex flex-col sm:flex-row justify-center items-center gap-2">
-                                <button onclick="toggleDokyukaiImage()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-full shadow transition-all transform hover:-translate-y-0.5">
+                            <!-- 操作ボタンエリア（名前線画切り替え ＆ ▶ 一コマアルバムを見る ボタン） -->
+                            <div class="text-center mb-4 flex flex-col sm:flex-row justify-center items-center gap-2">
+                                <button onclick="toggleDokyukaiImage()" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-full shadow transition-all transform hover:-translate-y-0.5">
                                     <i class="fa-solid fa-retweet"></i>
                                     <span id="dokyukai-badge-text">画像を押すと名前の線画になります</span>
                                 </button>
                                 
-                                <!-- 🆕 新設：「▶ 一コマアルバムを見る」ボタン -->
-                                <button onclick="openSlideshow()" class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-full shadow-md transition-all transform hover:-translate-y-0.5 border border-emerald-600">
+                                <!-- 🎥 一コマアルバムボタン -->
+                                <button onclick="openSlideshow()" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-full shadow-md transition-all transform hover:-translate-y-0.5 border border-emerald-600">
                                     <i class="fa-solid fa-film animate-pulse text-amber-300 mr-1"></i>
                                     <span>▶ 一コマアルバムを見る</span>
                                 </button>
@@ -521,7 +492,7 @@
                 </ul>
             </div>
 
-            <!-- 🆕 お知らせの真下に常設された「思い出・お便り送信フォーム」 -->
+            <!-- お知らせの真下に常設された「思い出・お便り送信フォーム」 -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 md:p-6 max-w-xl mx-auto">
                 <h3 class="serif-font text-lg md:text-xl font-bold text-gray-800 mb-1 flex items-center">
                     <i class="fa-solid fa-paper-plane text-amber-600 mr-2"></i>思い出やお便りを送る入力フォーム
@@ -530,7 +501,7 @@
                     送信ボタンを押すと、お使いのメールアプリ（Gmailや携帯メール等）が自動起動し、中島宛てにメールが届きます。
                 </p>
 
-                <!-- 反映確認用の案内文（ご指定の文章を大きく強調配置） -->
+                <!-- 反映確認用の案内文 -->
                 <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
                     <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
                     中島がメールを受け取った後にその後ページに反映されます。
@@ -582,7 +553,7 @@
                         送信ボタンを押すと自動でお使いのメールアプリが起動し、開設責任者の中島様へ直接届きます。
                     </p>
                     
-                    <!-- 反映案内文（目立つオレンジ装飾） -->
+                    <!-- 反映案内文 -->
                     <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
                         <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
                         中島がメールを受け取った後にその後ページに反映されます。
@@ -659,7 +630,7 @@
                         <i class="fa-solid fa-paper-plane text-emerald-700 mr-2"></i>私の近況をお便りで送る
                     </h3>
                     <p class="text-xs text-gray-500 mb-3">
-                        送信ボタンを押すと自動でお使いのメールアプリが起動し、開設責任者の中島様へ直接届きます。
+                        送信ボタンを押すと自動でお使い of メールアプリが起動し、開設責任者の中島様へ直接届きます。
                     </p>
                     
                     <!-- 重要案内文 -->
@@ -759,7 +730,7 @@
         </div>
     </footer>
 
-    <!-- 🆕 一コマアルバム（スライドショー）表示用モーダル（全画面対応） -->
+    <!-- 一コマアルバム（スライドショー）表示用モーダル（全画面対応） -->
     <div id="slideshow-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-between p-4 sm:p-6 transition-all duration-300">
         
         <!-- BGM用オーディオ要素 -->
@@ -794,7 +765,7 @@
             </button>
         </div>
 
-        <!-- 中部：写真表示エリア（画面の大きさに合わせ100%全景を表示。はみ出しなし） -->
+        <!-- 中部：写真表示エリア -->
         <div class="flex-grow w-full max-w-4xl mx-auto flex items-center justify-center my-4">
             <div class="relative w-full h-[55vh] sm:h-[65vh] bg-neutral-900/50 flex items-center justify-center rounded-2xl overflow-hidden border border-emerald-900/40 shadow-inner">
                 
@@ -806,7 +777,7 @@
             </div>
         </div>
 
-        <!-- 下部：操作ボタンエリア（シニアの皆様に見やすく・押しやすく大きく配置） -->
+        <!-- 下部：操作ボタンエリア -->
         <div class="w-full max-w-2xl mx-auto pb-2">
             <div class="grid grid-cols-5 gap-1.5 sm:gap-3 justify-center items-center text-white">
                 
@@ -857,7 +828,7 @@
             const badgeMini = document.getElementById('dokyukai-badge-mini');
             const cardTitle = document.getElementById('dokyukai-card-title');
 
-            // 切り替え前に一度非表示にして、再度ロード成功を待つ（チラつき・壊れアイコンマークを完全防止）
+            // 切り替え前に一度非表示にして、再度ロード成功を待つ
             if (img) img.classList.add('hidden');
             if (placeholder) placeholder.classList.remove('hidden');
 
@@ -988,7 +959,7 @@
             window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
         }
 
-        // A. 通常の集合写真風SVGプレースホルダー（テスト・プレビュー画面用）
+        // A. 通常の集合写真風SVGプレースホルダー
         function getDokyukaiPhotoSvg() {
             return `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
@@ -1017,11 +988,10 @@
             `;
         }
 
-        // B. 名前を割り当てた線画風SVGプレースホルダー（テスト・プレビュー用）
+        // B. 名前を割り当てた線画風SVGプレースホルダー
         function getDokyukaiNameSvg() {
             return `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
-                    <!-- 白黒・線画を意識した背景色 -->
                     <rect width="100%" height="100%" fill="#fafafa" stroke="#ccc" stroke-width="2"/>
                     <path d="M0,0 L800,450 M800,0 L0,450" stroke="#f0f0f0" stroke-width="1"/>
                     
@@ -1045,7 +1015,6 @@
                         <text x="340" y="144" font-family="sans-serif" font-size="11" fill="#1565c0" font-weight="bold" text-anchor="middle" stroke="none">35会さん</text>
                     </g>
                     
-                    <!-- 線画用のフッター枠 -->
                     <rect x="150" y="360" width="500" height="45" fill="#37474f" rx="22"/>
                     <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="16" fill="#fff" text-anchor="middle">
                         2026年7月15日
@@ -1083,24 +1052,7 @@
             if (dokyukaiPlaceholder) {
                 dokyukaiPlaceholder.innerHTML = getDokyukaiPhotoSvg();
             }
-
-            // ブラウザの自動再生ポリシー（安全制限）を優しく解除する補助スクリプト
-            // 画面のどこかを初めてクリック / タップしたときに音楽再生を開始します
-            const audio = document.getElementById('theme-song');
-            const playOnFirstInteraction = function() {
-                if (audio && audio.paused) {
-                    audio.play().catch(function(error) {
-                        console.log("自動再生が制限されています。手動で再生ボタンを押してください。", error);
-                    });
-                }
-                // 一度アクションがあったらイベントリスナーを取り除き、何度も再生リクエストが行かないようにします
-                document.removeEventListener('click', playOnFirstInteraction);
-                document.removeEventListener('touchstart', playOnFirstInteraction);
-            };
-
-            document.addEventListener('click', playOnFirstInteraction);
-            document.addEventListener('touchstart', playOnFirstInteraction);
         };
     </script>
 </body>
-</html> 
+</html>
