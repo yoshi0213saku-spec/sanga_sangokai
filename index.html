@@ -32,7 +32,7 @@
         ruby {
             ruby-position: over;
         }
-        /* 1. 通常の明るい背景の中にあるふりがな：深みのある和風の緑色でくっきり表示 */
+        /* 通常の明るい背景の中にあるふりがな：深みのある和風の緑色で表示 */
         rt {
             font-size: 0.6em;
             font-weight: 700;
@@ -41,7 +41,7 @@
             padding-bottom: 0.1em;
             text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.8);
         }
-        /* 2. ヘッダーやフッターなどの濃い背景の中にあるふりがな：明るいレモンイエロー */
+        /* ヘッダーやフッターなどの濃い背景の中にあるふりがな：明るいレモンイエロー */
         .dark-bg-ruby rt {
             font-size: 0.55em;
             color: #fef08a !important; /* 明るいレモンイエロー */
@@ -74,19 +74,19 @@
             }
         }
 
-        // スライドショー用画像リスト (tomo_3 から tomo_17)
+        // スライドショー用画像リスト (tomo_3_1 から tomo_16_1 全14枚)
         const slideshowImages = [
-            { name: "tomo_3" }, { name: "tomo_4" }, { name: "tomo_5" }, { name: "tomo_6" },
-            { name: "tomo_7" }, { name: "tomo_8" }, { name: "tomo_9" }, { name: "tomo_10" },
-            { name: "tomo_11" }, { name: "tomo_12" }, { name: "tomo_13" }, { name: "tomo_14" },
-            { name: "tomo_15" }, { name: "tomo_16" }, { name: "tomo_17" }
+            { name: "tomo_3_1" }, { name: "tomo_4_1" }, { name: "tomo_5_1" }, { name: "tomo_6_1" },
+            { name: "tomo_7_1" }, { name: "tomo_8_1" }, { name: "tomo_9_1" }, { name: "tomo_10_1" },
+            { name: "tomo_11_1" }, { name: "tomo_12_1" }, { name: "tomo_13_1" }, { name: "tomo_14_1" },
+            { name: "tomo_15_1" }, { name: "tomo_16_1" }
         ];
         let currentSlideIndex = 0;
         let slideIntervalId = null;
         let isSlidePlaying = false;
         let isSlideBgmOn = true;
 
-        // 一コマアルバム（スライドショー）を開始
+        // スライドショーを開始
         function openSlideshow() {
             // メインのテーマ曲を止める
             const mainAudio = document.getElementById('theme-song');
@@ -249,7 +249,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
                     <rect width="100%" height="100%" fill="#1a2f1c"/>
                     <circle cx="400" cy="180" r="130" fill="#2d5231" opacity="0.4"/>
-                    <!-- 桜模様の代わり -->
+                    <!-- 桜模様の飾り線 -->
                     <path d="M 0,380 Q 200,320 400,380 T 800,380" fill="none" stroke="#e8f5e9" stroke-width="2" stroke-dasharray="8 8"/>
                     
                     <g transform="translate(400, 160)" stroke="#a5d6a7" stroke-width="3" fill="none">
@@ -287,7 +287,7 @@
                         </svg>
                     </div>
                     
-                    <!-- メインタイトル：スマホでは自動で2行になり改行崩れを防ぎます -->
+                    <!-- メインタイトル：スマホでは自動で2行になり改字崩れを防ぎます -->
                     <h1 class="serif-font font-bold tracking-wider leading-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-amber-200">
                         <ruby>山河会<rt>さんがかい</rt></ruby>・<ruby>35会<rt>さんごかい</rt></ruby>の憩いの広場
                     </h1>
@@ -352,6 +352,7 @@
             </div>
         </section>
 
+        <!-- 🎵 テーマ曲プレイヤーセクション -->
         <section class="bg-amber-50/40 rounded-3xl shadow-md border-2 border-amber-200/80 p-5 md:p-7 relative overflow-hidden">
             <div class="absolute right-0 top-0 opacity-10 pointer-events-none transform translate-x-4 -translate-y-4">
                 <i class="fa-solid fa-music text-9xl text-amber-800"></i>
@@ -370,7 +371,7 @@
                     </h2>
                     
                     <p class="text-sm md:text-base text-amber-950 leading-relaxed">
-                        ふるさと南相木の青い空、清らかな風、速度を緩めて共に机を並べたあの素晴らしい日々。
+                        ふるさと南相木の青い空、清らかな風、そして共に机を並べたあの素晴らしい日々。
                         私たちの永遠の友情を歌い継ぐテーマ曲 **『ふるさとの友よ』** です。
                         故郷に思いをはせながら、ホームページをごゆっくりお楽しみください。
                     </p>
@@ -474,8 +475,8 @@
                                 </span>
                             </div>
                             <!-- 2026年7月15日の日付文字は小さく設定し、不要な（各人の名前線画）を完全に排除 -->
-                            <h3 id="dokyukai-card-title" class="serif-font text-xl font-bold text-center text-gray-800 mb-2">
-                                喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>
+                            <h3 id="dokyukai-card-title" class="serif-font text-center text-gray-500 mb-2">
+                                <span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>
                             </h3>
                             
                             <!-- 名前線画切り替え用の説明ボタンと一コマアルバムボタン（レスポンシブで折り返しにも完璧対応） -->
@@ -780,8 +781,8 @@
             
             <!-- 中央：現在の写真タイトル -->
             <div class="text-center">
-                <span id="slide-title" class="font-bold text-sm sm:text-base text-amber-200">tomo_3.jpg</span>
-                <span id="slide-counter" class="text-xs text-emerald-300 block">1 / 15 枚</span>
+                <span id="slide-title" class="font-bold text-sm sm:text-base text-amber-200">tomo_3_1.jpg</span>
+                <span id="slide-counter" class="text-xs text-emerald-300 block">1 / 14 枚</span>
             </div>
 
             <!-- 右側：BGM切り替えトグルボタン -->
@@ -868,7 +869,7 @@
                 // ボタン表記とカード表記の更新
                 if (badgeText) badgeText.innerHTML = '<i class="fa-solid fa-image mr-1"></i>画像を押すと本物の写真に戻ります';
                 if (badgeMini) badgeMini.innerText = "写真をみる";
-                if (cardTitle) cardTitle.innerHTML = '喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>';
+                if (cardTitle) cardTitle.innerHTML = '<span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>';
 
                 // プレビュー用の臨時の線画SVGを再描画
                 if (placeholder) placeholder.innerHTML = getDokyukaiNameSvg();
@@ -882,7 +883,7 @@
                 // ボタン表記とカード表記の更新
                 if (badgeText) badgeText.innerHTML = '<i class="fa-solid fa-retweet mr-1"></i>画像を押すと名前の線画になります';
                 if (badgeMini) badgeMini.innerText = "名前をみる";
-                if (cardTitle) cardTitle.innerHTML = '喜寿記念同級会 <span class="text-sm font-normal text-gray-500 block sm:inline sm:ml-2">2026年7月15日</span>';
+                if (cardTitle) cardTitle.innerHTML = '<span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>';
 
                 // 通常のカラーSVG写真プレビューを描画
                 if (placeholder) placeholder.innerHTML = getDokyukaiPhotoSvg();
@@ -1007,8 +1008,8 @@
                     </g>
                     <path d="M 50,400 Q 400,300 750,400" fill="none" stroke="#81c784" stroke-width="4"/>
                     <rect x="150" y="360" width="500" height="45" fill="#1b5e20" rx="22"/>
-                    <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="18" fill="#fff" text-anchor="middle">
-                        喜寿記念同級会 <tspan font-size="13" fill="#e2f5e3">2026年7月15日</tspan>
+                    <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="16" fill="#fff" text-anchor="middle">
+                        2026年7月15日
                     </text>
                 </svg>
             `;
@@ -1045,7 +1046,7 @@
                     <!-- 線画用のフッター枠 -->
                     <rect x="150" y="360" width="500" height="45" fill="#37474f" rx="22"/>
                     <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="16" fill="#fff" text-anchor="middle">
-                        喜寿記念同級会 <tspan font-size="12" fill="#cccccc">2026年7月15日</tspan>
+                        2026年7月15日
                     </text>
                 </svg>
             `;
