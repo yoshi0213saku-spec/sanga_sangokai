@@ -50,7 +50,7 @@
     </style>
 
     <script>
-        // 画像の読み込みが成功した際の処理（プレースホルダーを隠し、画像を表示）
+        // 画像の読み込みが成功した際の処理
         function showImage(imgId, placeholderId) {
             const img = document.getElementById(imgId);
             if (img) {
@@ -62,15 +62,15 @@
             }
         }
 
-        // 画像の読み込みに失敗した際の処理（エラーマークを出さず、安全にSVGプレースホルダーを表示）
+        // 画像の読み込みに失敗した際の処理
         function handleImageError(imgId, placeholderId) {
             const img = document.getElementById(imgId);
             if (img) {
-                img.classList.add('hidden'); // 壊れた画像を非表示にする
+                img.classList.add('hidden');
             }
             const placeholder = document.getElementById(placeholderId);
             if (placeholder) {
-                placeholder.classList.remove('hidden'); // 代わりの美しいSVGを復活させる
+                placeholder.classList.remove('hidden');
             }
         }
 
@@ -88,24 +88,21 @@
 
         // スライドショーを開始
         function openSlideshow() {
-            // モーダルを表示
             const modal = document.getElementById('slideshow-modal');
             if (modal) {
                 modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // 背後のスクロールを防止
+                document.body.style.overflow = 'hidden';
             }
 
             currentSlideIndex = 0;
             showSlide(currentSlideIndex);
 
-            // BGM開始
             const slideBgm = document.getElementById('slideshow-bgm');
             if (slideBgm && isSlideBgmOn) {
                 slideBgm.currentTime = 0;
-                slideBgm.play().catch(e => console.log("BGM自動再生ブロックへの対応:", e));
+                slideBgm.play().catch(e => console.log("BGM自動再生:", e));
             }
 
-            // 自動スライドショー（再生）を開始
             startSlideShow();
         }
 
@@ -116,16 +113,14 @@
             const modal = document.getElementById('slideshow-modal');
             if (modal) {
                 modal.classList.add('hidden');
-                document.body.style.overflow = ''; // スクロール復帰
+                document.body.style.overflow = '';
             }
 
-            // スライドBGM停止
             const slideBgm = document.getElementById('slideshow-bgm');
             if (slideBgm) {
                 slideBgm.pause();
             }
 
-            // 全画面表示中なら解除する
             if (document.fullscreenElement) {
                 document.exitFullscreen();
             }
@@ -140,34 +135,29 @@
             const slideImg = document.getElementById('slide-img');
             const ext = slideshowImages[index].ext;
             if (slideImg) {
-                slideImg.classList.add('hidden'); // ロード中のチラつきを防ぐ
+                slideImg.classList.add('hidden');
                 slideImg.src = slideshowImages[index].name + "." + ext;
             }
 
-            // カウンターとタイトルの表示更新
             document.getElementById('slide-counter').innerText = `${index + 1} / ${slideshowImages.length} 枚`;
             document.getElementById('slide-title').innerText = `${slideshowImages[index].name}.${ext}`;
         }
 
-        // 次の写真
         function nextSlide() {
             showSlide(currentSlideIndex + 1);
         }
 
-        // 前の写真
         function prevSlide() {
             showSlide(currentSlideIndex - 1);
         }
 
-        // 自動送りの開始
         function startSlideShow() {
             if (slideIntervalId) clearInterval(slideIntervalId);
             isSlidePlaying = true;
             updateSlideControlsUI();
-            slideIntervalId = setInterval(nextSlide, 4500); // 4.5秒ごとに次の写真へ
+            slideIntervalId = setInterval(nextSlide, 4500);
         }
 
-        // 自動送りの中断
         function stopSlideShow() {
             if (slideIntervalId) {
                 clearInterval(slideIntervalId);
@@ -177,7 +167,6 @@
             updateSlideControlsUI();
         }
 
-        // 再生・一時停止の切り替え
         function togglePlayPause() {
             if (isSlidePlaying) {
                 stopSlideShow();
@@ -186,7 +175,6 @@
             }
         }
 
-        // BGMオン・オフ切替
         function toggleSlideBgm() {
             const slideBgm = document.getElementById('slideshow-bgm');
             if (!slideBgm) return;
@@ -203,7 +191,6 @@
             }
         }
 
-        // 全画面表示の切替
         function toggleFullscreen() {
             const container = document.getElementById('slideshow-modal');
             if (!document.fullscreenElement) {
@@ -215,7 +202,6 @@
             }
         }
 
-        // コントロールボタンUIの更新
         function updateSlideControlsUI() {
             const playIcon = document.getElementById('icon-slide-play');
             const playText = document.getElementById('text-slide-play');
@@ -228,13 +214,11 @@
             }
         }
 
-        // スライド画像が読み込めたとき
         function onSlideImageLoad() {
             document.getElementById('slide-img').classList.remove('hidden');
             document.getElementById('slide-placeholder').classList.add('hidden');
         }
 
-        // スライド画像がまだアップロードされておらず読み込めなかったとき
         function onSlideImageError() {
             document.getElementById('slide-img').classList.add('hidden');
             const placeholder = document.getElementById('slide-placeholder');
@@ -245,16 +229,13 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
                     <rect width="100%" height="100%" fill="#1a2f1c"/>
                     <circle cx="400" cy="180" r="130" fill="#2d5231" opacity="0.4"/>
-                    <!-- 桜模様の飾り線 -->
                     <path d="M 0,380 Q 200,320 400,380 T 800,380" fill="none" stroke="#e8f5e9" stroke-width="2" stroke-dasharray="8 8"/>
-                    
                     <g transform="translate(400, 160)" stroke="#a5d6a7" stroke-width="3" fill="none">
                         <rect x="-60" y="-45" width="120" height="90" rx="10"/>
                         <circle cx="0" cy="0" r="30"/>
                         <circle cx="40" cy="-25" r="8" fill="#e57373" stroke="none"/>
                         <polygon points="-15,-45 0,-65 15,-45" stroke-linejoin="round"/>
                     </g>
-                    
                     <rect x="150" y="320" width="500" height="55" fill="#1b5e20" rx="28" stroke="#388e3c" stroke-width="2"/>
                     <text x="400" y="355" font-family="'Sawarabi Mincho', serif" font-size="20" fill="#fff" text-anchor="middle" font-weight="bold">
                         思い出のひとコマ：${name}.${ext}
@@ -265,6 +246,34 @@
                 </svg>
             `;
         }
+
+        // 📊 アクセスカウンターのカウント数管理
+        function initVisitorCounter() {
+            let count = 159;
+            try {
+                let stored = localStorage.getItem('yamagakai_visitor_count');
+                if (stored) {
+                    count = parseInt(stored, 10) + 1;
+                }
+                localStorage.setItem('yamagakai_visitor_count', count.toString());
+            } catch(e) {
+                count = 159;
+            }
+            renderCounterDigits(count);
+        }
+
+        // デジタルブロック描画
+        function renderCounterDigits(num) {
+            const container = document.getElementById('visitor-counter-digits');
+            if (!container) return;
+
+            const str = num.toString().padStart(6, '0');
+            let html = '';
+            for (let i = 0; i < str.length; i++) {
+                html += `<span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300 shadow-sm inline-block min-w-[1.4rem] text-center">${str[i]}</span>`;
+            }
+            container.innerHTML = html;
+        }
     </script>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -273,9 +282,8 @@
         <div class="max-w-5xl mx-auto px-4 py-6 md:py-8">
             <div class="flex flex-col items-center text-center">
                 
-                <!-- 1段目: メインタイトル（スマホ崩れ防止仕様） -->
+                <!-- 1段目: メインタイトル -->
                 <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 w-full">
-                    <!-- 左側の桜イラスト -->
                     <div class="flex-shrink-0 animate-pulse">
                         <svg class="w-8 h-8 md:w-12 md:h-12 text-pink-300 drop-shadow" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 3s1-2.5 3-2.5c1.5 0 2.5 1 2.5 2.5s-2 3.5-5.5 4c-3.5-.5-5.5-2.5-5.5-4S7.5.5 9 .5c2 0 3 2.5 3 2.5zm6.5 6.5s2.5 1 2.5 3c0 1.5-1 2.5-2.5 2.5s-3.5-2-4-5.5c.5-3.5 2.5-5.5 4-5.5s2.5 1 2.5 2.5zm-13 0s-2.5 1-2.5 3c0 1.5 1 2.5 2.5 2.5s3.5-2 4-5.5c-.5-3.5-2.5-5.5-4-5.5S3.5 7.5 3.5 9.5zm11.5 8s1 2.5 3 2.5c1.5 0 2.5-1 2.5-2.5s-2-3.5-5.5-4c-3.5.5-5.5 2.5-5.5 4s1 2.5 2.5 2.5c2 0 3-2.5 3-2.5zm-7 0s-1 2.5-3 2.5c-1.5 0-2.5-1-2.5-2.5s2-3.5 5.5-4c3.5.5 5.5 2.5 5.5 4s-1 2.5-2.5 2.5c-2 0-3-2.5-3-2.5z"/>
@@ -283,12 +291,10 @@
                         </svg>
                     </div>
                     
-                    <!-- メインタイトル -->
                     <h1 class="serif-font font-bold tracking-wider leading-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-amber-200">
                         <ruby>山河会<rt>さんがかい</rt></ruby>・<ruby>35会<rt>さんごかい</rt></ruby>の憩いの広場
                     </h1>
                     
-                    <!-- 右側の桜イラスト -->
                     <div class="flex-shrink-0 animate-pulse">
                         <svg class="w-8 h-8 md:w-12 md:h-12 text-pink-300 drop-shadow" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 3s1-2.5 3-2.5c1.5 0 2.5 1 2.5 2.5s-2 3.5-5.5 4c-3.5-.5-5.5-2.5-5.5-4S7.5.5 9 .5c2 0 3 2.5 3 2.5zm6.5 6.5s2.5 1 2.5 3c0 1.5-1 2.5-2.5 2.5s-3.5-2-4-5.5c.5-3.5 2.5-5.5 4-5.5s2.5 1 2.5 2.5zm-13 0s-2.5 1-2.5 3c0 1.5 1 2.5 2.5 2.5s3.5-2 4-5.5c-.5-3.5-2.5-5.5-4-5.5S3.5 7.5 3.5 9.5zm11.5 8s1 2.5 3 2.5c1.5 0 2.5-1 2.5-2.5s-2-3.5-5.5-4c-3.5.5-5.5 2.5-5.5 4s1 2.5 2.5 2.5c2 0 3-2.5 3-2.5zm-7 0s-1 2.5-3 2.5c-1.5 0-2.5-1-2.5-2.5s2-3.5 5.5-4c3.5.5 5.5 2.5 5.5 4s-1 2.5-2.5 2.5c-2 0-3-2.5-3-2.5z"/>
@@ -297,19 +303,16 @@
                     </div>
                 </div>
                 
-                <!-- 2段目: 昭和40年卒業 -->
                 <p class="text-xl md:text-2xl font-bold tracking-wide text-white mb-2 serif-font">
                     昭和40年卒業
                 </p>
                 
-                <!-- 3段目: 長野県南相木村立南相木中学校 -->
                 <p class="text-sm md:text-base text-emerald-200/90 tracking-wider serif-font font-bold">
                     長野県南相木村立南相木中学校
                 </p>
                 
             </div>
         </div>
-        <!-- 和風のグラデーション飾り帯 -->
         <div class="h-1 w-full bg-gradient-to-r from-emerald-800 via-amber-500 to-emerald-800"></div>
     </header>
 
@@ -355,12 +358,10 @@
             </div>
             
             <div class="flex flex-col md:flex-row items-center md:items-start md:space-x-6 space-y-4 md:space-y-0">
-                <!-- 左側：音符と桜のアイキャッチアイコン -->
                 <div class="flex-shrink-0 bg-amber-600 text-white rounded-2xl p-4 flex items-center justify-center shadow-md w-16 h-16">
                     <i class="fa-solid fa-headphones text-3xl animate-pulse"></i>
                 </div>
                 
-                <!-- 右側：紹介文と特設リンク -->
                 <div class="flex-grow space-y-4 w-full">
                     <h2 class="serif-font text-xl md:text-2xl font-bold text-amber-900 flex items-center justify-center md:justify-start">
                         <span>🌸 特設「ふるさとの友よ 音楽館」のご案内</span>
@@ -375,7 +376,6 @@
                         下記のボタンを押していただくと「音楽館」が別窓で開き、美しいメロディの数々をゆっくりとお聴きいただけます。故郷に思いをはせながら、素晴らしいひとときをお過ごしください。
                     </p>
 
-                    <!-- 特設サイトへのリンクボタン -->
                     <div class="pt-2 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
                         <a href="https://yoshi0213saku-spec.github.io/hurusato_tomoyo/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 border border-amber-500">
                             <i class="fa-solid fa-circle-play text-xl text-yellow-200 animate-pulse"></i>
@@ -386,7 +386,6 @@
             </div>
         </section>
 
-        <!-- ナビゲーションタブ -->
         <div class="grid grid-cols-3 gap-2 bg-emerald-800/10 p-2 rounded-2xl">
             <button onclick="switchTab('home')" id="tab-home" class="py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white">
                 <i class="fa-solid fa-house mr-1"></i><span class="block md:inline">トップ</span>
@@ -401,13 +400,11 @@
 
         <!-- タブコンテンツ1: トップ -->
         <div id="content-home" class="space-y-8">
-            <!-- 2つのメインビジュアルカード（横並び・スマホで縦並び） -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <!-- 1枚目：木造校舎の思い出（タイトル文字は完全非表示・削除） -->
+                <!-- 1枚目：木造校舎の思い出 -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
                     <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
-                        <!-- 写真を切り取らず全体を綺麗に表示するため object-contain に設定 -->
                         <img id="img-omoide" src="omoide_1.jpg" alt="昭和40年記念写真・あの頃の木造校舎" class="w-full h-full object-contain hidden" onload="showImage('img-omoide', 'placeholder-omoide')" onerror="handleImageError('img-omoide', 'placeholder-omoide')">
                         <div id="placeholder-omoide" class="w-full h-full"></div>
                     </div>
@@ -425,13 +422,12 @@
                     </div>
                 </div>
 
-                <!-- 2枚目：喜寿記念同級会（余計なタイトル文字を一切排除し、日付のみをスッキリと小さく表示） -->
+                <!-- 2枚目：喜寿記念同級会 -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
                     <div onclick="toggleDokyukaiImage()" class="relative h-64 bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-95 transition-opacity group" title="写真を押すと名前線画に切り替わります">
                         <img id="img-dokyukai" src="dokyukai_1.jpg" alt="喜寿記念同級会" class="w-full h-full object-contain hidden" onload="showImage('img-dokyukai', 'placeholder-dokyukai')" onerror="handleImageError('img-dokyukai', 'placeholder-dokyukai')">
                         <div id="placeholder-dokyukai" class="w-full h-full"></div>
 
-                        <!-- お名前切り替えの丸アイコンマーク -->
                         <div class="absolute bottom-3 right-3 bg-emerald-900/90 text-white rounded-full px-3 py-1 text-xs font-bold shadow-md flex items-center space-x-1 border border-emerald-700 pointer-events-none group-hover:scale-105 transition-transform">
                             <i class="fa-solid fa-user-tag text-amber-300"></i>
                             <span id="dokyukai-badge-mini">名前をみる</span>
@@ -440,26 +436,22 @@
                     
                     <div class="p-5 flex-grow flex flex-col justify-between">
                         <div>
-                            <!-- 緑のバッジ -->
                             <div class="text-center mb-3">
                                 <span class="inline-block px-4 py-1 bg-emerald-100 text-emerald-900 rounded-full text-sm font-bold shadow-sm">
                                     <i class="fa-solid fa-users mr-1"></i>喜寿記念同級会
                                 </span>
                             </div>
-                            
-                            <!-- 日付のみを小さく表示 -->
+
                             <h3 id="dokyukai-card-title" class="serif-font text-center text-gray-500 mb-4">
                                 <span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>
                             </h3>
                             
-                            <!-- 操作ボタンエリア（名前線画切り替え ＆ ▶ 一コマアルバムを見る ボタン） -->
                             <div class="text-center mb-4 flex flex-col sm:flex-row justify-center items-center gap-2">
                                 <button onclick="toggleDokyukaiImage()" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-full shadow transition-all transform hover:-translate-y-0.5">
                                     <i class="fa-solid fa-retweet"></i>
                                     <span id="dokyukai-badge-text">画像を押すと名前の線画になります</span>
                                 </button>
                                 
-                                <!-- 🎥 一コマアルバムボタン -->
                                 <button onclick="openSlideshow()" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-full shadow-md transition-all transform hover:-translate-y-0.5 border border-emerald-600">
                                     <i class="fa-solid fa-film animate-pulse text-amber-300 mr-1"></i>
                                     <span>▶ 一コマアルバムを見る</span>
@@ -492,7 +484,7 @@
                 </ul>
             </div>
 
-            <!-- お知らせの真下に常設された「思い出・お便り送信フォーム」 -->
+            <!-- お便り送信フォーム -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 md:p-6 max-w-xl mx-auto">
                 <h3 class="serif-font text-lg md:text-xl font-bold text-gray-800 mb-1 flex items-center">
                     <i class="fa-solid fa-paper-plane text-amber-600 mr-2"></i>思い出やお便りを送る入力フォーム
@@ -501,7 +493,6 @@
                     送信ボタンを押すと、お使いのメールアプリ（Gmailや携帯メール等）が自動起動し、中島義健（開設責任者）宛てにメールが届きます。
                 </p>
 
-                <!-- 反映確認用の案内文 -->
                 <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
                     <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
                     中島義健がメールを受け取った後にその後ページに反映されます。
@@ -541,10 +532,7 @@
                 </p>
             </div>
 
-            <!-- 掲示板と投稿エリア -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <!-- 投稿フォーム（メール起動用） -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 h-fit">
                     <h3 class="serif-font text-lg font-bold text-gray-800 mb-1 flex items-center">
                         <i class="fa-solid fa-paper-plane text-amber-600 mr-2"></i>思い出をメールで送る
@@ -553,7 +541,6 @@
                         送信ボタンを押すと自動でお使いのメールアプリが起動し、開設責任者の中島義健へ直接届きます。
                     </p>
                     
-                    <!-- 反映案内文 -->
                     <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
                         <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
                         中島義健がメールを受け取った後にその後ページに反映されます。
@@ -579,9 +566,7 @@
                     </form>
                 </div>
 
-                <!-- 投稿された思い出一覧 -->
                 <div class="lg:col-span-2 space-y-4" id="memory-list">
-                    <!-- サンプル投稿 -->
                     <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 relative">
                         <div class="flex justify-between items-start mb-2 border-b pb-2 border-gray-100">
                             <div>
@@ -621,10 +606,7 @@
                 </p>
             </div>
 
-            <!-- 常設の左右2分割構成：開いた瞬間から左側にメールフォームを配置 -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <!-- 近況お便り常設投稿フォーム -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 h-fit">
                     <h3 class="serif-font text-lg font-bold text-gray-800 mb-1 flex items-center">
                         <i class="fa-solid fa-paper-plane text-emerald-700 mr-2"></i>私の近況をお便りで送る
@@ -633,7 +615,6 @@
                         送信ボタンを押すと自動でお使いのメールアプリが起動し、開設責任者の中島義健へ直接届きます。
                     </p>
                     
-                    <!-- 重要案内文 -->
                     <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
                         <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
                         中島義健がメールを受け取った後にその後ページに反映されます。
@@ -665,9 +646,7 @@
                     </form>
                 </div>
 
-                <!-- お便り一覧カード（右側2カラム分） -->
                 <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 h-fit" id="hobby-list">
-                    <!-- サンプルお便り1 -->
                     <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col justify-between">
                         <div class="p-5">
                             <div class="flex justify-between items-center mb-3">
@@ -683,7 +662,6 @@
                         </div>
                     </div>
 
-                    <!-- サンプルお便り2 -->
                     <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col justify-between">
                         <div class="p-5">
                             <div class="flex justify-between items-center mb-3">
@@ -703,7 +681,7 @@
             </div>
         </div>
 
-        <!-- 📺 中島義健 制作 YouTube動画ギャラリー -->
+        <!-- 📺 中島義健作成のYouTube動画コーナー -->
         <section class="bg-white rounded-3xl shadow-md border border-gray-100 p-6 md:p-8 relative overflow-hidden">
             <div class="absolute left-0 top-0 bottom-0 w-2 bg-red-600"></div>
             
@@ -716,8 +694,6 @@
             </p>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                
-                <!-- 動画1: ふるさとの友よ -->
                 <a href="https://youtu.be/wkLsziH9DAg" target="_blank" rel="noopener noreferrer" class="flex flex-col justify-between p-4 bg-gradient-to-br from-amber-50 to-amber-100/30 hover:from-amber-100 border border-amber-200/80 rounded-2xl shadow-sm transition-all transform hover:-translate-y-1 hover:shadow group text-left">
                     <div>
                         <span class="inline-block px-2.5 py-0.5 bg-amber-600 text-white text-xs font-bold rounded-full mb-3 shadow-sm">
@@ -732,7 +708,6 @@
                     </div>
                 </a>
 
-                <!-- 動画2: 常源寺（南相木村）歴史探訪対談 -->
                 <a href="https://youtu.be/GR1cpj3bo3s?si=iaiZasrHK9EWG_sD" target="_blank" rel="noopener noreferrer" class="flex flex-col justify-between p-4 bg-gradient-to-br from-emerald-50 to-emerald-100/30 hover:from-emerald-100 border border-emerald-200/80 rounded-2xl shadow-sm transition-all transform hover:-translate-y-1 hover:shadow group text-left">
                     <div>
                         <span class="inline-block px-2.5 py-0.5 bg-emerald-700 text-white text-xs font-bold rounded-full mb-3 shadow-sm">
@@ -747,7 +722,6 @@
                     </div>
                 </a>
 
-                <!-- 動画3: 我が家のガーデニング -->
                 <a href="https://youtu.be/taFDDO_NXyM" target="_blank" rel="noopener noreferrer" class="flex flex-col justify-between p-4 bg-gradient-to-br from-lime-50 to-lime-100/30 hover:from-lime-100 border border-lime-200/80 rounded-2xl shadow-sm transition-all transform hover:-translate-y-1 hover:shadow group text-left">
                     <div>
                         <span class="inline-block px-2.5 py-0.5 bg-lime-600 text-white text-xs font-bold rounded-full mb-3 shadow-sm">
@@ -761,7 +735,6 @@
                         <i class="fa-solid fa-circle-play ml-1.5 text-lg text-red-600 animate-pulse"></i>
                     </div>
                 </a>
-
             </div>
         </section>
 
@@ -786,7 +759,27 @@
                 </div>
             </div>
             
-            <p class="text-xs text-emerald-400">
+            <!-- 📊 訪問者数（アクセスカウンター） -->
+            <div class="pt-3 border-t border-emerald-900/80 mt-2 flex flex-col items-center justify-center">
+                <div class="bg-emerald-900/80 px-4 py-2 rounded-xl border border-emerald-700/60 flex items-center space-x-3 shadow-inner">
+                    <span class="text-xs md:text-sm font-bold text-amber-200 flex items-center">
+                        <i class="fa-solid fa-chart-line text-amber-400 mr-2"></i>訪問者数（アクセスカウンター）：
+                    </span>
+                    <div id="visitor-counter-digits" class="flex space-x-1 font-mono font-bold text-base md:text-lg text-amber-950">
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">0</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">0</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">0</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">1</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">5</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">9</span>
+                    </div>
+                </div>
+                <p class="text-[11px] text-emerald-300/80 mt-1.5">
+                    ※皆さまのお越しを心より歓迎いたします
+                </p>
+            </div>
+
+            <p class="text-xs text-emerald-400 pt-1">
                 &copy; 2026 山河会・35会. All Rights Reserved.
             </p>
         </div>
@@ -794,8 +787,6 @@
 
     <!-- 一コマアルバム（スライドショー）表示用モーダル -->
     <div id="slideshow-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-between p-4 sm:p-6 transition-all duration-300">
-        
-        <!-- BGM用オーディオ要素 -->
         <audio id="slideshow-bgm" loop>
             <source src="tomoyo_uta_1.mp3" type="audio/mpeg">
             <source src="tomoyo_uta_1.ogg" type="audio/ogg">
@@ -803,10 +794,8 @@
             <source src="tomoyo_uta_1" type="audio/mpeg">
         </audio>
 
-        <!-- 上部：ヘッダー部分 -->
         <div class="w-full flex items-center justify-between text-white border-b border-gray-800 pb-3">
             <div class="flex items-center space-x-2">
-                <!-- 閉じるボタン -->
                 <button onclick="closeSlideshow()" class="px-3.5 py-1.5 bg-red-700 hover:bg-red-800 active:scale-95 text-white font-bold text-sm rounded-lg transition-all flex items-center space-x-1 shadow">
                     <i class="fa-solid fa-xmark mr-1"></i>
                     <span>閉じる</span>
@@ -814,59 +803,45 @@
                 <span class="text-xs sm:text-sm text-emerald-400 font-bold hidden sm:inline">一コマアルバム</span>
             </div>
             
-            <!-- 中央：現在の写真タイトル -->
             <div class="text-center">
                 <span id="slide-title" class="font-bold text-sm sm:text-base text-amber-200">tomo_3_1.jpg</span>
                 <span id="slide-counter" class="text-xs text-emerald-300 block">1 / 14 枚</span>
             </div>
 
-            <!-- 右側：BGM切り替えトグルボタン -->
             <button onclick="toggleSlideBgm()" class="px-3 py-1.5 bg-emerald-900/80 hover:bg-emerald-800 active:scale-95 text-white rounded-lg text-xs sm:text-sm font-bold border border-emerald-700 flex items-center space-x-1.5 transition-all">
                 <i id="slide-bgm-icon" class="fa-solid fa-volume-high text-amber-300"></i>
                 <span id="slide-bgm-text">BGM：オン</span>
             </button>
         </div>
 
-        <!-- 中部：写真表示エリア -->
         <div class="flex-grow w-full max-w-4xl mx-auto flex items-center justify-center my-4">
             <div class="relative w-full h-[55vh] sm:h-[65vh] bg-neutral-900/50 flex items-center justify-center rounded-2xl overflow-hidden border border-emerald-900/40 shadow-inner">
-                
-                <!-- 本物画像：全体表示（object-contain）指定 -->
                 <img id="slide-img" src="" alt="スライドショー画像" class="max-w-full max-h-full object-contain hidden" onload="onSlideImageLoad()" onerror="onSlideImageError()">
-                
-                <!-- 画像エラー時・ロード前の一時的な和風SVGプレースホルダー -->
                 <div id="slide-placeholder" class="w-full h-full"></div>
             </div>
         </div>
 
-        <!-- 下部：操作ボタンエリア -->
         <div class="w-full max-w-2xl mx-auto pb-2">
             <div class="grid grid-cols-5 gap-1.5 sm:gap-3 justify-center items-center text-white">
-                
-                <!-- ⏮ 前の人 -->
                 <button onclick="prevSlide()" class="flex flex-col items-center justify-center py-2.5 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold text-xs sm:text-sm shadow">
                     <i class="fa-solid fa-backward-step text-sm sm:text-lg mb-1 text-emerald-300"></i>
                     <span>⏮ 前の人</span>
                 </button>
                 
-                <!-- ▶ 再生 / ⏸ 一時停止 (トグル) -->
                 <button onclick="togglePlayPause()" id="btn-slide-play" class="col-span-2 flex flex-col items-center justify-center py-2.5 bg-amber-600 hover:bg-amber-700 active:scale-95 rounded-xl border border-amber-500/50 transition-all font-bold text-xs sm:text-sm shadow">
                     <i id="icon-slide-play" class="fa-solid fa-pause text-sm sm:text-lg mb-1 text-amber-200"></i>
                     <span id="text-slide-play">⏸ 一時停止</span>
                 </button>
                 
-                <!-- ⏭ 次の人 -->
                 <button onclick="nextSlide()" class="flex flex-col items-center justify-center py-2.5 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold text-xs sm:text-sm shadow">
                     <i class="fa-solid fa-forward-step text-sm sm:text-lg mb-1 text-emerald-300"></i>
                     <span>⏭ 次の人</span>
                 </button>
                 
-                <!-- ⛶ 全画面表示 -->
                 <button onclick="toggleFullscreen()" class="flex flex-col items-center justify-center py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-xl border border-slate-600/50 transition-all font-bold text-xs sm:text-sm shadow">
                     <i class="fa-solid fa-expand text-sm sm:text-lg mb-1 text-slate-300"></i>
                     <span>⛶ 全画面</span>
                 </button>
-
             </div>
             
             <p class="text-center text-[10px] sm:text-xs text-gray-500 mt-3">
@@ -877,10 +852,8 @@
     </div>
 
     <script>
-        // 同級会写真と名前入り線画のクリック切り替え状態管理
         let isShowingNameFile = false;
 
-        // 画像やボタンをクリックしたときに実行される切り替え処理
         function toggleDokyukaiImage() {
             isShowingNameFile = !isShowingNameFile;
             
@@ -890,49 +863,35 @@
             const badgeMini = document.getElementById('dokyukai-badge-mini');
             const cardTitle = document.getElementById('dokyukai-card-title');
 
-            // 切り替え前に一度非表示にして、再度ロード成功を待つ
             if (img) img.classList.add('hidden');
             if (placeholder) placeholder.classList.remove('hidden');
 
             if (isShowingNameFile) {
-                // 名前入り線画（dokyukai_namae_1）への切り替え
                 if (img) {
                     img.src = "dokyukai_namae_1.jpg";
                     img.alt = "喜寿記念同級会 各自の名前入り（線画）";
                 }
-                
-                // ボタン表記とカード表記の更新
                 if (badgeText) badgeText.innerHTML = '<i class="fa-solid fa-image mr-1"></i>画像を押すと本物の写真に戻ります';
                 if (badgeMini) badgeMini.innerText = "写真をみる";
                 if (cardTitle) cardTitle.innerHTML = '<span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>';
-
-                // プレビュー用の臨時の線画SVGを再描画
                 if (placeholder) placeholder.innerHTML = getDokyukaiNameSvg();
             } else {
-                // 通常写真（dokyukai_1）への切り替え
                 if (img) {
                     img.src = "dokyukai_1.jpg";
                     img.alt = "喜寿記念同級会";
                 }
-                
-                // ボタン表記とカード表記の更新
                 if (badgeText) badgeText.innerHTML = '<i class="fa-solid fa-retweet mr-1"></i>画像を押すと名前の線画になります';
                 if (badgeMini) badgeMini.innerText = "名前をみる";
                 if (cardTitle) cardTitle.innerHTML = '<span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>';
-
-                // 通常のカラーSVG写真プレビューを描画
                 if (placeholder) placeholder.innerHTML = getDokyukaiPhotoSvg();
             }
         }
 
-        // タブ切り替え機能
         function switchTab(tabId) {
-            // タブコンテンツをすべて隠す
             document.getElementById('content-home').classList.add('hidden');
             document.getElementById('content-memories').classList.add('hidden');
             document.getElementById('content-hobby').classList.add('hidden');
             
-            // タブの選択状態スタイルをクリア
             const tabs = ['home', 'memories', 'hobby'];
             tabs.forEach(t => {
                 const tabBtn = document.getElementById('tab-' + t);
@@ -941,17 +900,13 @@
                 }
             });
 
-            // 選択されたタブを表示する
             document.getElementById('content-' + tabId).classList.remove('hidden');
-            
-            // 選択されたタブのボタンスタイルを強調
             const activeBtn = document.getElementById('tab-' + tabId);
             if (activeBtn) {
                 activeBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white";
             }
         }
 
-        // トップページ（総合受付フォーム）メール送信アクション
         function handleHomeSubmit(event) {
             event.preventDefault();
             const name = document.getElementById('home-name').value;
@@ -970,18 +925,15 @@
                 `※中島義健がメールを確認後に、ホームページへと追加・反映されます。`
             );
 
-            // メールの起動
             window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
         }
 
-        // 思い出メール送信アクション
         function handleMemorySubmit(event) {
             event.preventDefault();
             const name = document.getElementById('memory-name').value;
             const period = document.getElementById('memory-period').value;
             const text = document.getElementById('memory-text').value;
 
-            // メールアプリ送信用URLを作成
             const to = 'yoshi0213.saku@gmail.com';
             const subject = encodeURIComponent(`【山河会・35会HP】思い出の投稿（${name}様より）`);
             const body = encodeURIComponent(
@@ -993,18 +945,15 @@
                 `※中島義健がメールを確認後に、ホームページへと追加されます。`
             );
 
-            // メールの起動
             window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
         }
 
-        // 近況お便りメール送信アクション
         function handleHobbySubmit(event) {
             event.preventDefault();
             const name = document.getElementById('hobby-name').value;
             const category = document.getElementById('hobby-category').value;
             const text = document.getElementById('hobby-text').value;
 
-            // メールアプリ送信用URLを作成
             const to = 'yoshi0213.saku@gmail.com';
             const subject = encodeURIComponent(`【山河会・35会HP】お便り（${name}様より）`);
             const body = encodeURIComponent(
@@ -1017,11 +966,9 @@
                 `※中島義健がメールを確認後に、ホームページへと追加されます。`
             );
 
-            // メールの起動
             window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
         }
 
-        // A. 通常の集合写真風SVGプレースホルダー
         function getDokyukaiPhotoSvg() {
             return `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
@@ -1031,17 +978,13 @@
                     <circle cx="400" cy="300" r="100" fill="#e8f5e9" opacity="0.4"/>
                     <path d="M 50,50 Q 400,120 750,50" fill="none" stroke="#ffb74d" stroke-width="5" stroke-dasharray="10"/>
                     <g transform="translate(180, 160)" fill="#2e7d32">
-                        <!-- 写真を模した楽しげな3名（カラー） -->
                         <circle cx="100" cy="60" r="24" fill="#37474f"/>
                         <path d="M 60,100 C 60,100 80,85 100,85 C 120,85 140,100 140,100 L 135,160 L 65,160 Z" fill="#455a64"/>
-                        
                         <circle cx="220" cy="35" r="28" fill="#e65100"/>
                         <path d="M 170,80 C 170,80 195,65 220,65 C 245,65 270,80 270,80 L 260,160 L 180,160 Z" fill="#f57c00"/>
-                        
                         <circle cx="340" cy="60" r="24" fill="#1565c0"/>
                         <path d="M 300,100 C 300,100 320,85 340,85 C 360,85 380,100 380,100 L 375,160 L 305,160 Z" fill="#1976d2"/>
                     </g>
-                    <path d="M 50,400 Q 400,300 750,400" fill="none" stroke="#81c784" stroke-width="4"/>
                     <rect x="150" y="360" width="500" height="45" fill="#1b5e20" rx="22"/>
                     <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="16" fill="#fff" text-anchor="middle">
                         2026年7月15日
@@ -1050,33 +993,26 @@
             `;
         }
 
-        // B. 名前を割り当てた線画風SVGプレースホルダー
         function getDokyukaiNameSvg() {
             return `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
                     <rect width="100%" height="100%" fill="#fafafa" stroke="#ccc" stroke-width="2"/>
-                    <path d="M0,0 L800,450 M800,0 L0,450" stroke="#f0f0f0" stroke-width="1"/>
-                    
                     <g transform="translate(180, 160)" fill="none" stroke="#555" stroke-width="2">
-                        <!-- 1人目：線画のアウトラインと名前タグ -->
                         <circle cx="100" cy="60" r="24"/>
                         <path d="M 60,120 Q 100,85 140,120"/>
                         <rect x="70" y="130" width="60" height="20" fill="#fff" stroke="#1b5e20" stroke-width="1.5" rx="3"/>
                         <text x="100" y="144" font-family="sans-serif" font-size="11" fill="#1b5e20" font-weight="bold" text-anchor="middle" stroke="none">中島さん</text>
                         
-                        <!-- 2人目：線画のアウトラインと名前タグ -->
                         <circle cx="220" cy="35" r="28"/>
                         <path d="M 175,110 Q 220,65 265,110"/>
                         <rect x="190" y="120" width="60" height="20" fill="#fff" stroke="#e65100" stroke-width="1.5" rx="3"/>
                         <text x="220" y="134" font-family="sans-serif" font-size="11" fill="#e65100" font-weight="bold" text-anchor="middle" stroke="none">山河さん</text>
                         
-                        <!-- 3人目：線画のアウトラインと名前タグ -->
                         <circle cx="340" cy="60" r="24"/>
                         <path d="M 300,120 Q 340,85 380,120"/>
                         <rect x="310" y="130" width="60" height="20" fill="#fff" stroke="#1565c0" stroke-width="1.5" rx="3"/>
                         <text x="340" y="144" font-family="sans-serif" font-size="11" fill="#1565c0" font-weight="bold" text-anchor="middle" stroke="none">35会さん</text>
                     </g>
-                    
                     <rect x="150" y="360" width="500" height="45" fill="#37474f" rx="22"/>
                     <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="16" fill="#fff" text-anchor="middle">
                         2026年7月15日
@@ -1085,9 +1021,8 @@
             `;
         }
 
-        // ページロード時の初期設定
+        // ページロード時初期設定
         window.onload = function() {
-            // 木造校舎のプレースホルダーSVG
             const omoideSvg = `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
                     <rect width="100%" height="100%" fill="#faf6f0"/>
@@ -1109,11 +1044,13 @@
                 omoidePlaceholder.innerHTML = omoideSvg;
             }
             
-            // 喜寿記念同級会（初期は通常のカラー写真プレビューSVGを設定）
             const dokyukaiPlaceholder = document.getElementById('placeholder-dokyukai');
             if (dokyukaiPlaceholder) {
                 dokyukaiPlaceholder.innerHTML = getDokyukaiPhotoSvg();
             }
+
+            // アクセスカウンター起動
+            initVisitorCounter();
         };
     </script>
 </body>
