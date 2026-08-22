@@ -138,6 +138,41 @@ p {
         line-height: 1.85;
     }
 }
+        /* ========================================
+   山河会・35会　読みやすさ改善 第1段階②
+   ======================================== */
+
+/* 本文をゆったり読みやすく */
+main p {
+    line-height: 1.85;
+}
+
+/* 見出しを少し見やすく */
+main h2,
+main h3,
+main h4 {
+    line-height: 1.5;
+}
+
+/* スマートフォンでは文章を少し大きく */
+@media (max-width: 640px) {
+    main p {
+        font-size: 16px;
+        line-height: 1.85;
+    }
+
+    main h2 {
+        font-size: 1.35rem;
+    }
+
+    main h3 {
+        font-size: 1.15rem;
+    }
+
+    main h4 {
+        font-size: 1.05rem;
+    }
+}
     </style>
 
     <script>
@@ -491,18 +526,18 @@ p {
 
         <!-- タブコンテンツ1: トップ -->
         <div id="content-home" class="space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <div class="grid grid-cols-1 gap-6">
                 
                 <!-- 1枚目：木造校舎の思い出 -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
-                    <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
+                    <div class="relative h-72 bg-gray-100 flex items-center justify-center overflow-hidden">
                         <img id="img-omoide" src="omoide_1.jpg" alt="昭和40年記念写真・あの頃の木造校舎" class="w-full h-full object-contain hidden" onload="showImage('img-omoide', 'placeholder-omoide')" onerror="handleImageError('img-omoide', 'placeholder-omoide')">
                         <div id="placeholder-omoide" class="w-full h-full"></div>
                     </div>
                     <div class="p-5 flex-grow flex flex-col justify-between">
                         <div>
                             <div class="text-center mb-3">
-                                <span class="inline-block px-4 py-1 bg-amber-100 text-amber-900 rounded-full text-sm font-bold shadow-sm">
+                              <span class="inline-block px-4 py-1 bg-amber-100 text-amber-900 rounded-full text-base font-bold shadow-sm">
                                     <i class="fa-solid fa-history mr-1"></i>昭和40年（1965年）
                                 </span>
                             </div>
@@ -515,7 +550,7 @@ p {
 
                 <!-- 2枚目：喜寿記念同級会 -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
-                    <div onclick="toggleDokyukaiImage()" class="relative h-64 bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-95 transition-opacity group" title="写真を押すと名前線画に切り替わります">
+                    <div onclick="toggleDokyukaiImage()" class="relative h-72 bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-95 transition-opacity group" title="写真を押すと名前線画に切り替わります">
                         <img id="img-dokyukai" src="dokyukai_1.jpg" alt="喜寿記念同級会" class="w-full h-full object-contain hidden" onload="showImage('img-dokyukai', 'placeholder-dokyukai')" onerror="handleImageError('img-dokyukai', 'placeholder-dokyukai')">
                         <div id="placeholder-dokyukai" class="w-full h-full"></div>
 
@@ -528,13 +563,13 @@ p {
                     <div class="p-5 flex-grow flex flex-col justify-between">
                         <div>
                             <div class="text-center mb-3">
-                                <span class="inline-block px-4 py-1 bg-emerald-100 text-emerald-900 rounded-full text-sm font-bold shadow-sm">
+                                <span class="inline-block px-4 py-1 bg-emerald-100 text-emerald-900 rounded-full text-base font-bold shadow-sm">
                                     <i class="fa-solid fa-users mr-1"></i>喜寿記念同級会
                                 </span>
                             </div>
 
                             <h3 id="dokyukai-card-title" class="serif-font text-center text-gray-500 mb-4">
-                                <span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>
+                                <span class="text-base font-normal text-gray-500 block sm:inline">2026年7月15日</span>
                             </h3>
                             
                             <div class="text-center mb-4 flex flex-col sm:flex-row justify-center items-center gap-2">
@@ -549,7 +584,7 @@ p {
                                 </button>
                             </div>
 
-                            <p class="text-sm text-gray-600 leading-relaxed text-center">
+                            <p class="text-base text-gray-600 leading-relaxed text-center">
                                 70名のうち16名の仲間が再び一堂に会しました。何十年経っても、顔を合わせればすぐにあおの頃のニックネームに逆戻り。お互いの元気な笑顔を讃え合いました。
                             </p>
                         </div>
