@@ -47,6 +47,53 @@
             color: #fef08a !important; /* 明るいレモンイエロー */
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9), -1px -1px 2px rgba(0, 0, 0, 0.9);
         }
+        /* =========================================
+   山河会・35会 スマホ見やすさ改善
+   ========================================= */
+
+/* 本文を少し読みやすく */
+body {
+    line-height: 1.7;
+}
+
+/* スマホでは文字を大きくして読みやすく */
+@media (max-width: 640px) {
+
+    body {
+        font-size: 16px;
+    }
+
+    /* 見出し */
+    h1 {
+        line-height: 1.35;
+    }
+
+    h2 {
+        line-height: 1.45;
+    }
+
+    h3 {
+        line-height: 1.5;
+    }
+
+    /* ボタンを指で押しやすくする */
+    button {
+        min-height: 48px;
+        touch-action: manipulation;
+    }
+
+    /* 入力欄も押しやすくする */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    /* 写真の角を少し柔らかく */
+    img {
+        border-radius: 0.75rem;
+    }
+}
     </style>
 
     <script>
