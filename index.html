@@ -53,46 +53,81 @@
         // 画像の読み込みが成功した際の処理
         function showImage(imgId, placeholderId) {
             const img = document.getElementById(imgId);
-            if (img) {
-                img.classList.remove('hidden');
-            }
+            if (img) img.classList.remove('hidden');
             const placeholder = document.getElementById(placeholderId);
-            if (placeholder) {
-                placeholder.classList.add('hidden');
-            }
+            if (placeholder) placeholder.classList.add('hidden');
         }
 
         // 画像の読み込みに失敗した際の処理
         function handleImageError(imgId, placeholderId) {
             const img = document.getElementById(imgId);
-            if (img) {
-                img.classList.add('hidden');
-            }
+            if (img) img.classList.add('hidden');
             const placeholder = document.getElementById(placeholderId);
-            if (placeholder) {
-                placeholder.classList.remove('hidden');
-            }
+            if (placeholder) placeholder.classList.remove('hidden');
         }
 
-        // スライドショー用画像リスト (tomo_3_1 から tomo_16_1 全14枚)
-        const slideshowImages = [
+        // アルバム別画像リストの設定
+        // 小学校時代のアルバム (s_1 から s_6 全6枚)
+        const primarySchoolImages = [
+            { name: "s_1", ext: "jpg" }, { name: "s_2", ext: "jpg" },
+            { name: "s_3", ext: "jpg" }, { name: "s_4", ext: "jpg" },
+            { name: "s_5", ext: "jpg" }, { name: "s_6", ext: "jpg" }
+        ];
+
+        // 中学校時代のアルバム (t_1 から t_11 全11枚)
+        const juniorHighImages = [
+            { name: "t_1", ext: "jpg" }, { name: "t_2", ext: "jpg" },
+            { name: "t_3", ext: "jpg" }, { name: "t_4", ext: "jpg" },
+            { name: "t_5", ext: "jpg" }, { name: "t_6", ext: "jpg" },
+            { name: "t_7", ext: "jpg" }, { name: "t_8", ext: "jpg" },
+            { name: "t_9", ext: "jpg" }, { name: "t_10", ext: "jpg" },
+            { name: "t_11", ext: "jpg" }
+        ];
+
+        // 喜寿記念同級会アルバム (tomo_3_1 から tomo_16_1 全14枚)
+        const dokyukaiImages = [
             { name: "tomo_3_1", ext: "jpg" }, { name: "tomo_4_1", ext: "jpg" }, { name: "tomo_5_1", ext: "jpg" }, { name: "tomo_6_1", ext: "jpg" },
             { name: "tomo_7_1", ext: "jpg" }, { name: "tomo_8_1", ext: "jpg" }, { name: "tomo_9_1", ext: "jpg" }, { name: "tomo_10_1", ext: "jpg" },
             { name: "tomo_11_1", ext: "jpg" }, { name: "tomo_12_1", ext: "jpg" }, { name: "tomo_13_1", ext: "jpg" }, { name: "tomo_14_1", ext: "jpg" },
             { name: "tomo_15_1", ext: "jpg" }, { name: "tomo_16_1", ext: "jpg" }
         ];
+
+        let activeSlideList = primarySchoolImages;
+        let activeAlbumLabel = "小学校時代のアルバム";
         let currentSlideIndex = 0;
         let slideIntervalId = null;
         let isSlidePlaying = false;
         let isSlideBgmOn = true;
 
-        // スライドショーを開始
+        // アルバム切り替え起動（小学校・中学校）
+        function openAlbum(type) {
+            if (type === 'primary') {
+                activeSlideList = primarySchoolImages;
+                activeAlbumLabel = "小学校時代のアルバム";
+            } else if (type === 'junior') {
+                activeSlideList = juniorHighImages;
+                activeAlbumLabel = "中学校時代のアルバム";
+            }
+            openSlideshowModal();
+        }
+
+        // 喜寿同級会スライドショー起動
         function openSlideshow() {
+            activeSlideList = dokyukaiImages;
+            activeAlbumLabel = "喜寿記念同級会アルバム";
+            openSlideshowModal();
+        }
+
+        // モーダル表示と共通開始ロジック
+        function openSlideshowModal() {
             const modal = document.getElementById('slideshow-modal');
             if (modal) {
                 modal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
             }
+
+            const labelEl = document.getElementById('slideshow-header-label');
+            if (labelEl) labelEl.innerText = activeAlbumLabel;
 
             currentSlideIndex = 0;
             showSlide(currentSlideIndex);
@@ -106,7 +141,7 @@
             startSlideShow();
         }
 
-        // 一コマアルバム（スライドショー）を閉じる
+        // アルバムスライドショーを閉じる
         function closeSlideshow() {
             stopSlideShow();
             
@@ -117,44 +152,38 @@
             }
 
             const slideBgm = document.getElementById('slideshow-bgm');
-            if (slideBgm) {
-                slideBgm.pause();
-            }
+            if (slideBgm) slideBgm.pause();
 
             if (document.fullscreenElement) {
                 document.exitFullscreen();
             }
         }
 
+        // スライドを表示
         function showSlide(index) {
-            if (index < 0) index = slideshowImages.length - 1;
-            if (index >= slideshowImages.length) index = 0;
+            if (index < 0) index = activeSlideList.length - 1;
+            if (index >= activeSlideList.length) index = 0;
             currentSlideIndex = index;
 
             const slideImg = document.getElementById('slide-img');
-            const ext = slideshowImages[index].ext;
-            if (slideImg) {
+            const item = activeSlideList[index];
+            if (slideImg && item) {
                 slideImg.classList.add('hidden');
-                slideImg.src = slideshowImages[index].name + "." + ext;
+                slideImg.src = item.name + "." + item.ext;
             }
 
-            document.getElementById('slide-counter').innerText = `${index + 1} / ${slideshowImages.length} 枚`;
-            document.getElementById('slide-title').innerText = `${slideshowImages[index].name}.${ext}`;
+            document.getElementById('slide-counter').innerText = `${index + 1} / ${activeSlideList.length} 枚`;
+            document.getElementById('slide-title').innerText = item ? `${item.name}.${item.ext}` : '';
         }
 
-        function nextSlide() {
-            showSlide(currentSlideIndex + 1);
-        }
-
-        function prevSlide() {
-            showSlide(currentSlideIndex - 1);
-        }
+        function nextSlide() { showSlide(currentSlideIndex + 1); }
+        function prevSlide() { showSlide(currentSlideIndex - 1); }
 
         function startSlideShow() {
             if (slideIntervalId) clearInterval(slideIntervalId);
             isSlidePlaying = true;
             updateSlideControlsUI();
-            slideIntervalId = setInterval(nextSlide, 4500);
+            slideIntervalId = setInterval(nextSlide, 10000);
         }
 
         function stopSlideShow() {
@@ -167,11 +196,8 @@
         }
 
         function togglePlayPause() {
-            if (isSlidePlaying) {
-                stopSlideShow();
-            } else {
-                startSlideShow();
-            }
+            if (isSlidePlaying) stopSlideShow();
+            else startSlideShow();
         }
 
         function toggleSlideBgm() {
@@ -193,9 +219,7 @@
         function toggleFullscreen() {
             const container = document.getElementById('slideshow-modal');
             if (!document.fullscreenElement) {
-                container.requestFullscreen().catch(err => {
-                    console.log(`全画面エラー: ${err.message}`);
-                });
+                container.requestFullscreen().catch(err => console.log(`全画面エラー: ${err.message}`));
             } else {
                 document.exitFullscreen();
             }
@@ -222,8 +246,9 @@
             document.getElementById('slide-img').classList.add('hidden');
             const placeholder = document.getElementById('slide-placeholder');
             placeholder.classList.remove('hidden');
-            const name = slideshowImages[currentSlideIndex].name;
-            const ext = slideshowImages[currentSlideIndex].ext;
+            const item = activeSlideList[currentSlideIndex];
+            const name = item ? item.name : 'photo';
+            const ext = item ? item.ext : 'jpg';
             placeholder.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
                     <rect width="100%" height="100%" fill="#1a2f1c"/>
@@ -251,9 +276,7 @@
             let count = 159;
             try {
                 let stored = localStorage.getItem('yamagakai_visitor_count');
-                if (stored) {
-                    count = parseInt(stored, 10) + 1;
-                }
+                if (stored) count = parseInt(stored, 10) + 1;
                 localStorage.setItem('yamagakai_visitor_count', count.toString());
             } catch(e) {
                 count = 159;
@@ -261,6 +284,7 @@
             renderCounterDigits(count);
         }
 
+        // デジタルブロック描画
         function renderCounterDigits(num) {
             const container = document.getElementById('visitor-counter-digits');
             if (!container) return;
@@ -398,22 +422,37 @@
         <div id="content-home" class="space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <!-- 1枚目：木造校舎の思い出 -->
+                <!-- 1枚目：小学校・中学校 2つのアルバムスライドショーカード -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
                     <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
                         <img id="img-omoide" src="omoide_1.jpg" alt="昭和40年記念写真・あの頃の木造校舎" class="w-full h-full object-contain hidden" onload="showImage('img-omoide', 'placeholder-omoide')" onerror="handleImageError('img-omoide', 'placeholder-omoide')">
                         <div id="placeholder-omoide" class="w-full h-full"></div>
                     </div>
+                    
                     <div class="p-5 flex-grow flex flex-col justify-between">
                         <div>
                             <div class="text-center mb-3">
                                 <span class="inline-block px-4 py-1 bg-amber-100 text-amber-900 rounded-full text-sm font-bold shadow-sm">
-                                    <i class="fa-solid fa-history mr-1"></i>昭和40年（1965年）
+                                    <i class="fa-solid fa-graduation-cap mr-1"></i>小・中学校の思い出アルバム
                                 </span>
                             </div>
-                            <p class="text-sm text-gray-600 leading-relaxed text-center mt-4">
-                                冬のダルマストーブの温もり、競い合って雑巾がけした長い廊下。私たちの人生の大切な原点が、今もこの木造の学び舎に息づいています。
+                            
+                            <p class="text-sm text-gray-600 leading-relaxed text-center mb-4">
+                                冬のダルマストーブの温もり、競い合って雑巾がけした長い廊下。私たちの人生の大切な原点が、今もこの学び舎に息づいています。
                             </p>
+
+                            <!-- 小学校・中学校の2つのスライドショー起動ボタン -->
+                            <div class="flex flex-col gap-2.5">
+                                <button onclick="openAlbum('primary')" class="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm rounded-xl shadow transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 border border-amber-500">
+                                    <i class="fa-solid fa-child text-yellow-200"></i>
+                                    <span>▶ 小学校時代のアルバムを見る</span>
+                                </button>
+                                
+                                <button onclick="openAlbum('junior')" class="w-full py-2.5 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm rounded-xl shadow transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 border border-emerald-600">
+                                    <i class="fa-solid fa-school text-amber-300"></i>
+                                    <span>▶ 中学校時代のアルバムを見る</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -463,6 +502,7 @@
 
             </div>
 
+            <!-- 事務局からのお知らせ -->
             <div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-4 sm:p-6">
                 <h3 class="serif-font text-lg md:text-xl font-bold text-amber-900 mb-3 flex items-center flex-wrap gap-1">
                     <span class="mr-2 text-amber-700"><i class="fa-solid fa-bullhorn"></i></span>同級会事務局からのお知らせ
@@ -818,12 +858,12 @@
                     <i class="fa-solid fa-xmark mr-1"></i>
                     <span>閉じる</span>
                 </button>
-                <span class="text-xs sm:text-sm text-emerald-400 font-bold hidden sm:inline">一コマアルバム</span>
+                <span id="slideshow-header-label" class="text-xs sm:text-sm text-emerald-400 font-bold hidden sm:inline">一コマアルバム</span>
             </div>
             
             <div class="text-center">
-                <span id="slide-title" class="font-bold text-sm sm:text-base text-amber-200">tomo_3_1.jpg</span>
-                <span id="slide-counter" class="text-xs text-emerald-300 block">1 / 14 枚</span>
+                <span id="slide-title" class="font-bold text-sm sm:text-base text-amber-200">s_1.jpg</span>
+                <span id="slide-counter" class="text-xs text-emerald-300 block">1 / 6 枚</span>
             </div>
 
             <button onclick="toggleSlideBgm()" class="px-3 py-1.5 bg-emerald-900/80 hover:bg-emerald-800 active:scale-95 text-white rounded-lg text-xs sm:text-sm font-bold border border-emerald-700 flex items-center space-x-1.5 transition-all">
@@ -841,9 +881,8 @@
 
         <div class="w-full max-w-2xl mx-auto pb-2">
             <div class="grid grid-cols-5 gap-1.5 sm:gap-3 justify-center items-center text-white">
-                <button onclick="prevSlide()" class="flex flex-col items-center justify-center py-2.5 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold text-xs sm:text-sm shadow">
-                    <i class="fa-solid fa-backward-step text-sm sm:text-lg mb-1 text-emerald-300"></i>
-                    <span>⏮ 前の人</span>
+                <button onclick="prevSlide()" class="flex items-center justify-center py-3 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold shadow" title="前の写真へ">
+                    <i class="fa-solid fa-backward-step text-lg sm:text-2xl text-emerald-300"></i>
                 </button>
                 
                 <button onclick="togglePlayPause()" id="btn-slide-play" class="col-span-2 flex flex-col items-center justify-center py-2.5 bg-amber-600 hover:bg-amber-700 active:scale-95 rounded-xl border border-amber-500/50 transition-all font-bold text-xs sm:text-sm shadow">
@@ -851,9 +890,8 @@
                     <span id="text-slide-play">⏸ 一時停止</span>
                 </button>
                 
-                <button onclick="nextSlide()" class="flex flex-col items-center justify-center py-2.5 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold text-xs sm:text-sm shadow">
-                    <i class="fa-solid fa-forward-step text-sm sm:text-lg mb-1 text-emerald-300"></i>
-                    <span>⏭ 次の人</span>
+                <button onclick="nextSlide()" class="flex items-center justify-center py-3 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold shadow" title="次の写真へ">
+                    <i class="fa-solid fa-forward-step text-lg sm:text-2xl text-emerald-300"></i>
                 </button>
                 
                 <button onclick="toggleFullscreen()" class="flex flex-col items-center justify-center py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-xl border border-slate-600/50 transition-all font-bold text-xs sm:text-sm shadow">
@@ -863,7 +901,7 @@
             </div>
             
             <p class="text-center text-[10px] sm:text-xs text-gray-500 mt-3">
-                ※4.5秒ごとに次の写真に自動で変わります。ボタンを押せばお好きなペースで1枚ずつ見ることもできます。
+                ※10秒ごとに次の写真に自動で変わります。ボタンを押せばお好きなペースで1枚ずつ見ることもできます。
             </p>
         </div>
 
