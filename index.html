@@ -58,15 +58,61 @@
             if (placeholder) placeholder.classList.add('hidden');
         }
 
-        // 画像の読み込みに失敗した際の処理
+        // 画像の読み込みに失敗した際の処理（サンプル写真フォールバック）
         function handleImageError(imgId, placeholderId) {
             const img = document.getElementById(imgId);
-            if (img) img.classList.add('hidden');
+            if (!img) return;
+
+            if (!img.dataset.fallbackTried) {
+                img.dataset.fallbackTried = "true";
+                if (imgId === 'img-omoide') {
+                    img.src = "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80";
+                } else if (imgId === 'img-dokyukai') {
+                    img.src = "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80";
+                }
+                return;
+            }
+
+            img.classList.add('hidden');
             const placeholder = document.getElementById(placeholderId);
             if (placeholder) placeholder.classList.remove('hidden');
         }
 
-        // アルバム別画像リストの設定
+        // アルバム別サンプル写真URL取得処理
+        function getSamplePhotoUrl(type, index) {
+            const primaryPhotos = [
+                "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1000&q=80"
+            ];
+            const juniorPhotos = [
+                "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1000&q=80"
+            ];
+            const branchPhotos = [
+                "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1511497584788-8767611136f6?auto=format&fit=crop&w=1000&q=80"
+            ];
+            const dokyukaiPhotos = [
+                "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1000&q=80",
+                "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80"
+            ];
+
+            let list = primaryPhotos;
+            if (type === 'junior') list = juniorPhotos;
+            else if (type === 'mikawa' || type === 'kuryu') list = branchPhotos;
+            else if (type === 'dokyukai') list = dokyukaiPhotos;
+
+            return list[index % list.length];
+        }
+
         // 小学校時代 (s_1 から s_6 全6枚)
         const primarySchoolImages = [
             { name: "s_1", ext: "jpg" }, { name: "s_2", ext: "jpg" },
@@ -113,8 +159,8 @@
         let slideIntervalId = null;
         let isSlidePlaying = false;
         let isSlideBgmOn = true;
+        let isShowingNameFile = false;
 
-        // アルバム切り替え起動（小学校・中学校・三川分校・栗生分校）
         function openAlbum(type) {
             activeAlbumType = type;
             if (type === 'primary') {
@@ -133,7 +179,6 @@
             openSlideshowModal();
         }
 
-        // 喜寿同級会スライドショー起動
         function openSlideshow() {
             activeAlbumType = 'dokyukai';
             activeSlideList = dokyukaiImages;
@@ -141,7 +186,6 @@
             openSlideshowModal();
         }
 
-        // モーダル表示と共通開始ロジック
         function openSlideshowModal() {
             const modal = document.getElementById('slideshow-modal');
             if (modal) {
@@ -164,7 +208,6 @@
             startSlideShow();
         }
 
-        // アルバムスライドショーを閉じる
         function closeSlideshow() {
             stopSlideShow();
             
@@ -182,21 +225,28 @@
             }
         }
 
-        // スライドを表示
         function showSlide(index) {
+            if (!activeSlideList || activeSlideList.length === 0) return;
             if (index < 0) index = activeSlideList.length - 1;
             if (index >= activeSlideList.length) index = 0;
             currentSlideIndex = index;
 
             const slideImg = document.getElementById('slide-img');
+            const placeholder = document.getElementById('slide-placeholder');
             const item = activeSlideList[index];
+
             if (slideImg && item) {
+                delete slideImg.dataset.fallbackTried;
                 slideImg.classList.add('hidden');
+                if (placeholder) placeholder.classList.remove('hidden');
                 slideImg.src = item.name + "." + item.ext;
             }
 
-            document.getElementById('slide-counter').innerText = `${index + 1} / ${activeSlideList.length} 枚`;
-            document.getElementById('slide-title').innerText = item ? `${item.name}.${item.ext}` : '';
+            const counterEl = document.getElementById('slide-counter');
+            if (counterEl) counterEl.innerText = `${index + 1} / ${activeSlideList.length} 枚`;
+
+            const titleEl = document.getElementById('slide-title');
+            if (titleEl) titleEl.innerText = item ? `${item.name}.${item.ext}` : '';
         }
 
         function nextSlide() { showSlide(currentSlideIndex + 1); }
@@ -262,44 +312,235 @@
 
         function onSlideImageLoad() {
             document.getElementById('slide-img').classList.remove('hidden');
-            document.getElementById('slide-placeholder').classList.add('hidden');
+            const placeholder = document.getElementById('slide-placeholder');
+            if (placeholder) placeholder.classList.add('hidden');
         }
 
         function onSlideImageError() {
-            document.getElementById('slide-img').classList.add('hidden');
+            const slideImg = document.getElementById('slide-img');
+            if (!slideImg) return;
+
+            if (!slideImg.dataset.fallbackTried) {
+                slideImg.dataset.fallbackTried = "true";
+                slideImg.src = getSamplePhotoUrl(activeAlbumType, currentSlideIndex);
+                return;
+            }
+
+            slideImg.classList.add('hidden');
             const placeholder = document.getElementById('slide-placeholder');
-            placeholder.classList.remove('hidden');
-            const item = activeSlideList[currentSlideIndex];
+            if (placeholder) {
+                placeholder.classList.remove('hidden');
+                renderSlidePlaceholder(activeSlideList[currentSlideIndex]);
+            }
+        }
+
+        function renderSlidePlaceholder(item) {
+            const placeholder = document.getElementById('slide-placeholder');
+            if (!placeholder) return;
+
             const name = item ? item.name : 'photo';
             const ext = item ? item.ext : 'jpg';
 
-            const isBranchSchool = (activeAlbumType === 'mikawa' || activeAlbumType === 'kuryu');
-            const mainMsg = isBranchSchool ? "📷 只今、当時の写真募集中です！" : `思い出のひとコマ：${name}.${ext}`;
-            const subMsg = isBranchSchool ? "分校時代の貴重なお写真をお持ちの方は、ぜひ中島義健までお寄せください。" : "※写真がサーバーに設置されると自動で切り替わります。";
+            let mainMsg = `思い出のひとコマ：${name}.${ext}`;
+            let subMsg = "※写真ファイルが配置されると自動で切り替わります。";
+
+            if (activeAlbumType === 'mikawa') {
+                mainMsg = "📷 三川分校：只今、当時の写真募集中です！";
+                subMsg = "分校時代の貴重なお写真をお持ちの方は、ぜひ中島義健までお寄せください。";
+            } else if (activeAlbumType === 'kuryu') {
+                mainMsg = "📷 栗生分校：只今、当時の写真募集中です！";
+                subMsg = "分校時代の貴重なお写真をお持ちの方は、ぜひ中島義健までお寄せください。";
+            }
 
             placeholder.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
                     <rect width="100%" height="100%" fill="#1a2f1c"/>
                     <circle cx="400" cy="180" r="130" fill="#2d5231" opacity="0.4"/>
                     <path d="M 0,380 Q 200,320 400,380 T 800,380" fill="none" stroke="#e8f5e9" stroke-width="2" stroke-dasharray="8 8"/>
-                    <g transform="translate(400, 150)" stroke="#a5d6a7" stroke-width="3" fill="none">
+                    <g transform="translate(400, 140)" stroke="#a5d6a7" stroke-width="3" fill="none">
                         <rect x="-60" y="-45" width="120" height="90" rx="10"/>
                         <circle cx="0" cy="0" r="30"/>
                         <circle cx="40" cy="-25" r="8" fill="#f59e0b" stroke="none"/>
                         <polygon points="-15,-45 0,-65 15,-45" stroke-linejoin="round"/>
                     </g>
-                    <rect x="100" y="310" width="600" height="65" fill="#1b5e20" rx="28" stroke="#f59e0b" stroke-width="3"/>
-                    <text x="400" y="350" font-family="'Sawarabi Mincho', serif" font-size="22" fill="#fef08a" text-anchor="middle" font-weight="bold">
+                    <rect x="80" y="300" width="640" height="70" fill="#1b5e20" rx="28" stroke="#f59e0b" stroke-width="3"/>
+                    <text x="400" y="342" font-family="'Sawarabi Mincho', serif" font-size="22" fill="#fef08a" text-anchor="middle" font-weight="bold">
                         ${mainMsg}
                     </text>
-                    <text x="400" y="260" font-family="sans-serif" font-size="15" fill="#a5d6a7" text-anchor="middle">
+                    <text x="400" y="250" font-family="sans-serif" font-size="15" fill="#a5d6a7" text-anchor="middle">
                         ${subMsg}
                     </text>
                 </svg>
             `;
         }
 
-        // 📊 アクセスカウンターのカウント数管理
+        function toggleDokyukaiImage() {
+            isShowingNameFile = !isShowingNameFile;
+            
+            const img = document.getElementById('img-dokyukai');
+            const placeholder = document.getElementById('placeholder-dokyukai');
+            const badgeText = document.getElementById('dokyukai-badge-text');
+            const badgeMini = document.getElementById('dokyukai-badge-mini');
+            const cardTitle = document.getElementById('dokyukai-card-title');
+
+            if (img) img.classList.add('hidden');
+            if (placeholder) placeholder.classList.remove('hidden');
+
+            if (isShowingNameFile) {
+                if (img) {
+                    img.src = "dokyukai_namae_1.jpg";
+                    img.alt = "喜寿記念同級会 各自の名前入り（線画）";
+                }
+                if (badgeText) badgeText.innerHTML = '<i class="fa-solid fa-image mr-1"></i>画像を押すと本物の写真に戻ります';
+                if (badgeMini) badgeMini.innerText = "写真をみる";
+                if (cardTitle) cardTitle.innerHTML = '<span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>';
+                if (placeholder) placeholder.innerHTML = getDokyukaiNameSvg();
+            } else {
+                if (img) {
+                    img.src = "dokyukai_1.jpg";
+                    img.alt = "喜寿記念同級会";
+                }
+                if (badgeText) badgeText.innerHTML = '<i class="fa-solid fa-retweet mr-1"></i>画像を押すと名前の線画になります';
+                if (badgeMini) badgeMini.innerText = "名前をみる";
+                if (cardTitle) cardTitle.innerHTML = '<span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>';
+                if (placeholder) placeholder.innerHTML = getDokyukaiPhotoSvg();
+            }
+        }
+
+        function switchTab(tabId) {
+            document.getElementById('content-home').classList.add('hidden');
+            document.getElementById('content-memories').classList.add('hidden');
+            document.getElementById('content-hobby').classList.add('hidden');
+            
+            const tabs = ['home', 'memories', 'hobby'];
+            tabs.forEach(t => {
+                const tabBtn = document.getElementById('tab-' + t);
+                if (tabBtn) {
+                    tabBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all text-emerald-800 hover:bg-white/50";
+                }
+            });
+
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabId);
+            if (activeBtn) {
+                activeBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white";
+            }
+        }
+
+        function handleHomeSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('home-name').value;
+            const type = document.getElementById('home-type').value;
+            const text = document.getElementById('home-text').value;
+
+            const to = 'yoshi0213.saku@gmail.com';
+            const subject = encodeURIComponent(`【山河会・35会HP】お便り投稿（${name}様より）`);
+            const body = encodeURIComponent(
+                `お名前：${name}\n` +
+                `投稿先（ジャンル）：${type}\n` +
+                `--------------------------------------------------\n\n` +
+                `${text}\n\n` +
+                `--------------------------------------------------\n` +
+                `※写真を一緒に送る場合は、このメールに写真を添付してお送りください。\n` +
+                `※中島義健がメールを確認後に、ホームページへと追加・反映されます。`
+            );
+
+            window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+        }
+
+        function handleMemorySubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('memory-name').value;
+            const period = document.getElementById('memory-period').value;
+            const text = document.getElementById('memory-text').value;
+
+            const to = 'yoshi0213.saku@gmail.com';
+            const subject = encodeURIComponent(`【山河会・35会HP】思い出の投稿（${name}様より）`);
+            const body = encodeURIComponent(
+                `お名前：${name}\n` +
+                `いつ頃の思い出：${period}\n` +
+                `--------------------------------------------------\n\n` +
+                `${text}\n\n` +
+                `--------------------------------------------------\n` +
+                `※中島義健がメールを確認後に、ホームページへと追加されます。`
+            );
+
+            window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+        }
+
+        function handleHobbySubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('hobby-name').value;
+            const category = document.getElementById('hobby-category').value;
+            const text = document.getElementById('hobby-text').value;
+
+            const to = 'yoshi0213.saku@gmail.com';
+            const subject = encodeURIComponent(`【山河会・35会HP】お便り（${name}様より）`);
+            const body = encodeURIComponent(
+                `お名前：${name}\n` +
+                `ジャンル：${category}\n` +
+                `--------------------------------------------------\n\n` +
+                `${text}\n\n` +
+                `--------------------------------------------------\n` +
+                `※写真を一緒に送りたい場合は、メールアプリが起動した後に写真を添付してお送りください。\n` +
+                `※中島義健がメールを確認後に、ホームページへと追加されます。`
+            );
+
+            window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+        }
+
+        function getDokyukaiPhotoSvg() {
+            return `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
+                    <rect width="100%" height="100%" fill="#e8f5e9"/>
+                    <circle cx="100" cy="80" r="60" fill="#f8bbd0" opacity="0.3"/>
+                    <circle cx="700" cy="120" r="80" fill="#ffcdd2" opacity="0.3"/>
+                    <circle cx="400" cy="300" r="100" fill="#e8f5e9" opacity="0.4"/>
+                    <path d="M 50,50 Q 400,120 750,50" fill="none" stroke="#ffb74d" stroke-width="5" stroke-dasharray="10"/>
+                    <g transform="translate(180, 160)" fill="#2e7d32">
+                        <circle cx="100" cy="60" r="24" fill="#37474f"/>
+                        <path d="M 60,100 C 60,100 80,85 100,85 C 120,85 140,100 140,100 L 135,160 L 65,160 Z" fill="#455a64"/>
+                        <circle cx="220" cy="35" r="28" fill="#e65100"/>
+                        <path d="M 170,80 C 170,80 195,65 220,65 C 245,65 270,80 270,80 L 260,160 L 180,160 Z" fill="#f57c00"/>
+                        <circle cx="340" cy="60" r="24" fill="#1565c0"/>
+                        <path d="M 300,100 C 300,100 320,85 340,85 C 360,85 380,100 380,100 L 375,160 L 305,160 Z" fill="#1976d2"/>
+                    </g>
+                    <rect x="150" y="360" width="500" height="45" fill="#1b5e20" rx="22"/>
+                    <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="16" fill="#fff" text-anchor="middle">
+                        2026年7月15日
+                    </text>
+                </svg>
+            `;
+        }
+
+        function getDokyukaiNameSvg() {
+            return `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
+                    <rect width="100%" height="100%" fill="#fafafa" stroke="#ccc" stroke-width="2"/>
+                    <g transform="translate(180, 160)" fill="none" stroke="#555" stroke-width="2">
+                        <circle cx="100" cy="60" r="24"/>
+                        <path d="M 60,120 Q 100,85 140,120"/>
+                        <rect x="70" y="130" width="60" height="20" fill="#fff" stroke="#1b5e20" stroke-width="1.5" rx="3"/>
+                        <text x="100" y="144" font-family="sans-serif" font-size="11" fill="#1b5e20" font-weight="bold" text-anchor="middle" stroke="none">中島さん</text>
+                        
+                        <circle cx="220" cy="35" r="28"/>
+                        <path d="M 175,110 Q 220,65 265,110"/>
+                        <rect x="190" y="120" width="60" height="20" fill="#fff" stroke="#e65100" stroke-width="1.5" rx="3"/>
+                        <text x="220" y="134" font-family="sans-serif" font-size="11" fill="#e65100" font-weight="bold" text-anchor="middle" stroke="none">山河さん</text>
+                        
+                        <circle cx="340" cy="60" r="24"/>
+                        <path d="M 300,120 Q 340,85 380,120"/>
+                        <rect x="310" y="130" width="60" height="20" fill="#fff" stroke="#1565c0" stroke-width="1.5" rx="3"/>
+                        <text x="340" y="144" font-family="sans-serif" font-size="11" fill="#1565c0" font-weight="bold" text-anchor="middle" stroke="none">35会さん</text>
+                    </g>
+                    <rect x="150" y="360" width="500" height="45" fill="#37474f" rx="22"/>
+                    <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="16" fill="#fff" text-anchor="middle">
+                        2026年7月15日
+                    </text>
+                </svg>
+            `;
+        }
+
         function initVisitorCounter() {
             let count = 159;
             try {
@@ -312,7 +553,6 @@
             renderCounterDigits(count);
         }
 
-        // デジタルブロック描画
         function renderCounterDigits(num) {
             const container = document.getElementById('visitor-counter-digits');
             if (!container) return;
@@ -324,6 +564,54 @@
             }
             container.innerHTML = html;
         }
+
+        window.openAlbum = openAlbum;
+        window.openSlideshow = openSlideshow;
+        window.closeSlideshow = closeSlideshow;
+        window.toggleDokyukaiImage = toggleDokyukaiImage;
+        window.switchTab = switchTab;
+        window.handleHomeSubmit = handleHomeSubmit;
+        window.handleMemorySubmit = handleMemorySubmit;
+        window.handleHobbySubmit = handleHobbySubmit;
+        window.showImage = showImage;
+        window.handleImageError = handleImageError;
+        window.prevSlide = prevSlide;
+        window.nextSlide = nextSlide;
+        window.togglePlayPause = togglePlayPause;
+        window.toggleSlideBgm = toggleSlideBgm;
+        window.toggleFullscreen = toggleFullscreen;
+        window.onSlideImageLoad = onSlideImageLoad;
+        window.onSlideImageError = onSlideImageError;
+
+        window.onload = function() {
+            const omoideSvg = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
+                    <rect width="100%" height="100%" fill="#faf6f0"/>
+                    <circle cx="400" cy="150" r="70" fill="#e57373" opacity="0.3"/>
+                    <rect x="280" y="220" width="240" height="100%" fill="#8d6e63" opacity="0.9" rx="4"/>
+                    <polygon points="250,220 400,150 550,220" fill="#5d4037" opacity="0.95"/>
+                    <rect x="310" y="245" width="35" height="35" fill="#fff59d" opacity="0.9" rx="2"/>
+                    <rect x="365" y="245" width="35" height="35" fill="#fff59d" opacity="0.9" rx="2"/>
+                    <rect x="420" y="245" width="35" height="35" fill="#fff59d" opacity="0.9" rx="2"/>
+                    <rect x="150" y="360" width="500" height="45" fill="#5d4037" rx="22"/>
+                    <text x="400" y="388" font-family="'Sawarabi Mincho', serif" font-size="18" fill="#fff" text-anchor="middle">
+                        昭和40年記念写真・あの頃の木造校舎
+                    </text>
+                </svg>
+            `;
+            
+            const omoidePlaceholder = document.getElementById('placeholder-omoide');
+            if (omoidePlaceholder) {
+                omoidePlaceholder.innerHTML = omoideSvg;
+            }
+            
+            const dokyukaiPlaceholder = document.getElementById('placeholder-dokyukai');
+            if (dokyukaiPlaceholder) {
+                dokyukaiPlaceholder.innerHTML = getDokyukaiPhotoSvg();
+            }
+
+            initVisitorCounter();
+        };
     </script>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -804,4 +1092,126 @@
         <!-- 🔒 安心の限定公開バナー（メインエリアの一番下） -->
         <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-5 shadow-sm">
             <div class="flex items-start space-x-3">
-<!-- ... existing code -->
+                <span class="text-blue-600 text-2xl mt-0.5"><i class="fa-solid fa-shield-halved"></i></span>
+                <div>
+                    <h2 class="text-lg font-bold text-blue-900 flex items-center">
+                        <span>🔒 同級会員の皆様だけの「安心な限定公開ホームページ」です</span>
+                    </h2>
+                    <p class="text-sm text-blue-800 mt-1.5 leading-relaxed">
+                        このホームページは、検索サイト（GoogleやYahooなど）の検索結果には一切登録されない、<strong>アドレスをご存知の「山河会・35会」の会員の皆様だけ</strong>が閲覧できる安心なウェブサイトです。どうぞ安心して、懐かしい思い出や近況の交流をお楽しみください。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-emerald-950 text-white py-6 md:py-8 mt-12 border-t-4 border-amber-600 dark-bg-ruby">
+        <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
+            <p class="text-xs md:text-sm text-emerald-200 serif-font">
+                <ruby>山河会<rt>さんがかい</rt></ruby>・<ruby>35会<rt>さんごかい</rt></ruby> ホームページ
+            </p>
+            
+            <div class="bg-emerald-900/40 py-3 px-5 rounded-xl border border-emerald-800 inline-block max-w-full">
+                <div class="flex flex-col md:flex-row items-center justify-center md:space-x-4 space-y-2 md:space-y-0 text-sm">
+                    <span class="font-bold flex items-center text-amber-200">
+                        <i class="fa-solid fa-user mr-2"></i>中島 義健
+                    </span>
+                    <span class="hidden md:inline text-emerald-700">|</span>
+                    <a href="mailto:yoshi0213.saku@gmail.com" class="text-white hover:text-amber-200 underline transition-colors flex items-center font-bold">
+                        <i class="fa-solid fa-envelope mr-1.5 text-amber-400"></i>yoshi0213.saku@gmail.com
+                    </a>
+                </div>
+            </div>
+            
+            <div class="pt-3 border-t border-emerald-900/80 mt-2 flex flex-col items-center justify-center">
+                <div class="bg-emerald-900/80 px-4 py-2 rounded-xl border border-emerald-700/60 flex items-center space-x-3 shadow-inner">
+                    <span class="text-xs md:text-sm font-bold text-amber-200 flex items-center">
+                        <i class="fa-solid fa-chart-line text-amber-400 mr-2"></i>訪問者数（アクセスカウンター）：
+                    </span>
+                    <div id="visitor-counter-digits" class="flex space-x-1 font-mono font-bold text-base md:text-lg text-amber-950">
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">0</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">0</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">0</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">1</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">5</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">9</span>
+                    </div>
+                </div>
+                <p class="text-[11px] text-emerald-300/80 mt-1.5">
+                    ※皆さまのお越しを心より歓迎いたします
+                </p>
+            </div>
+
+            <p class="text-xs text-emerald-400 pt-1">
+                &copy; 2026 山河会・35会. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- 一コマアルバム（スライドショー）表示用モーダル -->
+    <div id="slideshow-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-between p-4 sm:p-6 transition-all duration-300">
+        <audio id="slideshow-bgm" loop>
+            <source src="tomoyo_uta_1.mp3" type="audio/mpeg">
+            <source src="tomoyo_uta_1.ogg" type="audio/ogg">
+            <source src="tomoyo_uta_1.wav" type="audio/wav">
+            <source src="tomoyo_uta_1" type="audio/mpeg">
+        </audio>
+
+        <div class="w-full flex items-center justify-between text-white border-b border-gray-800 pb-3">
+            <div class="flex items-center space-x-2">
+                <button onclick="closeSlideshow()" class="px-3.5 py-1.5 bg-red-700 hover:bg-red-800 active:scale-95 text-white font-bold text-sm rounded-lg transition-all flex items-center space-x-1 shadow">
+                    <i class="fa-solid fa-xmark mr-1"></i>
+                    <span>閉じる</span>
+                </button>
+                <span id="slideshow-header-label" class="text-xs sm:text-sm text-emerald-400 font-bold hidden sm:inline">一コマアルバム</span>
+            </div>
+            
+            <div class="text-center">
+                <span id="slide-title" class="font-bold text-sm sm:text-base text-amber-200">s_1.jpg</span>
+                <span id="slide-counter" class="text-xs text-emerald-300 block">1 / 6 枚</span>
+            </div>
+
+            <button onclick="toggleSlideBgm()" class="px-3 py-1.5 bg-emerald-900/80 hover:bg-emerald-800 active:scale-95 text-white rounded-lg text-xs sm:text-sm font-bold border border-emerald-700 flex items-center space-x-1.5 transition-all">
+                <i id="slide-bgm-icon" class="fa-solid fa-volume-high text-amber-300"></i>
+                <span id="slide-bgm-text">BGM：オン</span>
+            </button>
+        </div>
+
+        <div class="flex-grow w-full max-w-4xl mx-auto flex items-center justify-center my-4">
+            <div class="relative w-full h-[55vh] sm:h-[65vh] bg-neutral-900/50 flex items-center justify-center rounded-2xl overflow-hidden border border-emerald-900/40 shadow-inner">
+                <img id="slide-img" src="" alt="スライドショー画像" class="max-w-full max-h-full object-contain hidden" onload="onSlideImageLoad()" onerror="onSlideImageError()">
+                <div id="slide-placeholder" class="w-full h-full"></div>
+            </div>
+        </div>
+
+        <div class="w-full max-w-2xl mx-auto pb-2">
+            <div class="grid grid-cols-5 gap-1.5 sm:gap-3 justify-center items-center text-white">
+                <button onclick="prevSlide()" class="flex items-center justify-center py-3 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold shadow" title="前の写真へ">
+                    <i class="fa-solid fa-backward-step text-lg sm:text-2xl text-emerald-300"></i>
+                </button>
+                
+                <button onclick="togglePlayPause()" id="btn-slide-play" class="col-span-2 flex flex-col items-center justify-center py-2.5 bg-amber-600 hover:bg-amber-700 active:scale-95 rounded-xl border border-amber-500/50 transition-all font-bold text-xs sm:text-sm shadow">
+                    <i id="icon-slide-play" class="fa-solid fa-pause text-sm sm:text-lg mb-1 text-amber-200"></i>
+                    <span id="text-slide-play">⏸ 一時停止</span>
+                </button>
+                
+                <button onclick="nextSlide()" class="flex items-center justify-center py-3 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold shadow" title="次の写真へ">
+                    <i class="fa-solid fa-forward-step text-lg sm:text-2xl text-emerald-300"></i>
+                </button>
+                
+                <button onclick="toggleFullscreen()" class="flex flex-col items-center justify-center py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-xl border border-slate-600/50 transition-all font-bold text-xs sm:text-sm shadow">
+                    <i class="fa-solid fa-expand text-sm sm:text-lg mb-1 text-slate-300"></i>
+                    <span>⛶ 全画面</span>
+                </button>
+            </div>
+            
+            <p class="text-center text-[10px] sm:text-xs text-gray-500 mt-3">
+                ※10秒ごとに次の写真に自動で変わります。ボタンを押せばお好きなペースで1枚ずつ見ることもできます。
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>
