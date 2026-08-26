@@ -50,77 +50,14 @@
     </style>
 
     <script>
-        // 画像の読み込みが成功した際の処理
-        function showImage(imgId, placeholderId) {
-            const img = document.getElementById(imgId);
-            if (img) img.classList.remove('hidden');
-            const placeholder = document.getElementById(placeholderId);
-            if (placeholder) placeholder.classList.add('hidden');
-        }
-
-        // 画像の読み込みに失敗した際の処理（サンプル写真フォールバック）
-        function handleImageError(imgId, placeholderId) {
-            const img = document.getElementById(imgId);
-            if (!img) return;
-
-            if (!img.dataset.fallbackTried) {
-                img.dataset.fallbackTried = "true";
-                if (imgId === 'img-omoide') {
-                    img.src = "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80";
-                } else if (imgId === 'img-dokyukai') {
-                    img.src = "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80";
-                }
-                return;
-            }
-
-            img.classList.add('hidden');
-            const placeholder = document.getElementById(placeholderId);
-            if (placeholder) placeholder.classList.remove('hidden');
-        }
-
-        // アルバム別サンプル写真URL取得処理
-        function getSamplePhotoUrl(type, index) {
-            const primaryPhotos = [
-                "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1000&q=80"
-            ];
-            const juniorPhotos = [
-                "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1000&q=80"
-            ];
-            const branchPhotos = [
-                "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1511497584788-8767611136f6?auto=format&fit=crop&w=1000&q=80"
-            ];
-            const dokyukaiPhotos = [
-                "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1000&q=80",
-                "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80"
-            ];
-
-            let list = primaryPhotos;
-            if (type === 'junior') list = juniorPhotos;
-            else if (type === 'mikawa' || type === 'kuryu') list = branchPhotos;
-            else if (type === 'dokyukai') list = dokyukaiPhotos;
-
-            return list[index % list.length];
-        }
-
-        // 小学校時代 (s_1 から s_6 全6枚)
+        // 小学校時代 (s_1 から s_6 全6枚 jpg)
         const primarySchoolImages = [
             { name: "s_1", ext: "jpg" }, { name: "s_2", ext: "jpg" },
             { name: "s_3", ext: "jpg" }, { name: "s_4", ext: "jpg" },
             { name: "s_5", ext: "jpg" }, { name: "s_6", ext: "jpg" }
         ];
 
-        // 中学校時代 (t_1 から t_11 全11枚)
+        // 中学校時代 (t_1 から t_11 全11枚 jpg)
         const juniorHighImages = [
             { name: "t_1", ext: "jpg" }, { name: "t_2", ext: "jpg" },
             { name: "t_3", ext: "jpg" }, { name: "t_4", ext: "jpg" },
@@ -130,21 +67,23 @@
             { name: "t_11", ext: "jpg" }
         ];
 
-        // 三川分校 (m_1 から m_6 全6枚)
+        // 三川分校 (im_1 から im_4 全4枚 png)
         const mikawaImages = [
-            { name: "m_1", ext: "jpg" }, { name: "m_2", ext: "jpg" },
-            { name: "m_3", ext: "jpg" }, { name: "m_4", ext: "jpg" },
-            { name: "m_5", ext: "jpg" }, { name: "m_6", ext: "jpg" }
+            { name: "im_1", ext: "png" },
+            { name: "im_2", ext: "png" },
+            { name: "im_3", ext: "png" },
+            { name: "im_4", ext: "png" }
         ];
 
-        // 栗生分校 (k_1 から k_6 全6枚)
+        // 栗生分校 (ik_1 から ik_4 全4枚 png / im_1 〜 im_4 互換)
         const kuryuImages = [
-            { name: "k_1", ext: "jpg" }, { name: "k_2", ext: "jpg" },
-            { name: "k_3", ext: "jpg" }, { name: "k_4", ext: "jpg" },
-            { name: "k_5", ext: "jpg" }, { name: "k_6", ext: "jpg" }
+            { name: "ik_1", ext: "png" },
+            { name: "ik_2", ext: "png" },
+            { name: "ik_3", ext: "png" },
+            { name: "ik_4", ext: "png" }
         ];
 
-        // 喜寿記念同級会アルバム (tomo_3_1 から tomo_16_1 全14枚)
+        // 喜寿記念同級会アルバム (tomo_3_1 から tomo_16_1 全14枚 jpg)
         const dokyukaiImages = [
             { name: "tomo_3_1", ext: "jpg" }, { name: "tomo_4_1", ext: "jpg" }, { name: "tomo_5_1", ext: "jpg" }, { name: "tomo_6_1", ext: "jpg" },
             { name: "tomo_7_1", ext: "jpg" }, { name: "tomo_8_1", ext: "jpg" }, { name: "tomo_9_1", ext: "jpg" }, { name: "tomo_10_1", ext: "jpg" },
@@ -160,6 +99,20 @@
         let isSlidePlaying = false;
         let isSlideBgmOn = true;
         let isShowingNameFile = false;
+
+        function showImage(imgId, placeholderId) {
+            const img = document.getElementById(imgId);
+            if (img) img.classList.remove('hidden');
+            const placeholder = document.getElementById(placeholderId);
+            if (placeholder) placeholder.classList.add('hidden');
+        }
+
+        function handleImageError(imgId, placeholderId) {
+            const img = document.getElementById(imgId);
+            if (img) img.classList.add('hidden');
+            const placeholder = document.getElementById(placeholderId);
+            if (placeholder) placeholder.classList.remove('hidden');
+        }
 
         function openAlbum(type) {
             activeAlbumType = type;
@@ -236,9 +189,12 @@
             const item = activeSlideList[index];
 
             if (slideImg && item) {
-                delete slideImg.dataset.fallbackTried;
+                delete slideImg.dataset.triedIm;
                 slideImg.classList.add('hidden');
-                if (placeholder) placeholder.classList.remove('hidden');
+                if (placeholder) {
+                    placeholder.classList.remove('hidden');
+                    renderSlidePlaceholder(item);
+                }
                 slideImg.src = item.name + "." + item.ext;
             }
 
@@ -319,10 +275,12 @@
         function onSlideImageError() {
             const slideImg = document.getElementById('slide-img');
             if (!slideImg) return;
-
-            if (!slideImg.dataset.fallbackTried) {
-                slideImg.dataset.fallbackTried = "true";
-                slideImg.src = getSamplePhotoUrl(activeAlbumType, currentSlideIndex);
+            
+            const item = activeSlideList[currentSlideIndex];
+            // 栗生分校（ik_1.png）で画像が見つからない場合、im_1.pngへの自動切り替えアシスト
+            if (item && item.name.startsWith('ik') && !slideImg.dataset.triedIm) {
+                slideImg.dataset.triedIm = "true";
+                slideImg.src = item.name.replace('ik', 'im') + "." + item.ext;
                 return;
             }
 
@@ -330,7 +288,7 @@
             const placeholder = document.getElementById('slide-placeholder');
             if (placeholder) {
                 placeholder.classList.remove('hidden');
-                renderSlidePlaceholder(activeSlideList[currentSlideIndex]);
+                renderSlidePlaceholder(item);
             }
         }
 
@@ -339,17 +297,23 @@
             if (!placeholder) return;
 
             const name = item ? item.name : 'photo';
-            const ext = item ? item.ext : 'jpg';
+            const ext = item ? item.ext : 'png';
 
             let mainMsg = `思い出のひとコマ：${name}.${ext}`;
-            let subMsg = "※写真ファイルが配置されると自動で切り替わります。";
+            let subMsg = "※画像ファイルが配置されると自動で切り替わります。";
 
             if (activeAlbumType === 'mikawa') {
-                mainMsg = "📷 三川分校：只今、当時の写真募集中です！";
-                subMsg = "分校時代の貴重なお写真をお持ちの方は、ぜひ中島義健までお寄せください。";
+                mainMsg = `三川分校の思い出：${name}.${ext}`;
+                subMsg = "※画像ファイル（im_1.png 〜 im_4.png）が配置されると自動で写真が表示されます。";
             } else if (activeAlbumType === 'kuryu') {
-                mainMsg = "📷 栗生分校：只今、当時の写真募集中です！";
-                subMsg = "分校時代の貴重なお写真をお持ちの方は、ぜひ中島義健までお寄せください。";
+                mainMsg = `栗生分校の思い出：${name}.${ext}`;
+                subMsg = "※画像ファイル（im_1.png 〜 im_4.png / ik_1.png 〜 ik_4.png）が配置されると自動で写真が表示されます。";
+            } else if (activeAlbumType === 'primary') {
+                mainMsg = `小学校時代の思い出：${name}.${ext}`;
+            } else if (activeAlbumType === 'junior') {
+                mainMsg = `中学校時代の思い出：${name}.${ext}`;
+            } else if (activeAlbumType === 'dokyukai') {
+                mainMsg = `喜寿記念同級会：${name}.${ext}`;
             }
 
             placeholder.innerHTML = `
@@ -367,7 +331,7 @@
                     <text x="400" y="342" font-family="'Sawarabi Mincho', serif" font-size="22" fill="#fef08a" text-anchor="middle" font-weight="bold">
                         ${mainMsg}
                     </text>
-                    <text x="400" y="250" font-family="sans-serif" font-size="15" fill="#a5d6a7" text-anchor="middle">
+                    <text x="400" y="250" font-family="sans-serif" font-size="14" fill="#a5d6a7" text-anchor="middle">
                         ${subMsg}
                     </text>
                 </svg>
@@ -1168,8 +1132,8 @@
             </div>
             
             <div class="text-center">
-                <span id="slide-title" class="font-bold text-sm sm:text-base text-amber-200">s_1.jpg</span>
-                <span id="slide-counter" class="text-xs text-emerald-300 block">1 / 6 枚</span>
+                <span id="slide-title" class="font-bold text-sm sm:text-base text-amber-200">im_1.png</span>
+                <span id="slide-counter" class="text-xs text-emerald-300 block">1 / 4 枚</span>
             </div>
 
             <button onclick="toggleSlideBgm()" class="px-3 py-1.5 bg-emerald-900/80 hover:bg-emerald-800 active:scale-95 text-white rounded-lg text-xs sm:text-sm font-bold border border-emerald-700 flex items-center space-x-1.5 transition-all">
