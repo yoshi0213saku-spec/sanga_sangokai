@@ -99,6 +99,7 @@
         let isSlidePlaying = false;
         let isSlideBgmOn = true;
         let isShowingNameFile = false;
+        let activeLayerNum = 1;
 
         function showImage(imgId, placeholderId) {
             const img = document.getElementById(imgId);
@@ -149,6 +150,13 @@
             const labelEl = document.getElementById('slideshow-header-label');
             if (labelEl) labelEl.innerText = activeAlbumLabel;
 
+            // リセットレイヤー表示
+            activeLayerNum = 1;
+            const l1 = document.getElementById('slide-layer-1');
+            const l2 = document.getElementById('slide-layer-2');
+            if (l1) { l1.classList.remove('opacity-0'); l1.classList.add('opacity-100'); l1.style.zIndex = '10'; }
+            if (l2) { l2.classList.remove('opacity-100'); l2.classList.add('opacity-0'); l2.style.zIndex = '0'; }
+
             currentSlideIndex = 0;
             showSlide(currentSlideIndex);
 
@@ -178,31 +186,71 @@
             }
         }
 
+        // なめらかなスライド切り替え（写真間の途切れを防止）
         function showSlide(index) {
             if (!activeSlideList || activeSlideList.length === 0) return;
             if (index < 0) index = activeSlideList.length - 1;
             if (index >= activeSlideList.length) index = 0;
             currentSlideIndex = index;
 
-            const slideImg = document.getElementById('slide-img');
-            const placeholder = document.getElementById('slide-placeholder');
             const item = activeSlideList[index];
-
-            if (slideImg && item) {
-                delete slideImg.dataset.triedIm;
-                slideImg.classList.add('hidden');
-                if (placeholder) {
-                    placeholder.classList.remove('hidden');
-                    renderSlidePlaceholder(item);
-                }
-                slideImg.src = item.name + "." + item.ext;
-            }
+            const targetLayerNum = (activeLayerNum === 1) ? 2 : 1;
+            
+            const targetImg = document.getElementById(`slide-img-${targetLayerNum}`);
+            const targetPlaceholder = document.getElementById(`slide-placeholder-${targetLayerNum}`);
 
             const counterEl = document.getElementById('slide-counter');
             if (counterEl) counterEl.innerText = `${index + 1} / ${activeSlideList.length} 枚`;
 
             const titleEl = document.getElementById('slide-title');
             if (titleEl) titleEl.innerText = item ? `${item.name}.${item.ext}` : '';
+
+            if (targetImg && item) {
+                delete targetImg.dataset.triedIm;
+                
+                targetImg.onload = function() {
+                    targetImg.classList.remove('hidden');
+                    if (targetPlaceholder) targetPlaceholder.classList.add('hidden');
+                    transitionToLayer(targetLayerNum);
+                };
+
+                targetImg.onerror = function() {
+                    if (item && item.name.startsWith('ik') && !targetImg.dataset.triedIm) {
+                        targetImg.dataset.triedIm = "true";
+                        targetImg.src = item.name.replace('ik', 'im') + "." + item.ext;
+                        return;
+                    }
+
+                    targetImg.classList.add('hidden');
+                    if (targetPlaceholder) {
+                        targetPlaceholder.classList.remove('hidden');
+                        renderSlidePlaceholder(targetPlaceholder, item);
+                    }
+                    transitionToLayer(targetLayerNum);
+                };
+
+                targetImg.src = item.name + "." + item.ext;
+            }
+        }
+
+        function transitionToLayer(targetLayerNum) {
+            const currentLayer = document.getElementById(`slide-layer-${activeLayerNum}`);
+            const targetLayer = document.getElementById(`slide-layer-${targetLayerNum}`);
+
+            if (currentLayer && targetLayer) {
+                targetLayer.style.zIndex = '20';
+                currentLayer.style.zIndex = '10';
+
+                targetLayer.classList.remove('opacity-0');
+                targetLayer.classList.add('opacity-100');
+
+                setTimeout(() => {
+                    currentLayer.classList.remove('opacity-100');
+                    currentLayer.classList.add('opacity-0');
+                    currentLayer.style.zIndex = '0';
+                    activeLayerNum = targetLayerNum;
+                }, 50);
+            }
         }
 
         function nextSlide() { showSlide(currentSlideIndex + 1); }
@@ -266,35 +314,8 @@
             }
         }
 
-        function onSlideImageLoad() {
-            document.getElementById('slide-img').classList.remove('hidden');
-            const placeholder = document.getElementById('slide-placeholder');
-            if (placeholder) placeholder.classList.add('hidden');
-        }
-
-        function onSlideImageError() {
-            const slideImg = document.getElementById('slide-img');
-            if (!slideImg) return;
-            
-            const item = activeSlideList[currentSlideIndex];
-            // 栗生分校（ik_1.png）で画像が見つからない場合、im_1.pngへの自動切り替えアシスト
-            if (item && item.name.startsWith('ik') && !slideImg.dataset.triedIm) {
-                slideImg.dataset.triedIm = "true";
-                slideImg.src = item.name.replace('ik', 'im') + "." + item.ext;
-                return;
-            }
-
-            slideImg.classList.add('hidden');
-            const placeholder = document.getElementById('slide-placeholder');
-            if (placeholder) {
-                placeholder.classList.remove('hidden');
-                renderSlidePlaceholder(item);
-            }
-        }
-
-        function renderSlidePlaceholder(item) {
-            const placeholder = document.getElementById('slide-placeholder');
-            if (!placeholder) return;
+        function renderSlidePlaceholder(containerEl, item) {
+            if (!containerEl) return;
 
             const name = item ? item.name : 'photo';
             const ext = item ? item.ext : 'png';
@@ -316,7 +337,7 @@
                 mainMsg = `喜寿記念同級会：${name}.${ext}`;
             }
 
-            placeholder.innerHTML = `
+            containerEl.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" class="w-full h-full">
                     <rect width="100%" height="100%" fill="#1a2f1c"/>
                     <circle cx="400" cy="180" r="130" fill="#2d5231" opacity="0.4"/>
@@ -544,8 +565,6 @@
         window.togglePlayPause = togglePlayPause;
         window.toggleSlideBgm = toggleSlideBgm;
         window.toggleFullscreen = toggleFullscreen;
-        window.onSlideImageLoad = onSlideImageLoad;
-        window.onSlideImageError = onSlideImageError;
 
         window.onload = function() {
             const omoideSvg = `
@@ -1113,7 +1132,7 @@
         </div>
     </footer>
 
-    <!-- 一コマアルバム（スライドショー）表示用モーダル -->
+    <!-- 一コマアルバム（スライドショー）表示用モーダル（クロスフェード対応） -->
     <div id="slideshow-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-between p-4 sm:p-6 transition-all duration-300">
         <audio id="slideshow-bgm" loop>
             <source src="tomoyo_uta_1.mp3" type="audio/mpeg">
@@ -1144,8 +1163,16 @@
 
         <div class="flex-grow w-full max-w-4xl mx-auto flex items-center justify-center my-4">
             <div class="relative w-full h-[55vh] sm:h-[65vh] bg-neutral-900/50 flex items-center justify-center rounded-2xl overflow-hidden border border-emerald-900/40 shadow-inner">
-                <img id="slide-img" src="" alt="スライドショー画像" class="max-w-full max-h-full object-contain hidden" onload="onSlideImageLoad()" onerror="onSlideImageError()">
-                <div id="slide-placeholder" class="w-full h-full"></div>
+                <!-- レイヤー1 -->
+                <div id="slide-layer-1" class="absolute inset-0 flex items-center justify-center transition-opacity duration-700 ease-in-out opacity-100 z-10">
+                    <img id="slide-img-1" src="" alt="スライドショー画像1" class="max-w-full max-h-full object-contain hidden">
+                    <div id="slide-placeholder-1" class="w-full h-full"></div>
+                </div>
+                <!-- レイヤー2 -->
+                <div id="slide-layer-2" class="absolute inset-0 flex items-center justify-center transition-opacity duration-700 ease-in-out opacity-0 z-0">
+                    <img id="slide-img-2" src="" alt="スライドショー画像2" class="max-w-full max-h-full object-contain hidden">
+                    <div id="slide-placeholder-2" class="w-full h-full"></div>
+                </div>
             </div>
         </div>
 
