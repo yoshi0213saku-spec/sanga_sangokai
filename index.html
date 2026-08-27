@@ -115,6 +115,24 @@
             if (placeholder) placeholder.classList.remove('hidden');
         }
 
+        function setSlideshowBgm(bgmName) {
+            const slideBgm = document.getElementById('slideshow-bgm');
+            if (!slideBgm) return;
+
+            const currentBgm = slideBgm.getAttribute('data-current-bgm');
+            if (currentBgm !== bgmName) {
+                slideBgm.pause();
+                slideBgm.innerHTML = `
+                    <source src="${bgmName}.mp3" type="audio/mpeg">
+                    <source src="${bgmName}.ogg" type="audio/ogg">
+                    <source src="${bgmName}.wav" type="audio/wav">
+                    <source src="${bgmName}" type="audio/mpeg">
+                `;
+                slideBgm.load();
+                slideBgm.setAttribute('data-current-bgm', bgmName);
+            }
+        }
+
         function openAlbum(type) {
             activeAlbumType = type;
             if (type === 'primary') {
@@ -130,6 +148,9 @@
                 activeSlideList = kuryuImages;
                 activeAlbumLabel = "栗生分校のアルバム";
             }
+
+            // 小・中学校アルバムには校歌「musik_minamiaiki_kouka」を設定
+            setSlideshowBgm('musik_minamiaiki_kouka');
             openSlideshowModal();
         }
 
@@ -137,6 +158,9 @@
             activeAlbumType = 'dokyukai';
             activeSlideList = dokyukaiImages;
             activeAlbumLabel = "喜寿記念同級会アルバム";
+
+            // 喜寿記念同級会には「tomoyo_uta_1」を設定
+            setSlideshowBgm('tomoyo_uta_1');
             openSlideshowModal();
         }
 
@@ -1134,11 +1158,11 @@
 
     <!-- 一コマアルバム（スライドショー）表示用モーダル（クロスフェード対応） -->
     <div id="slideshow-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-between p-4 sm:p-6 transition-all duration-300">
-        <audio id="slideshow-bgm" loop>
-            <source src="tomoyo_uta_1.mp3" type="audio/mpeg">
-            <source src="tomoyo_uta_1.ogg" type="audio/ogg">
-            <source src="tomoyo_uta_1.wav" type="audio/wav">
-            <source src="tomoyo_uta_1" type="audio/mpeg">
+        <audio id="slideshow-bgm" loop data-current-bgm="musik_minamiaiki_kouka">
+            <source src="musik_minamiaiki_kouka.mp3" type="audio/mpeg">
+            <source src="musik_minamiaiki_kouka.ogg" type="audio/ogg">
+            <source src="musik_minamiaiki_kouka.wav" type="audio/wav">
+            <source src="musik_minamiaiki_kouka" type="audio/mpeg">
         </audio>
 
         <div class="w-full flex items-center justify-between text-white border-b border-gray-800 pb-3">
