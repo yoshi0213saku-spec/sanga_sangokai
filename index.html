@@ -50,14 +50,30 @@
     </style>
 
     <script>
-        // 小学校時代 (s_1 から s_6 全6枚 jpg)
+        // 画像の読み込み成功・失敗処理
+        function showImage(imgId, placeholderId) {
+            const img = document.getElementById(imgId);
+            if (img) img.classList.remove('hidden');
+            const placeholder = document.getElementById(placeholderId);
+            if (placeholder) placeholder.classList.add('hidden');
+        }
+
+        function handleImageError(imgId, placeholderId) {
+            const img = document.getElementById(imgId);
+            if (img) img.classList.add('hidden');
+            const placeholder = document.getElementById(placeholderId);
+            if (placeholder) placeholder.classList.remove('hidden');
+        }
+
+        // アルバム別画像リストの設定
+        // 小学校時代 (s_1 から s_6 全6枚)
         const primarySchoolImages = [
             { name: "s_1", ext: "jpg" }, { name: "s_2", ext: "jpg" },
             { name: "s_3", ext: "jpg" }, { name: "s_4", ext: "jpg" },
             { name: "s_5", ext: "jpg" }, { name: "s_6", ext: "jpg" }
         ];
 
-        // 中学校時代 (t_1 から t_11 全11枚 jpg)
+        // 中学校時代 (t_1 から t_11 全11枚)
         const juniorHighImages = [
             { name: "t_1", ext: "jpg" }, { name: "t_2", ext: "jpg" },
             { name: "t_3", ext: "jpg" }, { name: "t_4", ext: "jpg" },
@@ -75,7 +91,7 @@
             { name: "im_4", ext: "png" }
         ];
 
-        // 栗生分校 (ik_1 から ik_4 全4枚 png / im_1 〜 im_4 互換)
+        // 栗生分校 (ik_1 から ik_4 全4枚 png)
         const kuryuImages = [
             { name: "ik_1", ext: "png" },
             { name: "ik_2", ext: "png" },
@@ -83,7 +99,7 @@
             { name: "ik_4", ext: "png" }
         ];
 
-        // 喜寿記念同級会アルバム (tomo_3_1 から tomo_16_1 全14枚 jpg)
+        // 喜寿記念同級会アルバム (tomo_3_1 から tomo_16_1 全14枚)
         const dokyukaiImages = [
             { name: "tomo_3_1", ext: "jpg" }, { name: "tomo_4_1", ext: "jpg" }, { name: "tomo_5_1", ext: "jpg" }, { name: "tomo_6_1", ext: "jpg" },
             { name: "tomo_7_1", ext: "jpg" }, { name: "tomo_8_1", ext: "jpg" }, { name: "tomo_9_1", ext: "jpg" }, { name: "tomo_10_1", ext: "jpg" },
@@ -100,20 +116,6 @@
         let isSlideBgmOn = true;
         let isShowingNameFile = false;
         let activeLayerNum = 1;
-
-        function showImage(imgId, placeholderId) {
-            const img = document.getElementById(imgId);
-            if (img) img.classList.remove('hidden');
-            const placeholder = document.getElementById(placeholderId);
-            if (placeholder) placeholder.classList.add('hidden');
-        }
-
-        function handleImageError(imgId, placeholderId) {
-            const img = document.getElementById(imgId);
-            if (img) img.classList.add('hidden');
-            const placeholder = document.getElementById(placeholderId);
-            if (placeholder) placeholder.classList.remove('hidden');
-        }
 
         function setSlideshowBgm(bgmName) {
             const slideBgm = document.getElementById('slideshow-bgm');
@@ -149,7 +151,6 @@
                 activeAlbumLabel = "栗生分校のアルバム";
             }
 
-            // 小・中学校アルバムには校歌「musik_minamiaiki_kouka」を設定
             setSlideshowBgm('musik_minamiaiki_kouka');
             openSlideshowModal();
         }
@@ -159,7 +160,6 @@
             activeSlideList = dokyukaiImages;
             activeAlbumLabel = "喜寿記念同級会アルバム";
 
-            // 喜寿記念同級会には「tomoyo_uta_1」を設定
             setSlideshowBgm('tomoyo_uta_1');
             openSlideshowModal();
         }
@@ -174,7 +174,6 @@
             const labelEl = document.getElementById('slideshow-header-label');
             if (labelEl) labelEl.innerText = activeAlbumLabel;
 
-            // リセットレイヤー表示
             activeLayerNum = 1;
             const l1 = document.getElementById('slide-layer-1');
             const l2 = document.getElementById('slide-layer-2');
@@ -210,7 +209,6 @@
             }
         }
 
-        // なめらかなスライド切り替え（写真間の途切れを防止）
         function showSlide(index) {
             if (!activeSlideList || activeSlideList.length === 0) return;
             if (index < 0) index = activeSlideList.length - 1;
@@ -383,6 +381,50 @@
             `;
         }
 
+        let isKoukaPlaying = false;
+
+        function toggleKoukaAudio() {
+            const audio = document.getElementById('kouka-audio-player');
+            const icon = document.getElementById('kouka-play-icon');
+            const text = document.getElementById('kouka-play-text');
+            const btn = document.getElementById('kouka-play-btn');
+
+            if (!audio) return;
+
+            if (isKoukaPlaying) {
+                audio.pause();
+                isKoukaPlaying = false;
+                if (icon) icon.className = "fa-solid fa-play text-lg mr-2 text-yellow-300";
+                if (text) text.innerText = "校歌を再生する";
+                if (btn) btn.className = "w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition-all flex items-center justify-center border border-emerald-600";
+            } else {
+                audio.play().then(() => {
+                    isKoukaPlaying = true;
+                    if (icon) icon.className = "fa-solid fa-pause text-lg mr-2 text-amber-200 animate-pulse";
+                    if (text) text.innerText = "一時停止する";
+                    if (btn) btn.className = "w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition-all flex items-center justify-center border border-amber-500";
+                }).catch(err => {
+                    console.log("校歌再生エラー:", err);
+                });
+            }
+        }
+
+        function openKoukaModal() {
+            const modal = document.getElementById('kouka-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeKoukaModal() {
+            const modal = document.getElementById('kouka-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
         function toggleDokyukaiImage() {
             isShowingNameFile = !isShowingNameFile;
             
@@ -425,14 +467,14 @@
             tabs.forEach(t => {
                 const tabBtn = document.getElementById('tab-' + t);
                 if (tabBtn) {
-                    tabBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all text-emerald-800 hover:bg-white/50";
+                    tabBtn.className = "py-2 md:py-3 px-2 rounded-xl text-center font-bold text-sm md:text-base transition-all text-emerald-800 hover:bg-white/50";
                 }
             });
 
             document.getElementById('content-' + tabId).classList.remove('hidden');
             const activeBtn = document.getElementById('tab-' + tabId);
             if (activeBtn) {
-                activeBtn.className = "py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white";
+                activeBtn.className = "py-2 md:py-3 px-2 rounded-xl text-center font-bold text-sm md:text-base transition-all shadow-sm bg-emerald-700 text-white";
             }
         }
 
@@ -574,6 +616,7 @@
             container.innerHTML = html;
         }
 
+        // 必須関数のグローバルバインド
         window.openAlbum = openAlbum;
         window.openSlideshow = openSlideshow;
         window.closeSlideshow = closeSlideshow;
@@ -589,6 +632,9 @@
         window.togglePlayPause = togglePlayPause;
         window.toggleSlideBgm = toggleSlideBgm;
         window.toggleFullscreen = toggleFullscreen;
+        window.toggleKoukaAudio = toggleKoukaAudio;
+        window.openKoukaModal = openKoukaModal;
+        window.closeKoukaModal = closeKoukaModal;
 
         window.onload = function() {
             const omoideSvg = `
@@ -624,10 +670,10 @@
 <body class="min-h-screen flex flex-col">
 
     <header class="bg-emerald-900 text-white shadow-md relative border-b-4 border-amber-600 dark-bg-ruby">
-        <div class="max-w-5xl mx-auto px-4 py-6 md:py-8">
+        <div class="max-w-5xl mx-auto px-4 py-4 md:py-6">
             <div class="flex flex-col items-center text-center">
                 
-                <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 w-full">
+                <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 mb-3 w-full">
                     <div class="flex-shrink-0 animate-pulse">
                         <svg class="w-8 h-8 md:w-12 md:h-12 text-pink-300 drop-shadow" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 3s1-2.5 3-2.5c1.5 0 2.5 1 2.5 2.5s-2 3.5-5.5 4c-3.5-.5-5.5-2.5-5.5-4S7.5.5 9 .5c2 0 3 2.5 3 2.5zm6.5 6.5s2.5 1 2.5 3c0 1.5-1 2.5-2.5 2.5s-3.5-2-4-5.5c.5-3.5 2.5-5.5 4-5.5s2.5 1 2.5 2.5zm-13 0s-2.5 1-2.5 3c0 1.5 1 2.5 2.5 2.5s3.5-2 4-5.5c-.5-3.5-2.5-5.5-4-5.5S3.5 7.5 3.5 9.5zm11.5 8s1 2.5 3 2.5c1.5 0 2.5-1 2.5-2.5s-2-3.5-5.5-4c-3.5.5-5.5 2.5-5.5 4s1 2.5 2.5 2.5c2 0 3-2.5 3-2.5zm-7 0s-1 2.5-3 2.5c-1.5 0-2.5-1-2.5-2.5s2-3.5 5.5-4c3.5.5 5.5 2.5 5.5 4s-1 2.5-2.5 2.5c-2 0-3-2.5-3-2.5z"/>
@@ -647,7 +693,7 @@
                     </div>
                 </div>
                 
-                <p class="text-xl md:text-2xl font-bold tracking-wide text-white mb-2 serif-font">
+                <p class="text-xl md:text-2xl font-bold tracking-wide text-white mb-1 serif-font">
                     昭和40年卒業
                 </p>
                 
@@ -660,17 +706,17 @@
         <div class="h-1 w-full bg-gradient-to-r from-emerald-800 via-amber-500 to-emerald-800"></div>
     </header>
 
-    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-6 space-y-8">
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-5 space-y-6">
 
         <!-- ごあいさつセクション -->
-        <section class="bg-white rounded-3xl shadow-md border border-gray-100 p-6 md:p-8 relative overflow-hidden">
+        <section class="bg-white rounded-3xl shadow-md border border-gray-100 p-5 md:p-7 relative overflow-hidden">
             <div class="absolute left-0 top-0 bottom-0 w-2 bg-emerald-700"></div>
             
-            <h2 class="serif-font text-2xl md:text-3xl font-bold text-emerald-800 mb-5 flex items-center">
+            <h2 class="serif-font text-2xl md:text-3xl font-bold text-emerald-800 mb-4 flex items-center">
                 <span class="mr-3"><i class="fa-solid fa-heart text-amber-600"></i></span>ごあいさつ
             </h2>
             
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <p class="text-gray-700 leading-loose">
                     昭和40年に南相木中学校を卒業してから長い年月が経ちましたが、豊かな自然の中で仲間と過ごした日々は今も心に残っています。
                 </p>
@@ -681,17 +727,17 @@
         </section>
 
         <!-- 🌸 特設「ふるさとの友よ 音楽館」のご案内 -->
-        <section class="bg-amber-50/40 rounded-3xl shadow-md border-2 border-amber-200/80 p-5 md:p-7 relative overflow-hidden">
+        <section class="bg-amber-50/40 rounded-3xl shadow-md border-2 border-amber-200/80 p-5 md:p-6 relative overflow-hidden">
             <div class="absolute right-0 top-0 opacity-10 pointer-events-none transform translate-x-4 -translate-y-4">
                 <i class="fa-solid fa-music text-9xl text-amber-800"></i>
             </div>
             
-            <div class="flex flex-col md:flex-row items-center md:items-start md:space-x-6 space-y-4 md:space-y-0">
+            <div class="flex flex-col md:flex-row items-center md:items-start md:space-x-6 space-y-3 md:space-y-0">
                 <div class="flex-shrink-0 bg-amber-600 text-white rounded-2xl p-4 flex items-center justify-center shadow-md w-16 h-16">
                     <i class="fa-solid fa-headphones text-3xl animate-pulse"></i>
                 </div>
                 
-                <div class="flex-grow space-y-4 w-full">
+                <div class="flex-grow space-y-3 w-full">
                     <h2 class="serif-font text-xl md:text-2xl font-bold text-amber-900 flex items-center justify-center md:justify-start">
                         <span>🌸 特設「ふるさとの友よ 音楽館」のご案内</span>
                     </h2>
@@ -704,7 +750,7 @@
                         下記のボタンを押していただくとお聴きいただけます。
                     </p>
 
-                    <div class="pt-2 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+                    <div class="pt-1 flex flex-col sm:flex-row justify-center md:justify-start gap-3">
                         <a href="https://yoshi0213saku-spec.github.io/hurusato_tomoyo/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 border border-amber-500">
                             <i class="fa-solid fa-circle-play text-xl text-yellow-200 animate-pulse"></i>
                             <span class="serif-font tracking-wider">👉「ふるさとの友よ 音楽館」を開く</span>
@@ -715,58 +761,58 @@
         </section>
 
         <div class="grid grid-cols-3 gap-2 bg-emerald-800/10 p-2 rounded-2xl">
-            <button onclick="switchTab('home')" id="tab-home" class="py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white">
+            <button onclick="switchTab('home')" id="tab-home" class="py-2.5 md:py-3 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all shadow-sm bg-emerald-700 text-white">
                 <i class="fa-solid fa-house mr-1"></i><span class="block md:inline">トップ</span>
             </button>
-            <button onclick="switchTab('memories')" id="tab-memories" class="py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all text-emerald-800 hover:bg-white/50">
+            <button onclick="switchTab('memories')" id="tab-memories" class="py-2.5 md:py-3 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all text-emerald-800 hover:bg-white/50">
                 <i class="fa-solid fa-camera mr-1"></i><span class="block md:inline">思い出のページ</span>
             </button>
-            <button onclick="switchTab('hobby')" id="tab-hobby" class="py-3 md:py-4 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all text-emerald-800 hover:bg-white/50">
+            <button onclick="switchTab('hobby')" id="tab-hobby" class="py-2.5 md:py-3 px-2 rounded-xl text-center font-bold text-base md:text-lg transition-all text-emerald-800 hover:bg-white/50">
                 <i class="fa-solid fa-seedling mr-1"></i><span class="block md:inline">私の最近</span>
             </button>
         </div>
 
         <!-- タブコンテンツ1: トップ -->
-        <div id="content-home" class="space-y-8">
+        <div id="content-home" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 <!-- 1枚目：小学校時代・中学校時代・三川分校・栗生分校 4つのアルバムボタンカード -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
-                    <div class="relative h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
+                    <div class="relative h-56 md:h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
                         <img id="img-omoide" src="omoide_1.jpg" alt="昭和40年記念写真・あの頃の木造校舎" class="w-full h-full object-contain hidden" onload="showImage('img-omoide', 'placeholder-omoide')" onerror="handleImageError('img-omoide', 'placeholder-omoide')">
                         <div id="placeholder-omoide" class="w-full h-full"></div>
                     </div>
                     
-                    <div class="p-5 flex-grow flex flex-col justify-between">
+                    <div class="p-4 md:p-5 flex-grow flex flex-col justify-between">
                         <div>
-                            <div class="text-center mb-3">
+                            <div class="text-center mb-2">
                                 <span class="inline-block px-4 py-1 bg-amber-100 text-amber-900 rounded-full text-sm font-bold shadow-sm">
                                     <i class="fa-solid fa-graduation-cap mr-1"></i>小・中学校の思い出アルバム
                                 </span>
                             </div>
                             
-                            <p class="text-sm text-gray-600 leading-relaxed text-center mb-4">
+                            <p class="text-sm text-gray-600 leading-relaxed text-center mb-3">
                                 冬のダルマストーブの温もり、競い合って雑巾がけした長い廊下。私たちの人生の大切な原点が、今もこの学び舎に息づいています。
                             </p>
 
-                            <!-- 4つのアルバムボタン (小学校時代、中学校時代、三川分校、栗生分校) -->
-                            <div class="grid grid-cols-2 gap-2.5">
-                                <button onclick="openAlbum('primary')" class="py-2.5 px-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-1 border border-amber-500">
+                            <!-- 4つのアルバムボタン -->
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="openAlbum('primary')" class="py-2 px-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-1 border border-amber-500">
                                     <i class="fa-solid fa-child text-yellow-200"></i>
                                     <span>小学校時代</span>
                                 </button>
 
-                                <button onclick="openAlbum('junior')" class="py-2.5 px-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-1 border border-emerald-600">
+                                <button onclick="openAlbum('junior')" class="py-2 px-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-1 border border-emerald-600">
                                     <i class="fa-solid fa-school text-amber-300"></i>
                                     <span>中学校時代</span>
                                 </button>
                                 
-                                <button onclick="openAlbum('mikawa')" class="py-2.5 px-2 bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-1 border border-teal-600">
+                                <button onclick="openAlbum('mikawa')" class="py-2 px-2 bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-1 border border-teal-600">
                                     <i class="fa-solid fa-tree text-green-200"></i>
                                     <span>三川分校</span>
                                 </button>
 
-                                <button onclick="openAlbum('kuryu')" class="py-2.5 px-2 bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-1 border border-amber-600">
+                                <button onclick="openAlbum('kuryu')" class="py-2 px-2 bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-1 border border-amber-600">
                                     <i class="fa-solid fa-mountain text-yellow-200"></i>
                                     <span>栗生分校</span>
                                 </button>
@@ -777,7 +823,7 @@
 
                 <!-- 2枚目：喜寿記念同級会 -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col h-full">
-                    <div onclick="toggleDokyukaiImage()" class="relative h-64 bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-95 transition-opacity group" title="写真を押すと名前線画に切り替わります">
+                    <div onclick="toggleDokyukaiImage()" class="relative h-56 md:h-64 bg-gray-50 flex items-center justify-center overflow-hidden cursor-pointer hover:opacity-95 transition-opacity group" title="写真を押すと名前線画に切り替わります">
                         <img id="img-dokyukai" src="dokyukai_1.jpg" alt="喜寿記念同級会" class="w-full h-full object-contain hidden" onload="showImage('img-dokyukai', 'placeholder-dokyukai')" onerror="handleImageError('img-dokyukai', 'placeholder-dokyukai')">
                         <div id="placeholder-dokyukai" class="w-full h-full"></div>
 
@@ -787,25 +833,25 @@
                         </div>
                     </div>
                     
-                    <div class="p-5 flex-grow flex flex-col justify-between">
+                    <div class="p-4 md:p-5 flex-grow flex flex-col justify-between">
                         <div>
-                            <div class="text-center mb-3">
+                            <div class="text-center mb-2">
                                 <span class="inline-block px-4 py-1 bg-emerald-100 text-emerald-900 rounded-full text-sm font-bold shadow-sm">
                                     <i class="fa-solid fa-users mr-1"></i>喜寿記念同級会
                                 </span>
                             </div>
 
-                            <h3 id="dokyukai-card-title" class="serif-font text-center text-gray-500 mb-4">
+                            <h3 id="dokyukai-card-title" class="serif-font text-center text-gray-500 mb-3">
                                 <span class="text-sm font-normal text-gray-500 block sm:inline">2026年7月15日</span>
                             </h3>
                             
-                            <div class="text-center mb-4 flex flex-col sm:flex-row justify-center items-center gap-2">
-                                <button onclick="toggleDokyukaiImage()" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-full shadow transition-all transform hover:-translate-y-0.5">
+                            <div class="text-center mb-3 flex flex-col sm:flex-row justify-center items-center gap-2">
+                                <button onclick="toggleDokyukaiImage()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-full shadow transition-all transform hover:-translate-y-0.5">
                                     <i class="fa-solid fa-retweet"></i>
                                     <span id="dokyukai-badge-text">画像を押すと名前の線画になります</span>
                                 </button>
                                 
-                                <button onclick="openSlideshow()" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-full shadow-md transition-all transform hover:-translate-y-0.5 border border-emerald-600">
+                                <button onclick="openSlideshow()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-full shadow-md transition-all transform hover:-translate-y-0.5 border border-emerald-600">
                                     <i class="fa-solid fa-film animate-pulse text-amber-300 mr-1"></i>
                                     <span>▶ 一コマアルバムを見る</span>
                                 </button>
@@ -820,12 +866,58 @@
 
             </div>
 
+            <!-- 🎵 南相木小学校 校歌セクション（超コンパクト版） -->
+            <section class="bg-amber-50/80 border-2 border-amber-300/80 rounded-2xl p-2.5 sm:p-3 shadow-sm">
+                <audio id="kouka-audio-player" preload="metadata">
+                    <source src="musik_minamiaiki_kouka.mp3" type="audio/mpeg">
+                    <source src="musik_minamiaiki_kouka.ogg" type="audio/ogg">
+                    <source src="musik_minamiaiki_kouka.wav" type="audio/wav">
+                    <source src="musik_minamiaiki_kouka" type="audio/mpeg">
+                </audio>
+
+                <div class="flex flex-col md:flex-row items-center gap-2">
+                    <!-- 左側：校歌タイトル & 再生ボタン -->
+                    <div class="w-full md:w-1/3 flex flex-col justify-center items-center text-center p-1.5 bg-white/90 rounded-xl border border-amber-200">
+                        <div class="flex items-center space-x-1 mb-1">
+                            <span class="text-amber-700 text-sm"><i class="fa-solid fa-music"></i></span>
+                            <h3 class="serif-font text-sm font-bold text-amber-950">南相木小学校 校歌</h3>
+                        </div>
+                        
+                        <p class="text-[11px] text-gray-600 mb-1.5">懐かしい校歌をお聴きいただけます</p>
+                        
+                        <button id="kouka-play-btn" onclick="toggleKoukaAudio()" class="w-full py-1.5 bg-emerald-700 hover:bg-emerald-800 active:scale-95 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center justify-center border border-emerald-600">
+                            <i id="kouka-play-icon" class="fa-solid fa-play text-xs mr-1 text-yellow-300"></i>
+                            <span id="kouka-play-text">校歌を再生する</span>
+                        </button>
+                    </div>
+
+                    <!-- 右側：校歌歌詞画像サムネイル -->
+                    <div class="w-full md:w-2/3 bg-white/90 rounded-xl p-1.5 border border-amber-200 flex flex-col items-center justify-center">
+                        <div onclick="openKoukaModal()" class="relative w-full h-24 sm:h-28 bg-amber-100/40 rounded-lg overflow-hidden cursor-pointer border border-amber-300/60 group hover:border-amber-500 transition-all flex items-center justify-center">
+                            <img id="img-kouka-lyric" src="gazo_kouka_1.png" alt="南相木小学校 校歌 歌詞" class="w-full h-full object-contain hidden" onload="showImage('img-kouka-lyric', 'placeholder-kouka-lyric')" onerror="handleImageError('img-kouka-lyric', 'placeholder-kouka-lyric')">
+                            
+                            <div id="placeholder-kouka-lyric" class="w-full h-full flex flex-col items-center justify-center p-1 text-center bg-amber-50/90">
+                                <i class="fa-solid fa-file-lines text-amber-700 text-lg mb-0.5"></i>
+                                <span class="serif-font font-bold text-amber-950 text-xs">南相木小学校 校歌 歌詞</span>
+                                <span class="text-[10px] text-amber-800">（押すと大きく表示されます）</span>
+                            </div>
+
+                            <!-- 拡大バッジ -->
+                            <div class="absolute bottom-1 right-1 bg-amber-900/80 text-white text-[10px] px-1.5 py-0.5 rounded-md shadow flex items-center space-x-1 group-hover:bg-amber-700 transition-colors pointer-events-none">
+                                <i class="fa-solid fa-magnifying-glass-plus text-amber-300"></i>
+                                <span>拡大</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- 事務局からのお知らせ -->
-            <div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-4 sm:p-6">
-                <h3 class="serif-font text-lg md:text-xl font-bold text-amber-900 mb-3 flex items-center flex-wrap gap-1">
+            <div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-4">
+                <h3 class="serif-font text-lg font-bold text-amber-900 mb-2 flex items-center flex-wrap gap-1">
                     <span class="mr-2 text-amber-700"><i class="fa-solid fa-bullhorn"></i></span>同級会事務局からのお知らせ
                 </h3>
-                <ul class="space-y-3 text-gray-700 text-sm sm:text-base">
+                <ul class="space-y-2 text-gray-700 text-sm sm:text-base">
                     <li class="flex items-start">
                         <span class="text-amber-600 mr-2 mt-1">●</span>
                         <span>思い出の写真やお便りを募集中です。下の入力フォームから中島義健宛てにお気軽にお寄せください。</span>
@@ -838,27 +930,27 @@
             </div>
 
             <!-- お便り送信フォーム -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 md:p-6 max-w-xl mx-auto">
-                <h3 class="serif-font text-lg md:text-xl font-bold text-gray-800 mb-1 flex items-center">
+            <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-4 md:p-5 max-w-xl mx-auto">
+                <h3 class="serif-font text-lg font-bold text-gray-800 mb-1 flex items-center">
                     <i class="fa-solid fa-paper-plane text-amber-600 mr-2"></i>思い出やお便りを送る入力フォーム
                 </h3>
-                <p class="text-xs md:text-sm text-gray-500 mb-4">
+                <p class="text-xs text-gray-500 mb-3">
                     送信ボタンを押すと、お使いのメールアプリ（Gmailや携帯メール等）が自動起動し、中島義健宛てにメールが届きます。
                 </p>
 
-                <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
+                <div class="bg-amber-50 border-2 border-amber-500 p-3 rounded-xl mb-3 text-xs sm:text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
                     <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
                     中島義健がメールを受け取った後にその後ページに反映されます。
                 </div>
 
-                <form id="home-form" class="space-y-4" onsubmit="handleHomeSubmit(event)">
+                <form id="home-form" class="space-y-3" onsubmit="handleHomeSubmit(event)">
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-1">お名前（ニックネーム可）</label>
-                        <input type="text" id="home-name" required placeholder="例：山河 太郎" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600">
+                        <input type="text" id="home-name" required placeholder="例：山河 太郎" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-1">お便りの種類</label>
-                        <select id="home-type" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600 bg-white">
+                        <select id="home-type" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600 bg-white">
                             <option value="昔の思い出（思い出のページに掲載希望）">昔の思い出（思い出のページに掲載希望）</option>
                             <option value="私の最近（趣味・畑・旅行など掲載希望）">私の最近（趣味・畑・旅行など掲載希望）</option>
                             <option value="その他・事務局へのご連絡">その他・事務局へのご連絡</option>
@@ -866,9 +958,9 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-1">お便りの本文（写真添付はメール送信画面で行えます）</label>
-                        <textarea id="home-text" required rows="4" placeholder="楽しかった思い出や、近頃の様子など自由にお書きください。写真も一緒にお送りいただけます。" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600"></textarea>
+                        <textarea id="home-text" required rows="3" placeholder="楽しかった思い出や、近頃の様子など自由にお書きください。写真も一緒にお送りいただけます。" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600"></textarea>
                     </div>
-                    <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-sm transition-colors flex items-center justify-center space-x-1 shadow">
+                    <button type="submit" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-sm transition-colors flex items-center justify-center space-x-1 shadow">
                         <i class="fa-solid fa-envelope"></i>
                         <span>メールを作成する</span>
                     </button>
@@ -877,71 +969,71 @@
         </div>
 
         <!-- タブコンテンツ2: 思い出のページ -->
-        <div id="content-memories" class="space-y-6 hidden">
-            <div class="text-center max-w-2xl mx-auto mb-6">
-                <h2 class="serif-font text-2xl md:text-3xl font-bold text-emerald-800 mb-2">🌸 思い出のページ</h2>
-                <p class="text-sm text-gray-600">
+        <div id="content-memories" class="space-y-5 hidden">
+            <div class="text-center max-w-2xl mx-auto mb-4">
+                <h2 class="serif-font text-2xl font-bold text-emerald-800 mb-1">🌸 思い出のページ</h2>
+                <p class="text-xs text-gray-600">
                     中学時代の修学旅行、部活動、運動会から最近の思い出まで。皆様からの思い出をメールで送っていただき、こちらに掲載して温めていく場所です。
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 h-fit">
-                    <h3 class="serif-font text-lg font-bold text-gray-800 mb-1 flex items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-4 h-fit">
+                    <h3 class="serif-font text-base font-bold text-gray-800 mb-1 flex items-center">
                         <i class="fa-solid fa-paper-plane text-amber-600 mr-2"></i>思い出をメールで送る
                     </h3>
-                    <p class="text-xs text-gray-500 mb-3">
+                    <p class="text-xs text-gray-500 mb-2">
                         送信ボタンを押すと自動でお使いのメールアプリが起動し、中島義健へ直接届きます。
                     </p>
                     
-                    <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
-                        <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
+                    <div class="bg-amber-50 border-2 border-amber-500 p-2.5 rounded-xl mb-3 text-xs text-amber-950 font-bold leading-relaxed shadow-sm">
+                        <i class="fa-solid fa-circle-info text-amber-600 mr-1"></i>
                         中島義健がメールを受け取った後にその後ページに反映されます。
                     </div>
 
-                    <form id="memory-form" class="space-y-3" onsubmit="handleMemorySubmit(event)">
+                    <form id="memory-form" class="space-y-2.5" onsubmit="handleMemorySubmit(event)">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">お名前（ニックネーム可）</label>
-                            <input type="text" id="memory-name" required placeholder="例：山河の友" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600">
+                            <input type="text" id="memory-name" required placeholder="例：山河の友" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:outline-none focus:border-emerald-600">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">いつ頃の記憶？</label>
-                            <input type="text" id="memory-period" required placeholder="例：中学2年の運動会" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600">
+                            <input type="text" id="memory-period" required placeholder="例：中学2年の運動会" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:outline-none focus:border-emerald-600">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">思い出の内容</label>
-                            <textarea id="memory-text" required rows="4" placeholder="先生に叱られたこと、楽しかった遠足のことなど何でもどうぞ。" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600"></textarea>
+                            <textarea id="memory-text" required rows="3" placeholder="先生に叱られたこと、楽しかった遠足のことなど何でもどうぞ。" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:outline-none focus:border-emerald-600"></textarea>
                         </div>
-                        <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-sm transition-colors flex items-center justify-center space-x-1 shadow">
+                        <button type="submit" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-xs transition-colors flex items-center justify-center space-x-1 shadow">
                             <i class="fa-solid fa-envelope"></i>
                             <span>メールを作成する</span>
                         </button>
                     </form>
                 </div>
 
-                <div class="lg:col-span-2 space-y-4" id="memory-list">
-                    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 relative">
-                        <div class="flex justify-between items-start mb-2 border-b pb-2 border-gray-100">
+                <div class="lg:col-span-2 space-y-3" id="memory-list">
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-4 relative">
+                        <div class="flex justify-between items-start mb-1.5 border-b pb-1.5 border-gray-100">
                             <div>
-                                <span class="font-bold text-emerald-800 text-base">中島 義健</span>
+                                <span class="font-bold text-emerald-800 text-sm">中島 義健</span>
                                 <span class="text-xs text-gray-500 ml-2">（いつ頃：昭和40年卒業の頃）</span>
                             </div>
-                            <span class="text-xs bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full">思い出話</span>
+                            <span class="text-xs bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full">思い出話</span>
                         </div>
-                        <p class="text-sm text-gray-700 leading-relaxed">
+                        <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">
                             南相木中学校の木造校舎で過ごした日々は、今でも私たちの心に深く根づいています。冬の朝、教室のダルマストーブの前にみんなで集まり、赤くなった顔でお互いの手を温め合ったのが昨日のことのようです。
                         </p>
                     </div>
 
-                    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 relative">
-                        <div class="flex justify-between items-start mb-2 border-b pb-2 border-gray-100">
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-4 relative">
+                        <div class="flex justify-between items-start mb-1.5 border-b pb-1.5 border-gray-100">
                             <div>
-                                <span class="font-bold text-emerald-800 text-base">川のせせらぎ</span>
+                                <span class="font-bold text-emerald-800 text-sm">川のせせらぎ</span>
                                 <span class="text-xs text-gray-500 ml-2">（いつ頃：中学の修学旅行）</span>
                             </div>
-                            <span class="text-xs bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full">思い出話</span>
+                            <span class="text-xs bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full">思い出話</span>
                         </div>
-                        <p class="text-sm text-gray-700 leading-relaxed">
+                        <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">
                             修学旅行で東京へ行ったとき、夜の旅館の部屋で先生に見つからないようにして、遅くまでみんなとヒソヒソ話をしたのが最高に楽しかったです。翌朝、眠たい目をこすりながら皇居前で記念撮影をした時の澄んだ秋晴れを、今でも思い出します。
                         </p>
                     </div>
@@ -951,36 +1043,36 @@
         </div>
 
         <!-- タブコンテンツ3: 私の最近 -->
-        <div id="content-hobby" class="space-y-6 hidden">
-            <div class="text-center max-w-2xl mx-auto mb-6">
-                <h2 class="serif-font text-2xl md:text-3xl font-bold text-emerald-800 mb-2">🏡 私の最近（趣味・ガーデニング・旅行など）</h2>
-                <p class="text-sm text-gray-600">
+        <div id="content-hobby" class="space-y-5 hidden">
+            <div class="text-center max-w-2xl mx-auto mb-4">
+                <h2 class="serif-font text-2xl font-bold text-emerald-800 mb-1">🏡 私の最近（趣味・ガーデニング・旅行など）</h2>
+                <p class="text-xs text-gray-600">
                     近況報告、畑仕事の成果、ご家族での旅行、趣味の手工芸など。「今楽しんでいること」をみんなに共有し、温かく元気をもらい合う場所です。
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-5 h-fit">
-                    <h3 class="serif-font text-lg font-bold text-gray-800 mb-1 flex items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-4 h-fit">
+                    <h3 class="serif-font text-base font-bold text-gray-800 mb-1 flex items-center">
                         <i class="fa-solid fa-paper-plane text-emerald-700 mr-2"></i>私の近況をお便りで送る
                     </h3>
-                    <p class="text-xs text-gray-500 mb-3">
+                    <p class="text-xs text-gray-500 mb-2">
                         送信ボタンを押すと自動でお使いのメールアプリが起動し、中島義健へ直接届きます。
                     </p>
                     
-                    <div class="bg-amber-50 border-2 border-amber-500 p-3.5 rounded-xl mb-4 text-sm text-amber-950 font-bold leading-relaxed shadow-sm">
-                        <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i>
+                    <div class="bg-amber-50 border-2 border-amber-500 p-2.5 rounded-xl mb-3 text-xs text-amber-950 font-bold leading-relaxed shadow-sm">
+                        <i class="fa-solid fa-circle-info text-amber-600 mr-1"></i>
                         中島義健がメールを受け取った後にその後ページに反映されます。
                     </div>
 
-                    <form id="hobby-form" class="space-y-3" onsubmit="handleHobbySubmit(event)">
+                    <form id="hobby-form" class="space-y-2.5" onsubmit="handleHobbySubmit(event)">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">お名前（ニックネーム可）</label>
-                            <input type="text" id="hobby-name" required placeholder="例：南相木 太郎" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600">
+                            <input type="text" id="hobby-name" required placeholder="例：南相木 太郎" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:outline-none focus:border-emerald-600">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">何についてのお便り？</label>
-                            <select id="hobby-category" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600 bg-white">
+                            <select id="hobby-category" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:outline-none focus:border-emerald-600 bg-white">
                                 <option value="日々の暮らし">日々の暮らし</option>
                                 <option value="畑・ガーデニング">畑・ガーデニング（農作業）</option>
                                 <option value="趣味・手芸・日曜大工">趣味・手芸・日曜大工</option>
@@ -990,27 +1082,27 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">お便りの本文（写真添付も後ほど可能です）</label>
-                            <textarea id="hobby-text" required rows="4" placeholder="最近あった嬉しかったこと、楽しんでいる趣味、作物の出来栄えなどをご自由にお書きください." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-emerald-600"></textarea>
+                            <textarea id="hobby-text" required rows="3" placeholder="最近あった嬉しかったこと、楽しんでいる趣味、作物の出来栄えなどをご自由にお書きください." class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:outline-none focus:border-emerald-600"></textarea>
                         </div>
-                        <button type="submit" class="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-sm transition-colors flex items-center justify-center space-x-1 shadow">
+                        <button type="submit" class="w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-xs transition-colors flex items-center justify-center space-x-1 shadow">
                             <i class="fa-solid fa-envelope"></i>
                             <span>メールを作成する</span>
                         </button>
                     </form>
                 </div>
 
-                <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 h-fit" id="hobby-list">
+                <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3 h-fit" id="hobby-list">
                     <!-- 竹内 芳弘様からのお便り -->
                     <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col justify-between">
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="inline-block px-3 py-1 bg-amber-100 text-amber-900 rounded-full text-xs font-bold">
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="inline-block px-2.5 py-0.5 bg-amber-100 text-amber-900 rounded-full text-xs font-bold">
                                     <i class="fa-solid fa-comment-dots mr-1"></i>日々の暮らし
                                 </span>
-                                <span class="text-xs text-gray-400">お便り：竹内 芳弘さんより</span>
+                                <span class="text-[11px] text-gray-400">お便り：竹内 芳弘さんより</span>
                             </div>
-                            <h4 class="font-bold text-gray-800 text-lg mb-2">同級会のホームページ見ました。</h4>
-                            <p class="text-sm text-gray-600 leading-relaxed">
+                            <h4 class="font-bold text-gray-800 text-base mb-1.5">同級会のホームページ見ました。</h4>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
                                 こんにちは久しぶりてすが楽しいホームページを拝見させて頂き、懐かしさ、合って話して観たくなりました、色々有難うございます 
                             </p>
                         </div>
@@ -1018,15 +1110,15 @@
 
                     <!-- 竹内 ふじ子様からのお便り -->
                     <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col justify-between">
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-900 rounded-full text-xs font-bold">
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-900 rounded-full text-xs font-bold">
                                     <i class="fa-solid fa-seedling mr-1"></i>日々の暮らし
                                 </span>
-                                <span class="text-xs text-gray-400">お便り：竹内 ふじ子さんより</span>
+                                <span class="text-[11px] text-gray-400">お便り：竹内 ふじ子さんより</span>
                             </div>
-                            <h4 class="font-bold text-gray-800 text-lg mb-2">竹内ふじ子です。ホームページありがとうございます。</h4>
-                            <p class="text-sm text-gray-600 leading-relaxed">
+                            <h4 class="font-bold text-gray-800 text-base mb-1.5">竹内ふじ子です。ホームページありがとうございます。</h4>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
                                 二人共に元気にしていますこの様な事に大変驚いています　そして嬉しく楽しく拝見させて頂いています 
                             </p>
                         </div>
@@ -1037,74 +1129,89 @@
         </div>
 
         <!-- 📺 中島義健作成のYouTube動画コーナー -->
-        <section class="bg-white rounded-3xl shadow-md border border-gray-100 p-6 md:p-8 relative overflow-hidden">
+        <section class="bg-white rounded-3xl shadow-md border border-gray-100 p-4 md:p-6 relative overflow-hidden">
             <div class="absolute left-0 top-0 bottom-0 w-2 bg-red-600"></div>
             
-            <h2 class="serif-font text-xl md:text-2xl font-bold text-emerald-800 mb-5 flex items-center">
+            <h2 class="serif-font text-xl md:text-2xl font-bold text-emerald-800 mb-3 flex items-center">
                 <span class="mr-3 text-red-600"><i class="fa-brands fa-youtube text-2xl animate-pulse"></i></span>中島義健作成のYouTube動画コーナー
             </h2>
             
-            <p class="text-sm text-gray-600 mb-6 leading-relaxed">
+            <p class="text-xs md:text-sm text-gray-600 mb-4 leading-relaxed">
                 中島義健が、まごころを込めて制作・撮影した、思い出のメロディや歴史探訪、そして日々の温かい暮らしのYouTube動画です。ボタンを押すと動画が開き、ゆっくりとご鑑賞いただけます。
             </p>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- 南相木村 AIで巡る空の旅 -->
-                <a href="https://youtu.be/Eocd_t_ZqyU" target="_blank" rel="noopener noreferrer" class="flex flex-col justify-between p-4 bg-gradient-to-br from-sky-50 to-sky-100/30 hover:from-sky-100 border border-sky-200/80 rounded-2xl shadow-sm transition-all transform hover:-translate-y-1 hover:shadow group text-left">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <!-- 1. 南相木村：生存と開拓の歴史 (一番最初に追加) -->
+                <a href="https://youtu.be/CjMNxI0or-I" target="_blank" rel="noopener noreferrer" class="flex flex-col justify-between p-3 bg-gradient-to-br from-amber-50 to-amber-100/30 hover:from-amber-100 border border-amber-200/80 rounded-2xl shadow-sm transition-all transform hover:-translate-y-1 hover:shadow group text-left">
                     <div>
-                        <span class="inline-block px-2.5 py-0.5 bg-sky-700 text-white text-xs font-bold rounded-full mb-3 shadow-sm">
+                        <span class="inline-block px-2 py-0.5 bg-amber-700 text-white text-[11px] font-bold rounded-full mb-2 shadow-sm">
+                            <i class="fa-solid fa-book-open mr-1"></i>歴史・ドキュメンタリー
+                        </span>
+                        <h3 class="font-bold text-gray-800 text-sm mb-1 group-hover:text-amber-800 transition-colors">南相木村：生存と開拓の歴史</h3>
+                        <p class="text-[11px] text-gray-600 leading-relaxed">厳しくも豊かな自然とともに歩んできた南相木村の歴史と、先人たちの開拓のドラマを描いた貴重な動画です。</p>
+                    </div>
+                    <div class="mt-3 flex items-center justify-end text-xs font-bold text-amber-800">
+                        <span>動画を再生する</span>
+                        <i class="fa-solid fa-circle-play ml-1.5 text-base text-red-600 animate-pulse"></i>
+                    </div>
+                </a>
+
+                <!-- 2. 南相木村 AIで巡る空の旅 -->
+                <a href="https://youtu.be/Eocd_t_ZqyU" target="_blank" rel="noopener noreferrer" class="flex flex-col justify-between p-3 bg-gradient-to-br from-sky-50 to-sky-100/30 hover:from-sky-100 border border-sky-200/80 rounded-2xl shadow-sm transition-all transform hover:-translate-y-1 hover:shadow group text-left">
+                    <div>
+                        <span class="inline-block px-2 py-0.5 bg-sky-700 text-white text-[11px] font-bold rounded-full mb-2 shadow-sm">
                             <i class="fa-solid fa-plane-departure mr-1"></i>空撮・AI
                         </span>
-                        <h3 class="font-bold text-gray-800 text-base mb-2 group-hover:text-emerald-800 transition-colors">南相木村 AIで巡る空の旅</h3>
-                        <p class="text-xs text-gray-600 leading-relaxed">雄大な山々や懐かしい集落の情景を、鳥のような空からの視点で臨場感たっぷりに巡ります。</p>
+                        <h3 class="font-bold text-gray-800 text-sm mb-1 group-hover:text-emerald-800 transition-colors">南相木村 AIで巡る空の旅</h3>
+                        <p class="text-[11px] text-gray-600 leading-relaxed">雄大な山々や懐かしい集落の情景を、鳥のような空からの視点で臨場感たっぷりに巡ります。</p>
                     </div>
-                    <div class="mt-4 flex items-center justify-end text-xs font-bold text-sky-800">
+                    <div class="mt-3 flex items-center justify-end text-xs font-bold text-sky-800">
                         <span>動画を再生する</span>
-                        <i class="fa-solid fa-circle-play ml-1.5 text-lg text-red-600 animate-pulse"></i>
+                        <i class="fa-solid fa-circle-play ml-1.5 text-base text-red-600 animate-pulse"></i>
                     </div>
                 </a>
 
-                <!-- ふるさとの友よ -->
-                <a href="https://youtu.be/wkLsziH9DAg" target="_blank" rel="noopener noreferrer" class="flex flex-col justify-between p-4 bg-gradient-to-br from-amber-50 to-amber-100/30 hover:from-amber-100 border border-amber-200/80 rounded-2xl shadow-sm transition-all transform hover:-translate-y-1 hover:shadow group text-left">
+                <!-- 3. ふるさとの友よ -->
+                <a href="https://youtu.be/wkLsziH9DAg" target="_blank" rel="noopener noreferrer" class="flex flex-col justify-between p-3 bg-gradient-to-br from-amber-50 to-amber-100/30 hover:from-amber-100 border border-amber-200/80 rounded-2xl shadow-sm transition-all transform hover:-translate-y-1 hover:shadow group text-left">
                     <div>
-                        <span class="inline-block px-2.5 py-0.5 bg-amber-600 text-white text-xs font-bold rounded-full mb-3 shadow-sm">
+                        <span class="inline-block px-2 py-0.5 bg-amber-600 text-white text-[11px] font-bold rounded-full mb-2 shadow-sm">
                             <i class="fa-solid fa-music mr-1"></i>テーマ曲
                         </span>
-                        <h3 class="font-bold text-gray-800 text-base mb-2 group-hover:text-amber-800 transition-colors">ふるさとの友よ</h3>
-                        <p class="text-xs text-gray-600 leading-relaxed">私たちの心を一つに結ぶ、かけがえのない永遠の友情を歌った感動のテーマ曲動画です。</p>
+                        <h3 class="font-bold text-gray-800 text-sm mb-1 group-hover:text-amber-800 transition-colors">ふるさとの友よ</h3>
+                        <p class="text-[11px] text-gray-600 leading-relaxed">私たちの心を一つに結ぶ、かけがえのない永遠の友情を歌った感動のテーマ曲動画です。</p>
                     </div>
-                    <div class="mt-4 flex items-center justify-end text-xs font-bold text-amber-700">
+                    <div class="mt-3 flex items-center justify-end text-xs font-bold text-amber-700">
                         <span>動画を再生する</span>
-                        <i class="fa-solid fa-circle-play ml-1.5 text-lg text-red-600 animate-pulse"></i>
+                        <i class="fa-solid fa-circle-play ml-1.5 text-base text-red-600 animate-pulse"></i>
                     </div>
                 </a>
 
-                <!-- 常源寺 歴史探訪対談 -->
-                <a href="https://youtu.be/GR1cpj3bo3s?si=iaiZasrHK9EWG_sD" target="_blank" rel="noopener noreferrer" class="flex flex-col justify-between p-4 bg-gradient-to-br from-emerald-50 to-emerald-100/30 hover:from-emerald-100 border border-emerald-200/80 rounded-2xl shadow-sm transition-all transform hover:-translate-y-1 hover:shadow group text-left">
+                <!-- 4. 常源寺 歴史探訪対談 -->
+                <a href="https://youtu.be/GR1cpj3bo3s?si=iaiZasrHK9EWG_sD" target="_blank" rel="noopener noreferrer" class="flex flex-col justify-between p-3 bg-gradient-to-br from-emerald-50 to-emerald-100/30 hover:from-emerald-100 border border-emerald-200/80 rounded-2xl shadow-sm transition-all transform hover:-translate-y-1 hover:shadow group text-left">
                     <div>
-                        <span class="inline-block px-2.5 py-0.5 bg-emerald-700 text-white text-xs font-bold rounded-full mb-3 shadow-sm">
+                        <span class="inline-block px-2 py-0.5 bg-emerald-700 text-white text-[11px] font-bold rounded-full mb-2 shadow-sm">
                             <i class="fa-solid fa-gopuram mr-1"></i>歴史探訪
                         </span>
-                        <h3 class="font-bold text-gray-800 text-base mb-2 group-hover:text-emerald-800 transition-colors">常源寺 歴史探訪対談</h3>
-                        <p class="text-xs text-gray-600 leading-relaxed">南相木村が誇る由緒正しき名刹「常源寺」の歩みや地域の歴史をじっくり紐解く貴重な歴史対談です。</p>
+                        <h3 class="font-bold text-gray-800 text-sm mb-1 group-hover:text-emerald-800 transition-colors">常源寺 歴史探訪対談</h3>
+                        <p class="text-[11px] text-gray-600 leading-relaxed">南相木村が誇る由緒正しき名刹「常源寺」の歩みや地域の歴史をじっくり紐解く貴重な歴史対談です。</p>
                     </div>
-                    <div class="mt-4 flex items-center justify-end text-xs font-bold text-emerald-800">
+                    <div class="mt-3 flex items-center justify-end text-xs font-bold text-emerald-800">
                         <span>動画を再生する</span>
-                        <i class="fa-solid fa-circle-play ml-1.5 text-lg text-red-600 animate-pulse"></i>
+                        <i class="fa-solid fa-circle-play ml-1.5 text-base text-red-600 animate-pulse"></i>
                     </div>
                 </a>
             </div>
         </section>
 
         <!-- 🔒 安心の限定公開バナー（メインエリアの一番下） -->
-        <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-5 shadow-sm">
+        <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 shadow-sm">
             <div class="flex items-start space-x-3">
                 <span class="text-blue-600 text-2xl mt-0.5"><i class="fa-solid fa-shield-halved"></i></span>
                 <div>
-                    <h2 class="text-lg font-bold text-blue-900 flex items-center">
+                    <h2 class="text-base font-bold text-blue-900 flex items-center">
                         <span>🔒 同級会員の皆様だけの「安心な限定公開ホームページ」です</span>
                     </h2>
-                    <p class="text-sm text-blue-800 mt-1.5 leading-relaxed">
+                    <p class="text-xs text-blue-800 mt-1 leading-relaxed">
                         このホームページは、検索サイト（GoogleやYahooなど）の検索結果には一切登録されない、<strong>アドレスをご存知の「山河会・35会」の会員の皆様だけ</strong>が閲覧できる安心なウェブサイトです。どうぞ安心して、懐かしい思い出や近況の交流をお楽しみください。
                     </p>
                 </div>
@@ -1113,14 +1220,14 @@
 
     </main>
 
-    <footer class="bg-emerald-950 text-white py-6 md:py-8 mt-12 border-t-4 border-amber-600 dark-bg-ruby">
-        <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
+    <footer class="bg-emerald-950 text-white py-5 md:py-6 mt-8 border-t-4 border-amber-600 dark-bg-ruby">
+        <div class="max-w-5xl mx-auto px-4 text-center space-y-3">
             <p class="text-xs md:text-sm text-emerald-200 serif-font">
                 <ruby>山河会<rt>さんがかい</rt></ruby>・<ruby>35会<rt>さんごかい</rt></ruby> ホームページ
             </p>
             
-            <div class="bg-emerald-900/40 py-3 px-5 rounded-xl border border-emerald-800 inline-block max-w-full">
-                <div class="flex flex-col md:flex-row items-center justify-center md:space-x-4 space-y-2 md:space-y-0 text-sm">
+            <div class="bg-emerald-900/40 py-2 px-4 rounded-xl border border-emerald-800 inline-block max-w-full">
+                <div class="flex flex-col md:flex-row items-center justify-center md:space-x-4 space-y-1 md:space-y-0 text-xs sm:text-sm">
                     <span class="font-bold flex items-center text-amber-200">
                         <i class="fa-solid fa-user mr-2"></i>中島 義健
                     </span>
@@ -1131,33 +1238,33 @@
                 </div>
             </div>
             
-            <div class="pt-3 border-t border-emerald-900/80 mt-2 flex flex-col items-center justify-center">
-                <div class="bg-emerald-900/80 px-4 py-2 rounded-xl border border-emerald-700/60 flex items-center space-x-3 shadow-inner">
-                    <span class="text-xs md:text-sm font-bold text-amber-200 flex items-center">
+            <div class="pt-2 border-t border-emerald-900/80 mt-2 flex flex-col items-center justify-center">
+                <div class="bg-emerald-900/80 px-4 py-1.5 rounded-xl border border-emerald-700/60 flex items-center space-x-3 shadow-inner">
+                    <span class="text-xs font-bold text-amber-200 flex items-center">
                         <i class="fa-solid fa-chart-line text-amber-400 mr-2"></i>訪問者数（アクセスカウンター）：
                     </span>
-                    <div id="visitor-counter-digits" class="flex space-x-1 font-mono font-bold text-base md:text-lg text-amber-950">
-                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">0</span>
-                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">0</span>
-                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">0</span>
-                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">1</span>
-                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">5</span>
-                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-sm sm:text-base border border-amber-300">9</span>
+                    <div id="visitor-counter-digits" class="flex space-x-1 font-mono font-bold text-sm md:text-base text-amber-950">
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-xs sm:text-sm border border-amber-300">0</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-xs sm:text-sm border border-amber-300">0</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-xs sm:text-sm border border-amber-300">0</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-xs sm:text-sm border border-amber-300">1</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-xs sm:text-sm border border-amber-300">5</span>
+                        <span class="bg-amber-100 text-amber-950 font-mono font-bold px-2 py-0.5 rounded text-xs sm:text-sm border border-amber-300">9</span>
                     </div>
                 </div>
-                <p class="text-[11px] text-emerald-300/80 mt-1.5">
+                <p class="text-[10px] text-emerald-300/80 mt-1">
                     ※皆さまのお越しを心より歓迎いたします
                 </p>
             </div>
 
-            <p class="text-xs text-emerald-400 pt-1">
+            <p class="text-[11px] text-emerald-400 pt-1">
                 &copy; 2026 山河会・35会. All Rights Reserved.
             </p>
         </div>
     </footer>
 
     <!-- 一コマアルバム（スライドショー）表示用モーダル（クロスフェード対応） -->
-    <div id="slideshow-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-between p-4 sm:p-6 transition-all duration-300">
+    <div id="slideshow-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-between p-3 sm:p-5 transition-all duration-300">
         <audio id="slideshow-bgm" loop data-current-bgm="musik_minamiaiki_kouka">
             <source src="musik_minamiaiki_kouka.mp3" type="audio/mpeg">
             <source src="musik_minamiaiki_kouka.ogg" type="audio/ogg">
@@ -1165,9 +1272,9 @@
             <source src="musik_minamiaiki_kouka" type="audio/mpeg">
         </audio>
 
-        <div class="w-full flex items-center justify-between text-white border-b border-gray-800 pb-3">
+        <div class="w-full flex items-center justify-between text-white border-b border-gray-800 pb-2">
             <div class="flex items-center space-x-2">
-                <button onclick="closeSlideshow()" class="px-3.5 py-1.5 bg-red-700 hover:bg-red-800 active:scale-95 text-white font-bold text-sm rounded-lg transition-all flex items-center space-x-1 shadow">
+                <button onclick="closeSlideshow()" class="px-3 py-1 bg-red-700 hover:bg-red-800 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-lg transition-all flex items-center space-x-1 shadow">
                     <i class="fa-solid fa-xmark mr-1"></i>
                     <span>閉じる</span>
                 </button>
@@ -1175,17 +1282,17 @@
             </div>
             
             <div class="text-center">
-                <span id="slide-title" class="font-bold text-sm sm:text-base text-amber-200">im_1.png</span>
-                <span id="slide-counter" class="text-xs text-emerald-300 block">1 / 4 枚</span>
+                <span id="slide-title" class="font-bold text-xs sm:text-sm text-amber-200">im_1.png</span>
+                <span id="slide-counter" class="text-[11px] text-emerald-300 block">1 / 4 枚</span>
             </div>
 
-            <button onclick="toggleSlideBgm()" class="px-3 py-1.5 bg-emerald-900/80 hover:bg-emerald-800 active:scale-95 text-white rounded-lg text-xs sm:text-sm font-bold border border-emerald-700 flex items-center space-x-1.5 transition-all">
+            <button onclick="toggleSlideBgm()" class="px-2.5 py-1 bg-emerald-900/80 hover:bg-emerald-800 active:scale-95 text-white rounded-lg text-xs font-bold border border-emerald-700 flex items-center space-x-1 transition-all">
                 <i id="slide-bgm-icon" class="fa-solid fa-volume-high text-amber-300"></i>
                 <span id="slide-bgm-text">BGM：オン</span>
             </button>
         </div>
 
-        <div class="flex-grow w-full max-w-4xl mx-auto flex items-center justify-center my-4">
+        <div class="flex-grow w-full max-w-4xl mx-auto flex items-center justify-center my-2">
             <div class="relative w-full h-[55vh] sm:h-[65vh] bg-neutral-900/50 flex items-center justify-center rounded-2xl overflow-hidden border border-emerald-900/40 shadow-inner">
                 <!-- レイヤー1 -->
                 <div id="slide-layer-1" class="absolute inset-0 flex items-center justify-center transition-opacity duration-700 ease-in-out opacity-100 z-10">
@@ -1200,32 +1307,68 @@
             </div>
         </div>
 
-        <div class="w-full max-w-2xl mx-auto pb-2">
-            <div class="grid grid-cols-5 gap-1.5 sm:gap-3 justify-center items-center text-white">
-                <button onclick="prevSlide()" class="flex items-center justify-center py-3 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold shadow" title="前の写真へ">
-                    <i class="fa-solid fa-backward-step text-lg sm:text-2xl text-emerald-300"></i>
+        <div class="w-full max-w-2xl mx-auto pb-1">
+            <div class="grid grid-cols-5 gap-1.5 sm:gap-2 justify-center items-center text-white">
+                <button onclick="prevSlide()" class="flex items-center justify-center py-2.5 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold shadow" title="前の写真へ">
+                    <i class="fa-solid fa-backward-step text-base sm:text-xl text-emerald-300"></i>
                 </button>
                 
-                <button onclick="togglePlayPause()" id="btn-slide-play" class="col-span-2 flex flex-col items-center justify-center py-2.5 bg-amber-600 hover:bg-amber-700 active:scale-95 rounded-xl border border-amber-500/50 transition-all font-bold text-xs sm:text-sm shadow">
-                    <i id="icon-slide-play" class="fa-solid fa-pause text-sm sm:text-lg mb-1 text-amber-200"></i>
+                <button onclick="togglePlayPause()" id="btn-slide-play" class="col-span-2 flex flex-col items-center justify-center py-2 bg-amber-600 hover:bg-amber-700 active:scale-95 rounded-xl border border-amber-500/50 transition-all font-bold text-xs shadow">
+                    <i id="icon-slide-play" class="fa-solid fa-pause text-xs sm:text-sm mb-0.5 text-amber-200"></i>
                     <span id="text-slide-play">⏸ 一時停止</span>
                 </button>
                 
-                <button onclick="nextSlide()" class="flex items-center justify-center py-3 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold shadow" title="次の写真へ">
-                    <i class="fa-solid fa-forward-step text-lg sm:text-2xl text-emerald-300"></i>
+                <button onclick="nextSlide()" class="flex items-center justify-center py-2.5 bg-emerald-900/90 hover:bg-emerald-800 active:scale-95 rounded-xl border border-emerald-700/50 transition-all font-bold shadow" title="次の写真へ">
+                    <i class="fa-solid fa-forward-step text-base sm:text-xl text-emerald-300"></i>
                 </button>
                 
-                <button onclick="toggleFullscreen()" class="flex flex-col items-center justify-center py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-xl border border-slate-600/50 transition-all font-bold text-xs sm:text-sm shadow">
-                    <i class="fa-solid fa-expand text-sm sm:text-lg mb-1 text-slate-300"></i>
+                <button onclick="toggleFullscreen()" class="flex flex-col items-center justify-center py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-xl border border-slate-600/50 transition-all font-bold text-xs shadow">
+                    <i class="fa-solid fa-expand text-xs sm:text-sm mb-0.5 text-slate-300"></i>
                     <span>⛶ 全画面</span>
                 </button>
             </div>
             
-            <p class="text-center text-[10px] sm:text-xs text-gray-500 mt-3">
+            <p class="text-center text-[10px] text-gray-500 mt-2">
                 ※10秒ごとに次の写真に自動で変わります。ボタンを押せばお好きなペースで1枚ずつ見ることもできます。
             </p>
         </div>
+    </div>
 
+    <!-- 🎵 南相木小学校 校歌 歌詞拡大表示モーダル -->
+    <div id="kouka-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex flex-col justify-between p-3 sm:p-5 transition-all duration-300">
+        <div class="w-full flex items-center justify-between text-white border-b border-gray-800 pb-2">
+            <div class="flex items-center space-x-2">
+                <span class="text-amber-400"><i class="fa-solid fa-music"></i></span>
+                <span class="serif-font font-bold text-sm sm:text-base text-amber-200">南相木小学校 校歌 歌詞</span>
+            </div>
+            <button onclick="closeKoukaModal()" class="px-3 py-1 bg-red-700 hover:bg-red-800 text-white font-bold text-xs sm:text-sm rounded-lg transition-all flex items-center space-x-1 shadow">
+                <i class="fa-solid fa-xmark mr-1"></i>
+                <span>閉じる</span>
+            </button>
+        </div>
+
+        <div class="flex-grow w-full max-w-3xl mx-auto flex items-center justify-center my-3 overflow-auto">
+            <div class="relative w-full h-[70vh] bg-amber-50 rounded-2xl overflow-hidden border border-amber-300 shadow-2xl flex items-center justify-center p-2">
+                <img id="img-kouka-modal-src" src="gazo_kouka_1.png" alt="南相木小学校 校歌 歌詞" class="max-w-full max-h-full object-contain hidden" onload="showImage('img-kouka-modal-src', 'placeholder-kouka-modal')" onerror="handleImageError('img-kouka-modal-src', 'placeholder-kouka-modal')">
+                
+                <div id="placeholder-kouka-modal" class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-amber-50">
+                    <i class="fa-solid fa-file-lines text-amber-800 text-4xl mb-3"></i>
+                    <h3 class="serif-font font-bold text-amber-950 text-xl mb-2">南相木小学校 校歌</h3>
+                    <p class="text-sm text-gray-700 leading-relaxed max-w-lg mb-4">
+                        ※サーバーに「gazo_kouka_1.png」が配置されると、こちらの画面いっぱいに歌詞の画像が大きく表示されます。
+                    </p>
+                    <div class="px-4 py-2 bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-300">
+                        画像ファイル名：gazo_kouka_1.png
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center pb-1">
+            <button onclick="closeKoukaModal()" class="px-6 py-2 bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow border border-emerald-600">
+                画面を閉じる
+            </button>
+        </div>
     </div>
 
 </body>
